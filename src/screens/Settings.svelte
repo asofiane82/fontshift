@@ -13,7 +13,7 @@
   import { isMac, isTauri, setWindowTitle } from '../lib/platform';
 
   const id = $props.id();
-  let tab = $state<'general' | 'appearance' | 'advanced'>('appearance');
+  let tab = $state<'appearance' | 'about'>('appearance');
   let resetDone = $state(false);
   const version = __APP_VERSION__;
 
@@ -22,9 +22,8 @@
   });
 
   const tabs: { key: typeof tab; icon: IconName; label: string }[] = $derived([
-    { key: 'general', icon: 'cog', label: t('set.general') },
     { key: 'appearance', icon: 'swatch', label: t('set.appearance') },
-    { key: 'advanced', icon: 'shield', label: t('set.advanced') },
+    { key: 'about', icon: 'info', label: t('set.about') },
   ]);
 
   const thumbs = $derived(
@@ -48,11 +47,6 @@
     prefs.set(k, v);
     resetDone = false;
   };
-  const stored = $derived([
-    { label: t('set.theme'), value: themeName(prefs.theme), key: 'fontaine.theme' },
-    { label: t('set.mode'), value: t('set.' + prefs.appearance), key: 'fontaine.appearance' },
-    { label: t('set.language'), value: langLabel(prefs.lang), key: 'fontaine.lang' },
-  ]);
 
 </script>
 
@@ -176,9 +170,8 @@
             {t('set.languageNote')}
           </p>
         </section>
-      {:else if tab === 'general'}
-        <section aria-labelledby="ab-{id}" class="flex flex-col gap-4">
-          <h2 id="ab-{id}" class="m-0 text-[15px] font-semibold text-fg">{t('set.about')}</h2>
+      {:else}
+        <section aria-label={t('set.about')} class="flex flex-col gap-4">
           <div class="bg-card shadow-card flex flex-wrap items-center gap-[22px] rounded-xl border border-line p-[22px]">
             <span role="img" aria-label={t('set.iconAria')} class="block size-[104px] shrink-0 [&>svg]:size-full">{@html APP_ICON_SVG}</span>
             <div class="flex min-w-0 flex-[1_1_220px] flex-col gap-1.5">
@@ -191,22 +184,6 @@
             <Icon name="shield" size={19} class="text-accent-text" />
             {t('set.local')}
           </p>
-        </section>
-      {:else}
-        <section aria-labelledby="pr-{id}" class="flex flex-col gap-3.5">
-          <h2 id="pr-{id}" class="m-0 text-[15px] font-semibold text-fg">{t('set.prefsStored')}</h2>
-          <dl class="bg-card m-0 overflow-hidden rounded-xl border border-line">
-            {#each stored as p (p.key)}
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-line px-[18px] py-3.5 last:border-b-0">
-                <dt class="flex-[1_1_140px] text-[14px] text-fg-muted">{p.label}</dt>
-                <dd class="m-0 flex flex-wrap items-center gap-3">
-                  <span class="text-[14.5px] font-semibold text-fg">{p.value}</span>
-                  <code class="rounded-md border border-line bg-sunken px-2 py-[3px] font-mono text-[12.5px] text-code-text">{p.key}</code>
-                </dd>
-              </div>
-            {/each}
-          </dl>
-          <p class="m-0 text-[13.5px] leading-normal text-fg-muted">{t('set.resetDesc')}</p>
         </section>
       {/if}
     </div>

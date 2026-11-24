@@ -16,7 +16,6 @@
     "resultsBadge": "{count, plural, one {# résultat} other {# résultats}}"
   },
   "top": {
-    "tabs": "Espaces de travail",
     "newSession": "Nouvelle conversion"
   },
   "conv": {
@@ -120,7 +119,7 @@
     },
     "metricsAria": "Aperçu de {name} et de ses lignes de référence",
     "customLabel": "Caractères à conserver",
-    "customPlaceholder": "Ex. ABCabc0123 €",
+    "customPlaceholder": "Ex. ABCabc0123 €  ou  U+0000-00FF",
     "destChoose": "Choisir un dossier",
     "cancelled": "Conversion annulée",
     "failedCount": "{count, plural, one {# fichier n’a pas pu être converti} other {# fichiers n’ont pas pu être convertis}}",
@@ -239,9 +238,7 @@
   "set": {
     "title": "Réglages",
     "tabs": "Sections des réglages",
-    "general": "Général",
     "appearance": "Apparence",
-    "advanced": "Avancé",
     "theme": "Thème",
     "themeDesc": "Choisissez votre univers graphique.",
     "themeDefault": "Par défaut",
@@ -261,7 +258,6 @@
     "platforms": "macOS · Windows · Linux",
     "local": "Vos polices ne quittent jamais votre ordinateur : toute la conversion est locale.",
     "iconAria": "Icône de l’application Fontaine",
-    "prefsStored": "Préférences stockées sur cet ordinateur",
     "selectedTheme": "{name}, thème sélectionné",
     "close": "Fermer les réglages"
   }

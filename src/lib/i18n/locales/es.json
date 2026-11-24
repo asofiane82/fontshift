@@ -16,7 +16,6 @@
     "resultsBadge": "{count, plural, one {# resultado} other {# resultados}}"
   },
   "top": {
-    "tabs": "Espacios de trabajo",
     "newSession": "Nueva conversión"
   },
   "conv": {
@@ -120,7 +119,7 @@
     },
     "metricsAria": "Vista previa de {name} con sus líneas de referencia",
     "customLabel": "Caracteres que conservar",
-    "customPlaceholder": "Ej. ABCabc0123 €",
+    "customPlaceholder": "P. ej. ABCabc0123 €  o  U+0000-00FF",
     "destChoose": "Elegir una carpeta",
     "cancelled": "Conversión cancelada",
     "failedCount": "{count, plural, one {# archivo no se pudo convertir} other {# archivos no se pudieron convertir}}",
@@ -239,9 +238,7 @@
   "set": {
     "title": "Ajustes",
     "tabs": "Secciones de ajustes",
-    "general": "General",
     "appearance": "Apariencia",
-    "advanced": "Avanzado",
     "theme": "Tema",
     "themeDesc": "Elige tu universo gráfico.",
     "themeDefault": "Predeterminado",
@@ -261,7 +258,6 @@
     "platforms": "macOS · Windows · Linux",
     "local": "Tus fuentes nunca salen de tu equipo: toda la conversión es local.",
     "iconAria": "Icono de la aplicación Fontaine",
-    "prefsStored": "Preferencias guardadas en este equipo",
     "selectedTheme": "{name}, tema seleccionado",
     "close": "Cerrar los ajustes"
   }

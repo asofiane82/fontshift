@@ -16,7 +16,6 @@
     "resultsBadge": "{count, plural, one {# result} other {# results}}"
   },
   "top": {
-    "tabs": "Workspaces",
     "newSession": "New conversion"
   },
   "conv": {
@@ -120,7 +119,7 @@
     },
     "metricsAria": "Preview of {name} with its reference lines",
     "customLabel": "Characters to keep",
-    "customPlaceholder": "e.g. ABCabc0123 €",
+    "customPlaceholder": "E.g. ABCabc0123 €  or  U+0000-00FF",
     "destChoose": "Choose a folder",
     "cancelled": "Conversion cancelled",
     "failedCount": "{count, plural, one {# file could not be converted} other {# files could not be converted}}",
@@ -239,9 +238,7 @@
   "set": {
     "title": "Settings",
     "tabs": "Settings sections",
-    "general": "General",
     "appearance": "Appearance",
-    "advanced": "Advanced",
     "theme": "Theme",
     "themeDesc": "Choose your visual world.",
     "themeDefault": "Default",
@@ -261,7 +258,6 @@
     "platforms": "macOS · Windows · Linux",
     "local": "Your fonts never leave your computer: every conversion runs locally.",
     "iconAria": "Fontaine app icon",
-    "prefsStored": "Preferences stored on this computer",
     "selectedTheme": "{name}, selected theme",
     "close": "Close settings"
   }

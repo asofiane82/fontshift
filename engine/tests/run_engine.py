@@ -66,6 +66,12 @@ res = E.convert(load("playfair-display-latin-600-italic.woff2"), "p.woff2", json
 f = TTFont(io.BytesIO(res["outputs"][0]["data"]))
 check(set(chr(c) for c in f.getBestCmap()) <= set("Fontaine  "), f"sous-ensemble perso : {sorted(chr(c) for c in f.getBestCmap())}")
 
+# Sous-ensemble personnalisé avec plage Unicode
+res = E.convert(load("playfair-display-latin-600-italic.woff2"), "p.woff2", json.dumps({"formats": ["woff2"], "subset": "custom", "customText": "U+0041-0043, xyz"}))
+f = TTFont(io.BytesIO(res["outputs"][0]["data"]))
+got = set(chr(c) for c in f.getBestCmap())
+check({"A", "B", "C", "x", "y", "z"} <= got and got <= set("ABCxyz \u00a0"), f"plage U+0041-0043 + xyz : {sorted(got)}")
+
 # Erreurs
 check(E.open_faces(b"\x80\x01abcdef", "Ancienne-Police.pfb").get("error") == "type1", "Type 1 refusé avec code")
 check(E.open_faces(b"garbage-data-here", "x.ttf").get("error") in ("unknownFormat", "corrupt"), "fichier illisible refusé")

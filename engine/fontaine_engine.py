@@ -301,7 +301,7 @@ def _parse_ranges(spec: str) -> set[int]:
         if not part:
             continue
         if "-" in part:
-            a, b = part.split("-")
+            a, b = part.split("-", 1)
             out.update(range(int(a, 16), int(b, 16) + 1))
         else:
             out.add(int(part, 16))
@@ -314,9 +314,15 @@ def subset_unicodes(mode: str, custom_text: str = "") -> set[int] | None:
     if mode == "latinExt":
         return _parse_ranges(LATIN) | _parse_ranges(LATIN_EXT)
     if mode == "custom":
-        cps = {ord(c) for c in (custom_text or "")}
+        # Plages Unicode (« U+0041 », « U+0100-017F ») et caractères tapés tels quels.
+        text = custom_text or ""
+        ranges = re.findall(r"[Uu]\+[0-9A-Fa-f]{1,6}(?:\s*-\s*(?:[Uu]\+)?[0-9A-Fa-f]{1,6})?", text)
+        cps = _parse_ranges(",".join(r.replace(" ", "") for r in ranges)) if ranges else set()
+        for r in ranges:
+            text = text.replace(r, " ")
+        cps |= {ord(c) for c in text if c not in ",;\n\r\t"}
         cps |= {0x20, 0xA0}
-        return cps
+        return {c for c in cps if c <= 0x10FFFF}
     return None
 
 

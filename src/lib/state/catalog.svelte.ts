@@ -57,7 +57,7 @@ class Catalog {
   families = $state<Family[]>([]);
   query = $state('');
   category = $state<'all' | Category>('all');
-  variableOnly = $state(true);
+  variableOnly = $state(false);
   selected = $state<string[]>([]);
   limit = $state(60);
   download = $state<{ done: number; total: number; failed: string[] } | null>(null);
@@ -112,7 +112,7 @@ class Catalog {
   resetFilters() {
     this.query = '';
     this.category = 'all';
-    this.variableOnly = true;
+    this.variableOnly = false;
     this.limit = 60;
   }
 

@@ -156,10 +156,12 @@
       <div class="bg-card shadow-card overflow-hidden rounded-xl border border-line">
         <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-b border-line py-2 pr-2 pl-4">
           <span class="text-[13.5px] text-fg-muted">{t('conv.listSummary', { count, size: fmt.size(session.totalSize) })}</span>
-          <button type="button" onclick={() => session.clear()} class="inline-flex min-h-9 items-center gap-[7px] rounded-lg px-2.5 text-[13.5px] whitespace-nowrap text-fg-muted hover:bg-hover hover:text-fg">
-            <Icon name="trash" size={16} />
-            {t('conv.clearAll')}
-          </button>
+          {#if session.phase !== 'done'}
+            <button type="button" onclick={() => session.clear()} class="inline-flex min-h-9 items-center gap-[7px] rounded-lg px-2.5 text-[13.5px] whitespace-nowrap text-fg-muted hover:bg-hover hover:text-fg">
+              <Icon name="trash" size={16} />
+              {t('conv.clearAll')}
+            </button>
+          {/if}
         </div>
         <ul class="m-0 list-none p-0">
           {#each session.items as item (item.id)}
