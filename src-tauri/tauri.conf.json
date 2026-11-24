@@ -45,7 +45,7 @@
     "longDescription": "Fontaine convertit vos polices entre TTF, OTF, WOFF, WOFF2 et EOT, conserve ou instancie les axes des polices variables, réduit les jeux de caractères, importe le catalogue Google Fonts et génère le CSS @font-face. Toute la conversion est locale.",
     "copyright": "© 2026 Fontaine",
     "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
-    "macOS": { "minimumSystemVersion": "13.0" },
+    "macOS": { "minimumSystemVersion": "13.0", "signingIdentity": "-" },
     "linux": { "deb": { "depends": [] } }
   }
 }
