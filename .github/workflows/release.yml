@@ -138,8 +138,10 @@ jobs:
           }
           copy fontshift-macos-apple-silicon '*.dmg'         Fontshift-macOS-Apple-Silicon.dmg
           copy fontshift-macos-intel         '*.dmg'         Fontshift-macOS-Intel.dmg
-          copy fontshift-macos-apple-silicon '*.app.tar.gz'  Fontshift-macOS-Apple-Silicon.app.tar.gz
-          copy fontshift-macos-intel         '*.app.tar.gz'  Fontshift-macOS-Intel.app.tar.gz
+          # archives de mise à jour macOS : utiles seulement si elles sont signées
+          copy_signed() { src=$(pick "$1" "$2"); if [ -n "$src" ] && [ -f "$src.sig" ]; then cp "$src" "telechargements/$3"; cp "$src.sig" "signatures/$3.sig"; fi; }
+          copy_signed fontshift-macos-apple-silicon '*.app.tar.gz'  Fontshift-macOS-Apple-Silicon.app.tar.gz
+          copy_signed fontshift-macos-intel         '*.app.tar.gz'  Fontshift-macOS-Intel.app.tar.gz
           copy fontshift-windows             '*-setup.exe'   Fontshift-Windows.exe
           copy fontshift-windows             '*.msi'         Fontshift-Windows.msi
           copy fontshift-linux               '*.AppImage'    Fontshift-Linux.AppImage
