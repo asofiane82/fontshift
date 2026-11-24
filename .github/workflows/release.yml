@@ -85,3 +85,40 @@ jobs:
             src-tauri/target/**/release/bundle/deb/*.deb
             src-tauri/target/**/release/bundle/rpm/*.rpm
             src-tauri/target/**/release/bundle/appimage/*.AppImage
+
+  # Lot prêt à déposer sur un site : installeurs sous des noms fixes + version.json
+  # (la page de téléchargement lit version.json pour afficher la version et les tailles).
+  telechargements:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artefacts
+      - name: Noms fixes et version.json
+        run: |
+          set -e
+          mkdir -p telechargements
+          pick() { find artefacts/"$1" -type f -name "$2" | head -n 1; }
+          copy() { src=$(pick "$1" "$2"); if [ -n "$src" ]; then cp "$src" "telechargements/$3"; fi; }
+          copy fontaine-macos-apple-silicon '*.dmg'        Fontaine-macOS-Apple-Silicon.dmg
+          copy fontaine-macos-intel         '*.dmg'        Fontaine-macOS-Intel.dmg
+          copy fontaine-windows             '*-setup.exe'  Fontaine-Windows.exe
+          copy fontaine-windows             '*.msi'        Fontaine-Windows.msi
+          copy fontaine-linux               '*.AppImage'   Fontaine-Linux.AppImage
+          copy fontaine-linux               '*.deb'        Fontaine-Linux.deb
+          copy fontaine-linux               '*.rpm'        Fontaine-Linux.rpm
+          VERSION=$(node -p "require('./package.json').version")
+          node -e '
+            const fs = require("fs");
+            const files = {};
+            for (const f of fs.readdirSync("telechargements")) files[f] = fs.statSync("telechargements/" + f).size;
+            fs.writeFileSync("telechargements/version.json", JSON.stringify({ version: process.argv[1], date: new Date().toISOString().slice(0, 10), files }, null, 2) + "\n");
+          ' "$VERSION"
+          ls -la telechargements && cat telechargements/version.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fontaine-telechargements
+          path: telechargements/
+          if-no-files-found: error
