@@ -1,5 +1,5 @@
 /*
- * Fontaine — palettes et tokens sémantiques.
+ * Fontshift — palettes et tokens sémantiques.
  * Source unique des couleurs : 8 thèmes × 2 apparences, mêmes clés, couleurs en aplat (sans dégradé).
  * Chaque thème part d'un trio (couleur profonde, accent, neutre clair) :
  *   clair  : fond = neutre, boutons = couleur profonde, surlignages = accent ;

@@ -107,7 +107,7 @@ function capability(info: FaceInfo) {
 /** Nom du sous-dossier d'une conversion : les familles, dans l'ordre de la liste (3 au plus, puis « + N »). */
 function folderName(items: FontItem[]) {
   const families = [...new Set(items.map((i) => (i.info?.family || i.fileName.replace(/\.[^.]+$/, '')).trim()))].filter(Boolean);
-  if (!families.length) return 'Fontaine';
+  if (!families.length) return 'Fontshift';
   const shown = families.slice(0, 3).join(' + ');
   return families.length > 3 ? `${shown} + ${families.length - 3}` : shown;
 }
@@ -460,9 +460,9 @@ class Session {
       const css = buildCss(results.outputs);
       results.css = css;
       try {
-        results.cssPath = await writeOutput(dest, 'fontaine-fonts.css', new TextEncoder().encode(css));
+        results.cssPath = await writeOutput(dest, 'fontshift-fonts.css', new TextEncoder().encode(css));
       } catch {
-        results.failures.push({ name: 'fontaine-fonts.css', error: 'conv.errorWrite' });
+        results.failures.push({ name: 'fontshift-fonts.css', error: 'conv.errorWrite' });
       }
     } else if (results.outputs.length) {
       results.css = buildCss(results.outputs);

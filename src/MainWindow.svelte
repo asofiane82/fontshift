@@ -7,12 +7,15 @@
   import { ui } from './lib/state/ui.svelte';
   import { session } from './lib/state/session.svelte';
   import { engine } from './lib/engine/client.svelte';
+  import { updates } from './lib/state/updates.svelte';
   import { onNativeDrop } from './lib/platform';
   import { t } from './lib/i18n/index.svelte';
   import { isMac, isTauri, setWindowTitle } from './lib/platform';
 
   // Le moteur démarre dès l'ouverture : il est prêt quand les premières polices arrivent.
   engine.start();
+  // Vérification silencieuse des mises à jour (rien ne se passe si aucune adresse n'est configurée).
+  void updates.init(true);
 
   // Glisser-déposer natif sur toute la fenêtre : les polices rejoignent la conversion.
   $effect(() => {

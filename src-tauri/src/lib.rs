@@ -1,4 +1,4 @@
-//! Fontaine — côté natif volontairement minimal : lecture et écriture des fichiers choisis
+//! Fontshift — côté natif volontairement minimal : lecture et écriture des fichiers choisis
 //! par l'utilisateur, dossier de sortie par défaut. La conversion elle-même tourne dans
 //! l'interface (fontTools via Pyodide), identique sur macOS, Windows et Linux.
 
@@ -104,7 +104,7 @@ fn prepare_output_dir(base: String, name: String) -> Result<String, String> {
     Ok(dir.to_string_lossy().into_owned())
 }
 
-/// Dossier de sortie proposé par défaut : Bureau/Fontaine (ou Documents, ou le dossier personnel).
+/// Dossier de sortie proposé par défaut : Bureau/Fontshift (ou Documents, ou le dossier personnel).
 #[tauri::command]
 fn default_output_dir(app: tauri::AppHandle) -> Result<String, String> {
     let paths = app.path();
@@ -113,7 +113,7 @@ fn default_output_dir(app: tauri::AppHandle) -> Result<String, String> {
         .or_else(|_| paths.document_dir())
         .or_else(|_| paths.home_dir())
         .map_err(|e| e.to_string())?;
-    Ok(base.join("Fontaine").to_string_lossy().into_owned())
+    Ok(base.join("Fontshift").to_string_lossy().into_owned())
 }
 
 #[tauri::command]
@@ -127,15 +127,57 @@ fn system_locales() -> Vec<String> {
     sys_locale::get_locales().collect()
 }
 
+/// Mises à jour automatiques. En veille tant qu'aucune adresse n'est renseignée dans
+/// `plugins.updater.endpoints` (tauri.conf.json) : `updater()` renvoie alors une erreur.
+mod updates {
+    use tauri::AppHandle;
+    use tauri_plugin_updater::UpdaterExt;
+
+    #[derive(serde::Serialize)]
+    pub struct Available {
+        version: String,
+    }
+
+    #[tauri::command]
+    pub fn update_enabled(app: AppHandle) -> bool {
+        app.updater().is_ok()
+    }
+
+    #[tauri::command]
+    pub async fn update_check(app: AppHandle) -> Result<Option<Available>, String> {
+        let update = app.updater().map_err(|e| e.to_string())?.check().await.map_err(|e| e.to_string())?;
+        Ok(update.map(|u| Available { version: u.version }))
+    }
+
+    /// Télécharge, vérifie la signature, installe puis relance l'application.
+    /// Sous Windows, l'installeur ferme l'application et la relance lui-même.
+    #[tauri::command]
+    pub async fn update_install(app: AppHandle) -> Result<(), String> {
+        let update = app
+            .updater()
+            .map_err(|e| e.to_string())?
+            .check()
+            .await
+            .map_err(|e| e.to_string())?
+            .ok_or_else(|| "aucune mise à jour disponible".to_string())?;
+        update.download_and_install(|_, _| {}, || {}).await.map_err(|e| e.to_string())?;
+        app.restart()
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![read_file, write_file, prepare_output_dir, default_output_dir, home_dir, system_locales])
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .invoke_handler(tauri::generate_handler![
+            read_file, write_file, prepare_output_dir, default_output_dir, home_dir, system_locales,
+            updates::update_enabled, updates::update_check, updates::update_install
+        ])
         .run(tauri::generate_context!())
-        .expect("erreur au lancement de Fontaine");
+        .expect("erreur au lancement de Fontshift");
 }
 
 #[cfg(test)]
@@ -155,7 +197,7 @@ mod tests {
 
     #[test]
     fn finds_free_name() {
-        let dir = std::env::temp_dir().join("fontaine-test-unique");
+        let dir = std::env::temp_dir().join("fontshift-test-unique");
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         fs::write(dir.join("A.woff2"), b"x").unwrap();

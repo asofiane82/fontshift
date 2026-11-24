@@ -1,10 +1,10 @@
 {
   "app": {
-    "name": "Fontaine",
+    "name": "Fontshift",
     "tagline": "Font conversion",
     "version": "Version {version}",
-    "windowMain": "Fontaine",
-    "windowSettings": "Fontaine Settings"
+    "windowMain": "Fontshift",
+    "windowSettings": "Fontshift Settings"
   },
   "nav": {
     "main": "Main navigation",
@@ -85,10 +85,10 @@
       "custom": "Character list or Unicode range"
     },
     "optCss": "Generate @font-face CSS",
-    "optCssInfo": "Creates a ready-to-use fontaine-fonts.css file.",
+    "optCssInfo": "Creates a ready-to-use fontshift-fonts.css file.",
     "optDest": "Destination",
-    "destPath": "~/Desktop/Fontaine",
-    "optDestInfo": "Folder where converted files are saved. Each conversion creates its own subfolder named after the font (e.g. Fontaine/Montserrat).",
+    "destPath": "~/Desktop/Fontshift",
+    "optDestInfo": "Folder where converted files are saved. Each conversion creates its own subfolder named after the font (e.g. Fontshift/Montserrat).",
     "cta": "{count, plural, one {Convert # font} other {Convert # fonts}}",
     "running": "Converting · {done} of {total}",
     "cancel": "Cancel",
@@ -136,7 +136,7 @@
   },
   "gf": {
     "title": "Google Fonts catalog",
-    "subtitle": "Pick families: Fontaine downloads them, then converts them with your settings.",
+    "subtitle": "Pick families: Fontshift downloads them, then converts them with your settings.",
     "search": "Search families, e.g. Inter",
     "searchLabel": "Search families",
     "variableOnly": "Variable only",
@@ -257,8 +257,21 @@
     "about": "About",
     "platforms": "macOS · Windows · Linux",
     "local": "Your fonts never leave your computer: every conversion runs locally.",
-    "iconAria": "Fontaine app icon",
+    "iconAria": "Fontshift app icon",
     "selectedTheme": "{name}, selected theme",
     "close": "Close settings"
+  },
+  "upd": {
+    "available": "Version {version} available",
+    "availableLong": "Version {version} is available.",
+    "install": "Install",
+    "installRestart": "Install and restart",
+    "later": "Later",
+    "installing": "Installing…",
+    "check": "Check for updates",
+    "checking": "Checking…",
+    "upToDate": "Fontshift is up to date.",
+    "error": "Unable to check for updates right now.",
+    "installError": "The update could not be installed. Please try again later."
   }
 }

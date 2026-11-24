@@ -10,10 +10,10 @@ from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.remote.file_detector import UselessFileDetector
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APP = os.path.join(ROOT, "src-tauri/target/release/fontaine")
+APP = os.path.join(ROOT, "src-tauri/target/release/fontshift")
 SHOTS = os.path.join(ROOT, "e2e/shots"); os.makedirs(SHOTS, exist_ok=True)
 FONTS = [os.path.join(ROOT, "engine/tests", f) for f in ("playfair-display-latin-wght-normal.woff2", "playfair-display-latin-600-italic.woff2")]
-home = tempfile.mkdtemp(prefix="fontaine-home-")
+home = tempfile.mkdtemp(prefix="fontshift-home-")
 os.makedirs(os.path.join(home, "Desktop"), exist_ok=True)
 env = dict(os.environ, HOME=home, LANG=os.environ.get("E2E_LANG", "fr_FR.UTF-8"), LANGUAGE=os.environ.get("E2E_LANGUAGE", "fr"), DISPLAY=":99",
            XDG_CONFIG_HOME=os.path.join(home, ".config"), XDG_DATA_HOME=os.path.join(home, ".local/share"))
@@ -65,13 +65,13 @@ try:
     WebDriverWait(d, 240).until(lambda x: "Voir les résultats" in x.find_element(By.TAG_NAME, "main").text)
     time.sleep(0.8)
     d.save_screenshot(os.path.join(SHOTS, "04-conversion-terminee.png"))
-    base = next((p for p in (os.path.join(home, "Desktop", "Fontaine"), os.path.join(home, "Documents", "Fontaine"), os.path.join(home, "Fontaine")) if os.path.isdir(p)), "")
+    base = next((p for p in (os.path.join(home, "Desktop", "Fontshift"), os.path.join(home, "Documents", "Fontshift"), os.path.join(home, "Fontshift")) if os.path.isdir(p)), "")
     subdirs = [os.path.join(base, x) for x in sorted(os.listdir(base))] if base else []
     out_dir = next((x for x in subdirs if os.path.isdir(x)), "")
     print("   sous-dossier :", os.path.basename(out_dir))
     files = sorted(os.listdir(out_dir)) if os.path.isdir(out_dir) else []
     print("   fichiers :", files)
-    check(any(f.endswith(".woff2") for f in files) and "fontaine-fonts.css" in files, "fichiers WOFF2/WOFF et CSS écrits sur le disque")
+    check(any(f.endswith(".woff2") for f in files) and "fontshift-fonts.css" in files, "fichiers WOFF2/WOFF et CSS écrits sur le disque")
 
     nav("Résultats")
     time.sleep(1)

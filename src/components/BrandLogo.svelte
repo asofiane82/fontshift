@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Logo Fontaine vectoriel. La forme haute reste or (--ftn-brand-gold) ; la forme basse et le
+  // Logo Fontshift vectoriel. La forme haute reste or (--ftn-brand-gold) ; la forme basse et le
   // logotype prennent la couleur du texte courant, ce qui garde le logo lisible dans tous les thèmes.
   import { MONOGRAM, WORDMARK, LOGO } from '../lib/brand';
 

@@ -1,8 +1,12 @@
-# Fontaine — identité visuelle (logo n° 05, aplats) · version 2
+# Fontshift — identité visuelle (logo n° 05, aplats) · version 3
 
-Assets de marque à valider (phase 1). Rien n'est encore intégré dans l'application.
+Assets de marque intégrés dans l'application (icônes, logo de l'interface, favicons).
 
-Changements par rapport à la version 1 :
+Version 3 : l'application s'appelle Fontshift (logotype recomposé en Syne 600) et le coin haut-droit
+de la forme basse du F est affiné (environ 69° au lieu de 82°) : son bord droit penche dans le même sens
+que l'extrémité de la barre or.
+
+Changements de la version 2 par rapport à la version 1 :
 - les deux formes du F sont nettement séparées, avec un écart constant de 4,5 % de la hauteur ;
 - le vert est retiré : la forme haute est en or, la forme basse en encre sur fond clair et en ivoire sur fond sombre ;
 - le logotype passe d'Urbanist à Syne 600.
@@ -13,12 +17,12 @@ Changements par rapport à la version 1 :
 |---|---|
 | `svg/` | Logos vectoriels (vrais tracés, aucune image incorporée) |
 | `png/` | Logos 2400 px et monogrammes 1024 px, fond transparent |
-| `macos/` | Icône 1024 px (SVG + PNG), `Fontaine.iconset` (16 à 1024 px), `Fontaine.icns` |
+| `macos/` | Icône 1024 px (SVG + PNG), `Fontshift.iconset` (16 à 1024 px), `Fontshift.icns` |
 | `web/` | `favicon.svg`, `favicon.ico` (16/32/48), PNG 16/32/48, `apple-touch-icon.png`, `icon-192/512.png`, `site.webmanifest`, balises `head.html` |
 | `preview/` | Planche d'identité, variantes de couleur du monogramme, planche et fichier JSON des thèmes |
 
-Logos SVG : `fontaine-logo-{dark,light,black,white}.svg` (horizontal) et
-`fontaine-monogram-{dark,light,black,white}.svg`. `fontaine-wordmark.svg` est le logotype seul
+Logos SVG : `fontshift-logo-{dark,light,black,white}.svg` (horizontal) et
+`fontshift-monogram-{dark,light,black,white}.svg`. `fontshift-wordmark.svg` est le logotype seul
 en `currentColor`, pour l'interface.
 
 - `dark` : pour fonds sombres (or #DDB66E, ivoire #FCF8EF)

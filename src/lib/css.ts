@@ -52,7 +52,7 @@ export function cssForRule(r: FaceRule): string {
 
 export function buildCss(outputs: SavedOutput[]): string {
   const rules = faceRules(outputs);
-  return ['/* Fontaine · fontaine-fonts.css */', '', ...rules.map(cssForRule).flatMap((r) => [r, ''])].join('\n').trimEnd() + '\n';
+  return ['/* Fontshift · fontshift-fonts.css */', '', ...rules.map(cssForRule).flatMap((r) => [r, ''])].join('\n').trimEnd() + '\n';
 }
 
 export const slug = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -63,7 +63,7 @@ export function tailwindSnippet(outputs: SavedOutput[], twigComment: string): st
   const first = families[0] ? slug(families[0]) : 'sans';
   return [
     '@import "tailwindcss";',
-    '@import "./fontaine-fonts.css";',
+    '@import "./fontshift-fonts.css";',
     '',
     '@theme {',
     ...families.map((f) => `  --font-${slug(f)}: ${q(f)}, sans-serif;`),

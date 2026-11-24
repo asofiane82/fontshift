@@ -40,7 +40,7 @@ export async function pickFolder(title: string, defaultPath?: string): Promise<s
 }
 
 export async function defaultOutputDir(): Promise<string> {
-  if (!isTauri) return '~/Fontaine';
+  if (!isTauri) return '~/Fontshift';
   return invoke<string>('default_output_dir');
 }
 
@@ -165,4 +165,21 @@ export async function listenAll(name: string, cb: (payload: unknown) => void): P
   const ch = new BroadcastChannel('fontaine');
   ch.onmessage = (e) => e.data?.name === name && cb(e.data.payload);
   return () => ch.close();
+}
+
+/** Mises à jour : false tant qu'aucune adresse n'est configurée (ou hors de l'application). */
+export async function updatesEnabled(): Promise<boolean> {
+  if (!isTauri) return false;
+  return invoke<boolean>('update_enabled');
+}
+
+/** Version disponible, ou null si l'application est à jour. */
+export async function checkUpdate(): Promise<string | null> {
+  const r = await invoke<{ version: string } | null>('update_check');
+  return r?.version ?? null;
+}
+
+/** Télécharge, vérifie, installe puis relance l'application. */
+export async function installUpdate(): Promise<void> {
+  await invoke('update_install');
 }

@@ -1,9 +1,9 @@
-# Fontaine
+# Fontshift
 
 Application de bureau légère (macOS, Windows, Linux) pour convertir des polices :
 TTF, OTF, WOFF, WOFF2 et EOT, polices variables comprises, avec import depuis Google Fonts
 et génération du CSS `@font-face`. Identité visuelle : logo n° 05 « Futuriste & Fluide » (monogramme F
-or et encre, logotype Syne). 8 thèmes en aplats (Champagne & Encre par défaut) en clair et en sombre,
+or et encre, logotype Syne). Anciennement « Fontaine » (renommée en 1.5.0). 8 thèmes en aplats (Champagne & Encre par défaut) en clair et en sombre,
 en français, anglais et espagnol.
 
 ## Ce que fait l'application
@@ -21,9 +21,9 @@ en français, anglais et espagnol.
     Une police variable ne peut pas sortir en OTF (CFF2 non généré) ; l'EOT est produit depuis
     l'instance par défaut. Ces deux cas sont signalés dans les Résultats.
   - Jeux de caractères : complet, latin, latin étendu (plages de Google Fonts) ou liste personnalisée.
-  - Fichier `fontaine-fonts.css` prêt à intégrer, dossier de destination au choix
-    (par défaut `Bureau/Fontaine`). Chaque conversion range ses fichiers dans un sous-dossier
-    au nom des polices (`Fontaine/Montserrat`, puis `Montserrat (2)`…) ; rien n'est écrasé.
+  - Fichier `fontshift-fonts.css` prêt à intégrer, dossier de destination au choix
+    (par défaut `Bureau/Fontshift`). Chaque conversion range ses fichiers dans un sous-dossier
+    au nom des polices (`Fontshift/Montserrat`, puis `Montserrat (2)`…) ; rien n'est écrasé.
 - **Google Fonts** : catalogue officiel (mis en cache 7 jours), recherche, catégories,
   filtre « Variables uniquement », sélection multiple, téléchargement des fichiers officiels
   (variables quand ils existent) puis ajout à la conversion.
@@ -34,8 +34,10 @@ en français, anglais et espagnol.
 - **Réglages** (fenêtre séparée) : thème, apparence (clair, sombre, système) et langue
   (système, français, anglais, espagnol), indépendants, enregistrés automatiquement,
   appliqués aussitôt à toutes les fenêtres. Changer de langue n'interrompt pas une conversion.
+- **Mises à jour automatiques** : voir plus bas. En veille tant qu'aucune adresse n'est configurée.
 
-Toute la conversion est locale : seul le catalogue Google Fonts utilise le réseau.
+Toute la conversion est locale : seuls le catalogue Google Fonts et, une fois configurée,
+la vérification des mises à jour utilisent le réseau.
 
 ## Architecture
 
@@ -51,7 +53,8 @@ src/                     Interface Svelte 5 + Tailwind CSS 4
   lib/state/             Session de conversion, catalogue Google Fonts, navigation
   components/, screens/  Composants réutilisables et écrans (aucune couleur ni chaîne en dur)
 engine/                  Moteur Python (fontTools) et ses tests
-src-tauri/               Côté natif Rust minimal : lecture/écriture des fichiers, dossier par défaut, langue du système
+src-tauri/               Côté natif Rust minimal : lecture/écriture des fichiers, dossier par défaut, langue du système,
+                         mises à jour (tauri-plugin-updater)
 e2e/                     Test de bout en bout de l'application compilée (tauri-driver)
 design/brand/            Assets de marque : SVG vectoriels, PNG, icône macOS (.icns), icône Windows/Linux,
                          favicons, planches ; source/ contient les scripts qui les génèrent
@@ -78,8 +81,8 @@ Modifier les couleurs : `src/lib/theme/palette.js`, puis `npm run prepare:assets
 
 Régénérer la marque (Python 3, fontTools, uharfbuzz, shapely, numpy, rsvg-convert) :
 `python3 design/brand/source/gen_wordmark.py && python3 design/brand/source/separate.py && python3 design/brand/source/build_brand.py`,
-puis `npx tauri icon design/brand/desktop/fontaine-desktop-icon-1024.png -o src-tauri/icons` et
-`icon.icns` depuis `design/brand/macos/` (l'icône macOS garde la marge du gabarit Apple). Ajouter une chaîne : la même clé dans les trois fichiers de `locales/`.
+puis `npx tauri icon design/brand/desktop/fontshift-desktop-icon-1024.png -o src-tauri/icons` (supprimer
+ensuite `android/` et `ios/`) et `icon.icns` depuis `design/brand/macos/Fontshift.icns` (l'icône macOS garde la marge du gabarit Apple). Ajouter une chaîne : la même clé dans les trois fichiers de `locales/`.
 
 ## Tester
 
@@ -106,3 +109,31 @@ Sans certificat Apple, macOS demandera d'ouvrir l'application via clic droit ›
 les secrets `APPLE_*` du workflow permettent la signature et la notarisation.
 
 macOS 13 minimum (moteur WebAssembly dans WKWebView), Windows 10/11 (WebView2), Linux avec WebKitGTK 4.1.
+
+## Publier et mettre à jour
+
+La compilation (GitHub Actions › Publication › Run workflow) produit les installeurs des quatre
+plateformes, puis le lot `fontshift-telechargements` : installeurs sous des noms fixes,
+`version.json` et, quand tout est configuré, `latest.json` et les archives macOS de mise à jour.
+
+**Mises à jour automatiques.** Au lancement, Fontshift lit `latest.json` ; si une version plus récente
+existe, un bandeau discret s'affiche dans la barre latérale (et dans Réglages › À propos).
+L'application télécharge la mise à jour, vérifie sa signature, l'installe puis redémarre.
+macOS, Windows (installeur NSIS ou MSI) et Linux (AppImage, .deb et .rpm) sont pris en charge.
+
+1. Adresse : renseigner l'URL complète de `latest.json` dans `src-tauri/tauri.conf.json` >
+   `plugins.updater.endpoints` (HTTPS obligatoire). Les installeurs doivent être déposés dans le
+   même dossier que `latest.json`. Tant que la liste est vide, aucune vérification n'a lieu
+   et rien n'apparaît dans l'interface.
+2. Clé de signature : secrets du dépôt `TAURI_SIGNING_PRIVATE_KEY` (contenu du fichier `.key`) et
+   `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`. La clé publique correspondante est dans `tauri.conf.json`.
+   Sans ces secrets, la compilation fonctionne mais ne produit pas de fichiers de mise à jour.
+   **Si la clé privée est perdue, les applications installées ne pourront plus être mises à jour.**
+3. À chaque version : augmenter le numéro (package.json, tauri.conf.json, Cargo.toml), lancer la
+   compilation, puis déposer tout le contenu du lot sur le site (installeurs, archives `.app.tar.gz`,
+   `latest.json`).
+
+**Signature macOS.** Avec les secrets `APPLE_CERTIFICATE` (certificat Developer ID Application en
+base64), `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY` (« Developer ID Application: Nom (TEAMID) »),
+`APPLE_ID`, `APPLE_PASSWORD` (mot de passe pour app) et `APPLE_TEAM_ID`, l'application est signée et
+notarisée par Apple. Sans eux, elle reçoit une signature ad hoc (alerte au premier lancement).

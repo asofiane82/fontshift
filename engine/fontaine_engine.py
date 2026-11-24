@@ -1,4 +1,4 @@
-"""Fontaine — moteur de conversion de polices.
+"""Fontshift — moteur de conversion de polices.
 
 Ce module tourne dans Pyodide (WebAssembly, dans un Web Worker de l'application)
 et, pour les tests, dans un CPython classique. Il ne dépend que de fontTools et

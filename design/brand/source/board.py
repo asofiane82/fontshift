@@ -50,8 +50,8 @@ y = 0
 # --- En-tête
 parts.append(rect(0, 0, W, 300, C['ink'], rx=0))
 parts.append(logo(80, 90, 120, C['gold'], C['ivory'], C['ivory']))
-parts.append(text(W - 80, 118, 'Identité visuelle · logo n° 05 « Futuriste & Fluide » · version 2', 30, 600, '#F4EFE6', 'end'))
-parts.append(text(W - 80, 162, 'Phase 1 — assets à valider avant intégration dans l’application', 22, 400, '#C9C2B4', 'end'))
+parts.append(text(W - 80, 118, 'Identité visuelle · logo n° 05 « Futuriste & Fluide » · version 3', 30, 600, '#F4EFE6', 'end'))
+parts.append(text(W - 80, 162, 'Fontshift — coin bas du F affiné (69°), intégré dans l’application', 22, 400, '#C9C2B4', 'end'))
 parts.append(text(W - 80, 200, 'Formes du F nettement séparées · or & encre, sans vert · logotype Syne 600 en contours · aucune image incorporée', 18, 400, '#A69F92', 'end'))
 y = 360
 
@@ -67,10 +67,10 @@ def section(title, sub=''):
 # --- 1. Logo horizontal
 section('Logo horizontal', 'Monogramme + logotype, sans slogan · SVG vectoriels et PNG 2400 px')
 cw, ch, gap = 538, 320, 36
-cards = [('fontaine-logo-dark.svg', 'Fonds sombres', C['ink'], (C['gold'], C['ivory'], C['ivory'], False), '#C9C2B4'),
-         ('fontaine-logo-light.svg', 'Fonds clairs', '#FFFFFF', (C['goldDeep'], C['ink'], C['ink'], False), MUTED),
-         ('fontaine-logo-black.svg', 'Monochrome noir', '#F1F3F8', ('#000000', '#000000', '#000000', True), MUTED),
-         ('fontaine-logo-white.svg', 'Monochrome blanc', '#6D28D9', ('#FFFFFF', '#FFFFFF', '#FFFFFF', True), '#E4DCFB')]
+cards = [('fontshift-logo-dark.svg', 'Fonds sombres', C['ink'], (C['gold'], C['ivory'], C['ivory'], False), '#C9C2B4'),
+         ('fontshift-logo-light.svg', 'Fonds clairs', '#FFFFFF', (C['goldDeep'], C['ink'], C['ink'], False), MUTED),
+         ('fontshift-logo-black.svg', 'Monochrome noir', '#F1F3F8', ('#000000', '#000000', '#000000', True), MUTED),
+         ('fontshift-logo-white.svg', 'Monochrome blanc', '#6D28D9', ('#FFFFFF', '#FFFFFF', '#FFFFFF', True), '#E4DCFB')]
 for i, (fname, label, bg, (g, e, t, cut), lc) in enumerate(cards):
     x = 80 + i * (cw + gap)
     parts.append(rect(x, y, cw, ch, bg, stroke=LINE if bg in ('#FFFFFF', '#F1F3F8') else None))
@@ -122,10 +122,10 @@ parts.append(text(lx - pad, y + mw - 4, 'Tailles réelles : 48, 32, 24 et 16 px 
 y += mw + 70
 
 # --- 3. Icône macOS
-section('Icône de l’application (macOS)', 'Identique pour tous les thèmes · gabarit Apple 1024 px, pavé 824 px à coins continus · .icns et Fontaine.iconset (16 à 1024 px)')
+section('Icône de l’application (macOS)', 'Identique pour tous les thèmes · gabarit Apple 1024 px, pavé 824 px à coins continus · .icns et Fontshift.iconset (16 à 1024 px)')
 ih = 420
 parts.append(rect(80, y, 560, ih, '#E9ECF3', stroke=LINE))
-parts.append(img(80 + 60, y + 0, ih, ih, f'{OUT}/macos/fontaine-app-icon-1024.png'))
+parts.append(img(80 + 60, y + 0, ih, ih, f'{OUT}/macos/fontshift-app-icon-1024.png'))
 # tailles réelles sur fond clair et sombre
 x1 = 680
 parts.append(rect(x1, y, 760, ih / 2 - 10, '#FFFFFF', stroke=LINE))
@@ -134,7 +134,7 @@ sizes = [(128, 'icon_128x128.png'), (64, 'icon_32x32@2x.png'), (32, 'icon_32x32.
 for row, (by, lc) in enumerate(((y, MUTED), (y + ih / 2 + 10, '#B9BFD6'))):
     cx = x1 + 40
     for px, fn in sizes:
-        parts.append(img(cx, by + (ih / 2 - 10 - px) / 2 - 8, px, px, f'{OUT}/macos/Fontaine.iconset/{fn}'))
+        parts.append(img(cx, by + (ih / 2 - 10 - px) / 2 - 8, px, px, f'{OUT}/macos/Fontshift.iconset/{fn}'))
         parts.append(text(cx + px / 2, by + ih / 2 - 26, f'{px} px', 14, 500, lc, 'middle'))
         cx += px + 70
 # Dock
@@ -145,14 +145,14 @@ parts.append(text(dx + (W - 80 - dx) / 2, y + 70, 'Dock et Finder', 20, 600, INK
 for i in range(5):
     ix = dx + 100 + i * 150
     if i == 2:
-        parts.append(img(ix - 4, y + ih - 146, 102, 102, f'{OUT}/macos/Fontaine.iconset/icon_128x128@2x.png'))
+        parts.append(img(ix - 4, y + ih - 146, 102, 102, f'{OUT}/macos/Fontshift.iconset/icon_128x128@2x.png'))
         parts.append(f'<circle cx="{ix + 47}" cy="{y + ih - 46}" r="4" fill="#10142A" opacity=".7"/>')
     else:
         parts.append(rect(ix + 6, y + ih - 136, 82, 82, '#C8CDDA', rx=20))
 # Finder
 parts.append(rect(dx + 60, y + 100, 240, 150, '#FFFFFF', rx=14, stroke='#C5CAD9'))
-parts.append(img(dx + 130, y + 112, 100, 100, f'{OUT}/macos/Fontaine.iconset/icon_128x128@2x.png'))
-parts.append(text(dx + 180, y + 236, 'Fontaine.app', 15, 500, INK, 'middle'))
+parts.append(img(dx + 130, y + 112, 100, 100, f'{OUT}/macos/Fontshift.iconset/icon_128x128@2x.png'))
+parts.append(text(dx + 180, y + 236, 'Fontshift.app', 15, 500, INK, 'middle'))
 y += ih + 70
 
 # --- 4. Favicons
@@ -164,7 +164,7 @@ for i, (bg, tab, fg, scheme) in enumerate((('#DEE2EB', '#FFFFFF', INK, 'light'),
     parts.append(rect(x + 30, y + 40, 330, 52, tab, rx=10))
     gold, em = (C['goldDeep'], C['ink']) if scheme == 'light' else (C['gold'], C['ivory'])
     parts.append(mono(x + 48, y + 57, 18, gold, em))
-    parts.append(text(x + 80, y + 72, 'Fontaine — conversion de polices', 15, 500, fg))
+    parts.append(text(x + 80, y + 72, 'Fontshift — conversion de polices', 15, 500, fg))
     parts.append(text(x + 30, y + 150, 'favicon.svg · thème ' + ('clair' if scheme == 'light' else 'sombre') + ' du navigateur', 15, 400, MUTED if scheme == 'light' else '#B9BFD6'))
 fx = 80 + 2 * 760
 parts.append(rect(fx, y, W - 80 - fx, fh, '#FFFFFF', stroke=LINE))
@@ -180,7 +180,7 @@ y += fh + 70
 
 # --- 5. Couleurs de marque
 section('Couleurs de marque', 'Aplats, sans dégradé · aucun vert · l’or profond sert sur fond clair')
-sw = [('Or Fontaine', C['gold'], 'forme haute, fonds sombres'), ('Or profond', C['goldDeep'], 'forme haute, fonds clairs'),
+sw = [('Or Fontshift', C['gold'], 'forme haute, fonds sombres'), ('Or profond', C['goldDeep'], 'forme haute, fonds clairs'),
       ('Encre', C['ink'], 'forme basse et logotype sur clair, fond de l’icône'), ('Ivoire', C['ivory'], 'forme basse et logotype sur sombre')]
 bw = (W - 160 - 3 * 24) / 4
 for i, (n, hx, use) in enumerate(sw):
@@ -194,5 +194,5 @@ H = y + 40
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{f(H)}" viewBox="0 0 {W} {f(H)}">'
        f'<rect width="100%" height="100%" fill="#F1F3F8"/>' + ''.join(parts) + '</svg>')
 open(HERE + '/board.svg', 'w').write(svg)
-subprocess.run(['rsvg-convert', HERE + '/board.svg', '-o', f'{OUT}/preview/fontaine-planche-identite.png'], check=True)
+subprocess.run(['rsvg-convert', HERE + '/board.svg', '-o', f'{OUT}/preview/fontshift-planche-identite.png'], check=True)
 print('planche', W, '×', round(H))

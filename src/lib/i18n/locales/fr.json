@@ -1,10 +1,10 @@
 {
   "app": {
-    "name": "Fontaine",
+    "name": "Fontshift",
     "tagline": "Conversion de polices",
     "version": "Version {version}",
-    "windowMain": "Fontaine",
-    "windowSettings": "Réglages de Fontaine"
+    "windowMain": "Fontshift",
+    "windowSettings": "Réglages de Fontshift"
   },
   "nav": {
     "main": "Navigation principale",
@@ -85,10 +85,10 @@
       "custom": "Liste de caractères ou plage Unicode"
     },
     "optCss": "Générer le CSS @font-face",
-    "optCssInfo": "Crée un fichier fontaine-fonts.css prêt à intégrer.",
+    "optCssInfo": "Crée un fichier fontshift-fonts.css prêt à intégrer.",
     "optDest": "Destination",
-    "destPath": "~/Bureau/Fontaine",
-    "optDestInfo": "Dossier où les fichiers convertis sont enregistrés. Chaque conversion crée son propre sous-dossier au nom de la police (ex. Fontaine/Montserrat).",
+    "destPath": "~/Bureau/Fontshift",
+    "optDestInfo": "Dossier où les fichiers convertis sont enregistrés. Chaque conversion crée son propre sous-dossier au nom de la police (ex. Fontshift/Montserrat).",
     "cta": "{count, plural, one {Convertir # police} other {Convertir # polices}}",
     "running": "Conversion en cours · {done} sur {total}",
     "cancel": "Annuler",
@@ -136,7 +136,7 @@
   },
   "gf": {
     "title": "Catalogue Google Fonts",
-    "subtitle": "Choisissez des familles : Fontaine les télécharge puis les convertit avec vos réglages.",
+    "subtitle": "Choisissez des familles : Fontshift les télécharge puis les convertit avec vos réglages.",
     "search": "Rechercher une famille, ex. Inter",
     "searchLabel": "Rechercher une famille",
     "variableOnly": "Variables uniquement",
@@ -257,8 +257,21 @@
     "about": "À propos",
     "platforms": "macOS · Windows · Linux",
     "local": "Vos polices ne quittent jamais votre ordinateur : toute la conversion est locale.",
-    "iconAria": "Icône de l’application Fontaine",
+    "iconAria": "Icône de l’application Fontshift",
     "selectedTheme": "{name}, thème sélectionné",
     "close": "Fermer les réglages"
+  },
+  "upd": {
+    "available": "Version {version} disponible",
+    "availableLong": "La version {version} est disponible.",
+    "install": "Installer",
+    "installRestart": "Installer et redémarrer",
+    "later": "Plus tard",
+    "installing": "Installation…",
+    "check": "Rechercher les mises à jour",
+    "checking": "Recherche…",
+    "upToDate": "Fontshift est à jour.",
+    "error": "Impossible de vérifier les mises à jour pour le moment.",
+    "installError": "La mise à jour n’a pas pu être installée. Réessayez plus tard."
   }
 }

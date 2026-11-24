@@ -1,4 +1,4 @@
-"""Monogramme Fontaine : sépare nettement les deux formes du F.
+"""Monogramme Fontshift : sépare nettement les deux formes du F.
 
 La forme haute n'est pas modifiée. Le bord supérieur de la forme basse devient une courbe
 parallèle au bord inférieur de la forme haute (écart constant), qui rejoint le contour gauche

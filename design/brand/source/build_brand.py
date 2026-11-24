@@ -1,7 +1,7 @@
-"""Construit les assets de marque Fontaine (logo n° 05, aplats) à partir des tracés vectorisés.
+"""Construit les assets de marque Fontshift (logo n° 05, aplats) à partir des tracés vectorisés.
 
 Entrées : work/monogram.json (monogramme séparé, work/separate.py), work/wordmark.json (logotype Syne 600, work/gen_wordmark.py).
-Sortie : out/fontaine-brand/ (SVG, PNG, icônes macOS, favicons).
+Sortie : out/fontshift-brand/ (SVG, PNG, icônes macOS, favicons).
 """
 import json, os, re, subprocess, sys, shutil
 import numpy as np
@@ -14,7 +14,7 @@ OUT = os.path.dirname(ROOT)                             # design/brand
 
 # ---------------------------------------------------------------- couleurs
 BRAND = {
-    'gold': '#DDB66E',         # Or Fontaine (fonds sombres)
+    'gold': '#DDB66E',         # Or Fontshift (fonds sombres)
     'goldDeep': '#B8893A',     # Or profond (fonds clairs)
     'ivory': '#FCF8EF',        # Ivoire : forme basse et logotype sur fond sombre
     'ink': '#16140F',          # Encre : forme basse et logotype sur fond clair, fond de l'icône
@@ -76,10 +76,10 @@ def mono_body(upper, lower, indent='  ', transform=None):
 
 VARIANTS = {
     # nom : (forme haute, forme basse, logotype, titre)
-    'dark': (BRAND['gold'], BRAND['ivory'], BRAND['ivory'], 'Fontaine — pour fonds sombres'),
-    'light': (BRAND['goldDeep'], BRAND['ink'], BRAND['ink'], 'Fontaine — pour fonds clairs'),
-    'black': (BRAND['black'], BRAND['black'], BRAND['black'], 'Fontaine — monochrome noir'),
-    'white': (BRAND['white'], BRAND['white'], BRAND['white'], 'Fontaine — monochrome blanc'),
+    'dark': (BRAND['gold'], BRAND['ivory'], BRAND['ivory'], 'Fontshift — pour fonds sombres'),
+    'light': (BRAND['goldDeep'], BRAND['ink'], BRAND['ink'], 'Fontshift — pour fonds clairs'),
+    'black': (BRAND['black'], BRAND['black'], BRAND['black'], 'Fontshift — monochrome noir'),
+    'white': (BRAND['white'], BRAND['white'], BRAND['white'], 'Fontshift — monochrome blanc'),
 }
 
 
@@ -91,13 +91,13 @@ def write(path, text):
 def build_logos():
     for name, (upper, lower, text, title) in VARIANTS.items():
         body = mono_body(upper, lower) + f'  <path fill="{text}" d="{WORD}"/>\n'
-        write(f'{OUT}/svg/fontaine-logo-{name}.svg', svg(LOGO_W, MH, body, title))
-        write(f'{OUT}/svg/fontaine-monogram-{name}.svg', svg(MW, MH, mono_body(upper, lower), title.replace('Fontaine', 'Monogramme Fontaine')))
+        write(f'{OUT}/svg/fontshift-logo-{name}.svg', svg(LOGO_W, MH, body, title))
+        write(f'{OUT}/svg/fontshift-monogram-{name}.svg', svg(MW, MH, mono_body(upper, lower), title.replace('Fontshift', 'Monogramme Fontshift')))
     # logotype seul (utile pour l'interface, couleur reprise du texte courant)
     ys = [p[1] for op, pts in W['cmds'] for p in pts]
     top, bottom = wy + min(ys) * k, wy + max(ys) * k          # point du i et dépassements inclus
     wbody = f'  <path fill="currentColor" transform="translate({fmt(-(MW + GAP))} {fmt(-top)})" d="{WORD}"/>\n'
-    write(f'{OUT}/svg/fontaine-wordmark.svg', svg(LOGO_W - MW - GAP, bottom - top, wbody, 'Fontaine'))
+    write(f'{OUT}/svg/fontshift-wordmark.svg', svg(LOGO_W - MW - GAP, bottom - top, wbody, 'Fontshift'))
 
 
 # ---------------------------------------------------------------- icône macOS
@@ -138,7 +138,7 @@ def icon_svg(size=1024, tile=824, mono_h=0.6, bg=None, full_bleed=False, radius=
     tx = size / 2 - MW * sc / 2
     ty = size / 2 - MH * sc / 2
     body = shape + mono_body(BRAND['gold'], BRAND['ivory'], transform=f'translate({fmt(tx)} {fmt(ty)}) scale({sc:.5f})')
-    return svg(size, size, body, 'Icône de Fontaine').replace(f'width="{fmt(size * 4)}" height="{fmt(size * 4)}"', f'width="{size}" height="{size}"')
+    return svg(size, size, body, 'Icône de Fontshift').replace(f'width="{fmt(size * 4)}" height="{fmt(size * 4)}"', f'width="{size}" height="{size}"')
 
 
 def raster(svg_path, png_path, w, h=None):
@@ -148,21 +148,21 @@ def raster(svg_path, png_path, w, h=None):
 
 
 def build_icons():
-    write(f'{OUT}/macos/fontaine-app-icon.svg', icon_svg())
-    raster(f'{OUT}/macos/fontaine-app-icon.svg', f'{OUT}/macos/fontaine-app-icon-1024.png', 1024, 1024)
-    iconset = f'{OUT}/macos/Fontaine.iconset'
+    write(f'{OUT}/macos/fontshift-app-icon.svg', icon_svg())
+    raster(f'{OUT}/macos/fontshift-app-icon.svg', f'{OUT}/macos/fontshift-app-icon-1024.png', 1024, 1024)
+    iconset = f'{OUT}/macos/Fontshift.iconset'
     os.makedirs(iconset, exist_ok=True)
     for base in (16, 32, 128, 256, 512):
         for scale in (1, 2):
             px = base * scale
             name = f'icon_{base}x{base}' + ('@2x' if scale == 2 else '') + '.png'
-            raster(f'{OUT}/macos/fontaine-app-icon.svg', f'{iconset}/{name}', px, px)
+            raster(f'{OUT}/macos/fontshift-app-icon.svg', f'{iconset}/{name}', px, px)
     # .icns (générateur Tauri, identique à iconutil)
-    tmp = '/tmp/fontaine-icns'
+    tmp = '/tmp/fontshift-icns'
     shutil.rmtree(tmp, ignore_errors=True)
-    subprocess.run(['npx', '--yes', '@tauri-apps/cli@2', 'icon', f'{OUT}/macos/fontaine-app-icon-1024.png', '-o', tmp],
+    subprocess.run(['npx', '--yes', '@tauri-apps/cli@2', 'icon', f'{OUT}/macos/fontshift-app-icon-1024.png', '-o', tmp],
                    check=True, cwd=os.path.join(ROOT, '..', '..', '..'), capture_output=True)
-    shutil.copy(f'{tmp}/icon.icns', f'{OUT}/macos/Fontaine.icns')
+    shutil.copy(f'{tmp}/icon.icns', f'{OUT}/macos/Fontshift.icns')
 
 
 def build_web():
@@ -174,7 +174,7 @@ def build_web():
     side = MH + 2 * pad
     body += (f'  <g transform="translate({fmt((side - MW) / 2)} {pad})">\n'
              f'    <path class="e" d="{LOWER}"/>\n    <path class="g" d="{UPPER}"/>\n  </g>\n')
-    write(f'{web}/favicon.svg', svg(side, side, body, 'Fontaine').replace(f'width="{fmt(side * 4)}" height="{fmt(side * 4)}" ', ''))
+    write(f'{web}/favicon.svg', svg(side, side, body, 'Fontshift').replace(f'width="{fmt(side * 4)}" height="{fmt(side * 4)}" ', ''))
     # pavé pour .ico, PNG et icônes d'application web
     write(f'{web}/favicon-tile.svg', icon_svg(64, full_bleed=True, radius=14, mono_h=0.64))
     for px in (16, 32, 48):
@@ -189,7 +189,7 @@ def build_web():
         raster(f'{web}/icon-maskable.svg', f'{web}/icon-{px}.png', px, px)
     os.remove(f'{web}/apple-touch-icon.svg')
     write(f'{web}/site.webmanifest', json.dumps({
-        'name': 'Fontaine', 'short_name': 'Fontaine', 'theme_color': BRAND['ink'], 'background_color': BRAND['ink'],
+        'name': 'Fontshift', 'short_name': 'Fontshift', 'theme_color': BRAND['ink'], 'background_color': BRAND['ink'],
         'display': 'standalone',
         'icons': [{'src': '/icon-192.png', 'sizes': '192x192', 'type': 'image/png', 'purpose': 'any maskable'},
                   {'src': '/icon-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'any maskable'}]},
@@ -202,14 +202,14 @@ def build_web():
 
 def build_desktop():
     """Icône Windows et Linux : même dessin, pavé à coins arrondis sur toute la surface (pas de marge macOS)."""
-    write(f'{OUT}/desktop/fontaine-desktop-icon.svg', icon_svg(1024, full_bleed=True, radius=228, mono_h=0.5))
-    raster(f'{OUT}/desktop/fontaine-desktop-icon.svg', f'{OUT}/desktop/fontaine-desktop-icon-1024.png', 1024, 1024)
+    write(f'{OUT}/desktop/fontshift-desktop-icon.svg', icon_svg(1024, full_bleed=True, radius=228, mono_h=0.5))
+    raster(f'{OUT}/desktop/fontshift-desktop-icon.svg', f'{OUT}/desktop/fontshift-desktop-icon-1024.png', 1024, 1024)
 
 
 def build_png():
     for name in VARIANTS:
-        raster(f'{OUT}/svg/fontaine-logo-{name}.svg', f'{OUT}/png/fontaine-logo-{name}-2400.png', 2400)
-        raster(f'{OUT}/svg/fontaine-monogram-{name}.svg', f'{OUT}/png/fontaine-monogram-{name}-1024.png', 1024)
+        raster(f'{OUT}/svg/fontshift-logo-{name}.svg', f'{OUT}/png/fontshift-logo-{name}-2400.png', 2400)
+        raster(f'{OUT}/svg/fontshift-monogram-{name}.svg', f'{OUT}/png/fontshift-monogram-{name}-1024.png', 1024)
 
 
 if __name__ == '__main__':

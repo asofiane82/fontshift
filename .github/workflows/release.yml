@@ -49,6 +49,22 @@ jobs:
       - run: npm ci
       # Signature et notarisation macOS facultatives : les secrets APPLE_* du dépôt ne sont transmis
       # que s'ils existent. Sans eux, l'application reçoit une signature ad hoc (signingIdentity « - »).
+      # Mises à jour automatiques : les fichiers de mise à jour signés ne sont produits que si la clé
+      # (secrets TAURI_SIGNING_PRIVATE_KEY et TAURI_SIGNING_PRIVATE_KEY_PASSWORD) est présente.
+      - name: Clé de mise à jour (si configurée)
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            for v in TAURI_SIGNING_PRIVATE_KEY TAURI_SIGNING_PRIVATE_KEY_PASSWORD; do
+              { echo "$v<<__FIN__"; printenv "$v"; echo "__FIN__"; } >> "$GITHUB_ENV"
+            done
+            echo "UPDATER_ARGS=--config src-tauri/tauri.updater.conf.json" >> "$GITHUB_ENV"
+          else
+            echo "Pas de clé de mise à jour : installeurs sans fichiers de mise à jour."
+          fi
       - name: Signature macOS (si configurée)
         if: matrix.platform == 'macos-latest'
         shell: bash
@@ -63,20 +79,27 @@ jobs:
           for v in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
             if [ -n "${!v}" ]; then { echo "$v<<__FIN__"; printenv "$v"; echo "__FIN__"; } >> "$GITHUB_ENV"; fi
           done
+          # L'identité (« Developer ID Application: … (TEAMID) ») remplace la signature ad hoc de tauri.conf.json.
+          if [ -n "$APPLE_CERTIFICATE" ] && [ -z "$APPLE_SIGNING_IDENTITY" ]; then
+            echo "::warning::APPLE_CERTIFICATE est défini sans APPLE_SIGNING_IDENTITY : ajoutez ce secret pour signer avec le Developer ID."
+          fi
+          if [ -n "$APPLE_SIGNING_IDENTITY" ] && [ -z "$APPLE_ID$APPLE_PASSWORD$APPLE_TEAM_ID" ]; then
+            echo "::warning::Signature sans notarisation : ajoutez APPLE_ID, APPLE_PASSWORD et APPLE_TEAM_ID."
+          fi
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
-          releaseName: 'Fontaine v__VERSION__'
+          releaseName: 'Fontshift v__VERSION__'
           releaseBody: 'Installeurs macOS, Windows et Linux.'
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }}
+          args: ${{ matrix.args }} ${{ env.UPDATER_ARGS }}
       - name: Installeurs (artefacts de l'exécution)
         uses: actions/upload-artifact@v4
         with:
-          name: fontaine-${{ matrix.name }}
+          name: fontshift-${{ matrix.name }}
           if-no-files-found: error
           path: |
             src-tauri/target/**/release/bundle/dmg/*.dmg
@@ -85,9 +108,13 @@ jobs:
             src-tauri/target/**/release/bundle/deb/*.deb
             src-tauri/target/**/release/bundle/rpm/*.rpm
             src-tauri/target/**/release/bundle/appimage/*.AppImage
+            src-tauri/target/**/release/bundle/macos/*.app.tar.gz
+            src-tauri/target/**/release/bundle/**/*.sig
 
   # Lot prêt à déposer sur un site : installeurs sous des noms fixes + version.json
-  # (la page de téléchargement lit version.json pour afficher la version et les tailles).
+  # (la page de téléchargement lit version.json pour afficher la version et les tailles)
+  # + latest.json et archives macOS pour les mises à jour automatiques, quand une adresse
+  # est configurée dans tauri.conf.json et que la clé de mise à jour existe.
   telechargements:
     needs: build
     runs-on: ubuntu-latest
@@ -99,26 +126,36 @@ jobs:
       - name: Noms fixes et version.json
         run: |
           set -e
-          mkdir -p telechargements
+          mkdir -p telechargements signatures
           pick() { find artefacts/"$1" -type f -name "$2" | head -n 1; }
-          copy() { src=$(pick "$1" "$2"); if [ -n "$src" ]; then cp "$src" "telechargements/$3"; fi; }
-          copy fontaine-macos-apple-silicon '*.dmg'        Fontaine-macOS-Apple-Silicon.dmg
-          copy fontaine-macos-intel         '*.dmg'        Fontaine-macOS-Intel.dmg
-          copy fontaine-windows             '*-setup.exe'  Fontaine-Windows.exe
-          copy fontaine-windows             '*.msi'        Fontaine-Windows.msi
-          copy fontaine-linux               '*.AppImage'   Fontaine-Linux.AppImage
-          copy fontaine-linux               '*.deb'        Fontaine-Linux.deb
-          copy fontaine-linux               '*.rpm'        Fontaine-Linux.rpm
+          # copie l'installeur sous son nom fixe, et sa signature de mise à jour si elle existe
+          copy() {
+            src=$(pick "$1" "$2")
+            if [ -n "$src" ]; then
+              cp "$src" "telechargements/$3"
+              if [ -f "$src.sig" ]; then cp "$src.sig" "signatures/$3.sig"; fi
+            fi
+          }
+          copy fontshift-macos-apple-silicon '*.dmg'         Fontshift-macOS-Apple-Silicon.dmg
+          copy fontshift-macos-intel         '*.dmg'         Fontshift-macOS-Intel.dmg
+          copy fontshift-macos-apple-silicon '*.app.tar.gz'  Fontshift-macOS-Apple-Silicon.app.tar.gz
+          copy fontshift-macos-intel         '*.app.tar.gz'  Fontshift-macOS-Intel.app.tar.gz
+          copy fontshift-windows             '*-setup.exe'   Fontshift-Windows.exe
+          copy fontshift-windows             '*.msi'         Fontshift-Windows.msi
+          copy fontshift-linux               '*.AppImage'    Fontshift-Linux.AppImage
+          copy fontshift-linux               '*.deb'         Fontshift-Linux.deb
+          copy fontshift-linux               '*.rpm'         Fontshift-Linux.rpm
+          node scripts/latest-json.mjs telechargements signatures
           VERSION=$(node -p "require('./package.json').version")
           node -e '
             const fs = require("fs");
             const files = {};
-            for (const f of fs.readdirSync("telechargements")) files[f] = fs.statSync("telechargements/" + f).size;
+            for (const f of fs.readdirSync("telechargements")) if (!f.endsWith(".json")) files[f] = fs.statSync("telechargements/" + f).size;
             fs.writeFileSync("telechargements/version.json", JSON.stringify({ version: process.argv[1], date: new Date().toISOString().slice(0, 10), files }, null, 2) + "\n");
           ' "$VERSION"
           ls -la telechargements && cat telechargements/version.json
       - uses: actions/upload-artifact@v4
         with:
-          name: fontaine-telechargements
+          name: fontshift-telechargements
           path: telechargements/
           if-no-files-found: error

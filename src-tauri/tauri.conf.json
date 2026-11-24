@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Fontaine",
-  "version": "1.4.0",
-  "identifier": "app.fontaine.converter",
+  "productName": "Fontshift",
+  "version": "1.5.0",
+  "identifier": "app.fontshift.converter",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Fontaine",
+        "title": "Fontshift",
         "width": 1280,
         "height": 840,
         "minWidth": 900,
@@ -34,7 +34,9 @@
         "img-src": "'self' data: blob:",
         "connect-src": "'self' ipc: http://ipc.localhost"
       },
-      "dangerousDisableAssetCspModification": ["style-src"]
+      "dangerousDisableAssetCspModification": [
+        "style-src"
+      ]
     }
   },
   "bundle": {
@@ -42,10 +44,32 @@
     "targets": "all",
     "category": "DeveloperTool",
     "shortDescription": "Conversion de polices TTF, OTF, WOFF, WOFF2, EOT et variables",
-    "longDescription": "Fontaine convertit vos polices entre TTF, OTF, WOFF, WOFF2 et EOT, conserve ou instancie les axes des polices variables, réduit les jeux de caractères, importe le catalogue Google Fonts et génère le CSS @font-face. Toute la conversion est locale.",
-    "copyright": "© 2026 Fontaine",
-    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
-    "macOS": { "minimumSystemVersion": "13.0", "signingIdentity": "-" },
-    "linux": { "deb": { "depends": [] } }
+    "longDescription": "Fontshift convertit vos polices entre TTF, OTF, WOFF, WOFF2 et EOT, conserve ou instancie les axes des polices variables, réduit les jeux de caractères, importe le catalogue Google Fonts et génère le CSS @font-face. Toute la conversion est locale.",
+    "copyright": "© 2026 Fontshift",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "13.0",
+      "signingIdentity": "-"
+    },
+    "linux": {
+      "deb": {
+        "depends": []
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEE4RkI3MDlDQTQ0RUJFMDMKUldRRHZrNmtuSEQ3cUFTeXZtRlI3SzFjNWVGcmdlMGV5MW82SG8rbzUwbWpqZEZHZDhVRlJESzYK",
+      "endpoints": [],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

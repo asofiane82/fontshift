@@ -1,4 +1,4 @@
-"""Thèmes Fontaine en aplats, reconstruits à partir des trios de couleurs choisis par Sofiane.
+"""Thèmes Fontshift en aplats, reconstruits à partir des trios de couleurs choisis par Sofiane.
 
 Chaque thème = un trio (couleur profonde, couleur d'accent, neutre clair) décliné en clair et en sombre :
   clair  : fond = neutre du trio, boutons = couleur profonde, surlignages = accent ;

@@ -2,7 +2,7 @@
 
 | Composant | Rôle | Licence |
 |---|---|---|
-| [Tauri](https://tauri.app) 2 et ses extensions dialog, http, opener | fenêtre native, accès aux fichiers, réseau | MIT ou Apache-2.0 |
+| [Tauri](https://tauri.app) 2 et ses extensions dialog, http, opener, updater | fenêtre native, accès aux fichiers, réseau | MIT ou Apache-2.0 |
 | [Pyodide](https://pyodide.org) | CPython compilé en WebAssembly (moteur) | MPL-2.0 |
 | [fontTools](https://github.com/fonttools/fonttools) | lecture, conversion, sous-ensembles, instances | MIT |
 | [brotli-wasm](https://github.com/httptoolkit/brotli-wasm) | compression Brotli du WOFF2 | Apache-2.0 |

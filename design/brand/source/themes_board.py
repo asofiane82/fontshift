@@ -1,4 +1,4 @@
-"""Planche des thèmes (phase 1) : 8 thèmes en aplats, clair et sombre, sur une maquette réduite de Fontaine."""
+"""Planche des thèmes (phase 1) : 8 thèmes en aplats, clair et sombre, sur une maquette réduite de Fontshift."""
 import json, subprocess
 import os
 HERE = os.path.dirname(os.path.abspath(__file__))   # design/brand/source
@@ -97,5 +97,5 @@ parts.append(text(PAD, y - 10, f'Contrastes WCAG vérifiés sur chaque fond et s
 H = y + 30
 svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{f(H)}" viewBox="0 0 {W} {f(H)}"><rect width="100%" height="100%" fill="#F1F3F8"/>{"".join(parts)}</svg>'
 open(HERE + '/themes_board.svg', 'w').write(svg)
-subprocess.run(['rsvg-convert', HERE + '/themes_board.svg', '-o', f'{OUT}/fontaine-themes.png'], check=True)
+subprocess.run(['rsvg-convert', HERE + '/themes_board.svg', '-o', f'{OUT}/fontshift-themes.png'], check=True)
 print('planche thèmes', W, '×', round(H))

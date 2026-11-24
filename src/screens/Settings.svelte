@@ -11,11 +11,13 @@
   import { prefs, THEMES, LANGS, LANG_INFO, DEFAULTS, type LangPref, type ThemeKey } from '../lib/prefs.svelte';
   import { tokens, themeName } from '../lib/theme/palette.js';
   import { isMac, isTauri, setWindowTitle } from '../lib/platform';
+  import { updates } from '../lib/state/updates.svelte';
 
   const id = $props.id();
   let tab = $state<'appearance' | 'about'>('appearance');
   let resetDone = $state(false);
   const version = __APP_VERSION__;
+  void updates.init(true); // vérification silencieuse : l’onglet À propos affiche directement l’état
 
   $effect(() => {
     void setWindowTitle(t('app.windowSettings'));
@@ -180,6 +182,32 @@
               <span class="text-[14px] text-fg-muted">{t('set.platforms')}</span>
             </div>
           </div>
+          {#if updates.enabled}
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5 rounded-xl border border-line px-[22px] py-4">
+              <p role="status" class="m-0 flex min-w-0 items-center gap-2 text-[14px] text-fg-muted">
+                {#if updates.available}
+                  <Icon name="cloudDown" size={18} class="shrink-0 text-accent-text" />
+                  {updates.status === 'installError' ? t('upd.installError') : t('upd.availableLong', { version: updates.available })}
+                {:else if updates.status === 'upToDate'}
+                  <Icon name="checkCircle" size={18} class="shrink-0 text-success" />
+                  {t('upd.upToDate')}
+                {:else if updates.status === 'error'}
+                  <Icon name="alert" size={18} class="shrink-0" />
+                  {t('upd.error')}
+                {/if}
+              </p>
+              {#if updates.available}
+                <button type="button" disabled={updates.status === 'installing'} onclick={() => updates.install()} class="bg-gold inline-flex min-h-11 items-center gap-2 rounded-[10px] px-4 text-[14px] font-semibold whitespace-nowrap disabled:opacity-70">
+                  {updates.status === 'installing' ? t('upd.installing') : t('upd.installRestart')}
+                </button>
+              {:else}
+                <button type="button" disabled={updates.status === 'checking'} onclick={() => updates.check()} class="inline-flex min-h-11 items-center gap-2 rounded-[10px] border border-line-strong px-4 text-[14px] font-medium whitespace-nowrap text-fg hover:bg-hover disabled:opacity-70">
+                  <Icon name="replay" size={17} />
+                  {updates.status === 'checking' ? t('upd.checking') : t('upd.check')}
+                </button>
+              {/if}
+            </div>
+          {/if}
           <p class="m-0 flex items-start gap-2.5 rounded-[10px] border border-line bg-sunken px-4 py-3.5 text-[13.5px] leading-normal text-fg-muted">
             <Icon name="shield" size={19} class="text-accent-text" />
             {t('set.local')}

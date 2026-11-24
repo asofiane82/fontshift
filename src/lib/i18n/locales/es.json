@@ -1,10 +1,10 @@
 {
   "app": {
-    "name": "Fontaine",
+    "name": "Fontshift",
     "tagline": "Conversión de fuentes",
     "version": "Versión {version}",
-    "windowMain": "Fontaine",
-    "windowSettings": "Ajustes de Fontaine"
+    "windowMain": "Fontshift",
+    "windowSettings": "Ajustes de Fontshift"
   },
   "nav": {
     "main": "Navegación principal",
@@ -85,10 +85,10 @@
       "custom": "Lista de caracteres o rango Unicode"
     },
     "optCss": "Generar CSS @font-face",
-    "optCssInfo": "Crea un archivo fontaine-fonts.css listo para integrar.",
+    "optCssInfo": "Crea un archivo fontshift-fonts.css listo para integrar.",
     "optDest": "Destino",
-    "destPath": "~/Escritorio/Fontaine",
-    "optDestInfo": "Carpeta donde se guardan los archivos convertidos. Cada conversión crea su propia subcarpeta con el nombre de la fuente (p. ej. Fontaine/Montserrat).",
+    "destPath": "~/Escritorio/Fontshift",
+    "optDestInfo": "Carpeta donde se guardan los archivos convertidos. Cada conversión crea su propia subcarpeta con el nombre de la fuente (p. ej. Fontshift/Montserrat).",
     "cta": "{count, plural, one {Convertir # fuente} other {Convertir # fuentes}}",
     "running": "Convirtiendo · {done} de {total}",
     "cancel": "Cancelar",
@@ -136,7 +136,7 @@
   },
   "gf": {
     "title": "Catálogo de Google Fonts",
-    "subtitle": "Elige familias: Fontaine las descarga y las convierte con tus ajustes.",
+    "subtitle": "Elige familias: Fontshift las descarga y las convierte con tus ajustes.",
     "search": "Buscar familias, p. ej. Inter",
     "searchLabel": "Buscar familias",
     "variableOnly": "Solo variables",
@@ -257,8 +257,21 @@
     "about": "Acerca de",
     "platforms": "macOS · Windows · Linux",
     "local": "Tus fuentes nunca salen de tu equipo: toda la conversión es local.",
-    "iconAria": "Icono de la aplicación Fontaine",
+    "iconAria": "Icono de la aplicación Fontshift",
     "selectedTheme": "{name}, tema seleccionado",
     "close": "Cerrar los ajustes"
+  },
+  "upd": {
+    "available": "Versión {version} disponible",
+    "availableLong": "La versión {version} está disponible.",
+    "install": "Instalar",
+    "installRestart": "Instalar y reiniciar",
+    "later": "Más tarde",
+    "installing": "Instalando…",
+    "check": "Buscar actualizaciones",
+    "checking": "Buscando…",
+    "upToDate": "Fontshift está actualizado.",
+    "error": "No se pueden buscar actualizaciones en este momento.",
+    "installError": "No se pudo instalar la actualización. Inténtalo de nuevo más tarde."
   }
 }

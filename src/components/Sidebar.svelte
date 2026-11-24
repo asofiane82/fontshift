@@ -6,6 +6,7 @@
   import { t, fmt } from '../lib/i18n/index.svelte';
   import { ui, type Route } from '../lib/state/ui.svelte';
   import { session } from '../lib/state/session.svelte';
+  import { updates } from '../lib/state/updates.svelte';
   import { isMac, isTauri, openSettingsWindow } from '../lib/platform';
 
   const LOGO_H = 44;
@@ -48,6 +49,26 @@
     {/each}
   </nav>
   <div class="min-h-6 flex-1" data-tauri-drag-region></div>
+  {#if updates.available && !updates.dismissed}
+    <!-- Bandeau discret, seulement quand une nouvelle version existe. -->
+    <div role="status" class="mx-3.5 mb-2 flex flex-col gap-2.5 rounded-[10px] border border-line bg-card px-3.5 py-3">
+      <p class="m-0 flex items-center gap-2 text-[13.5px] font-semibold text-fg">
+        <Icon name="cloudDown" size={18} class="shrink-0 text-accent-text" />
+        <span class="min-w-0">{t('upd.available', { version: updates.available })}</span>
+      </p>
+      {#if updates.status === 'installError'}
+        <p class="m-0 text-[12.5px] leading-snug text-fg-muted">{t('upd.installError')}</p>
+      {/if}
+      <div class="flex gap-2">
+        <button type="button" disabled={updates.status === 'installing'} onclick={() => updates.install()} class="bg-gold inline-flex min-h-9 items-center rounded-lg px-3 text-[13px] font-semibold disabled:opacity-70">
+          {updates.status === 'installing' ? t('upd.installing') : t('upd.install')}
+        </button>
+        {#if updates.status !== 'installing'}
+          <button type="button" onclick={() => (updates.dismissed = true)} class="inline-flex min-h-9 items-center rounded-lg px-3 text-[13px] text-fg-muted hover:bg-hover">{t('upd.later')}</button>
+        {/if}
+      </div>
+    </div>
+  {/if}
   <div class="px-3.5 pb-[18px]">
     <button type="button" onclick={() => openSettingsWindow(t('app.windowSettings'))} class="flex min-h-11 w-full items-center gap-3.5 rounded-[9px] px-3.5 text-left text-[15px] text-fg hover:bg-hover">
       <Icon name="cog" size={20} />

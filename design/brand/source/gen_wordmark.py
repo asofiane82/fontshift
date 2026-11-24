@@ -1,4 +1,4 @@
-"""Logotype « Fontaine » en Syne 600 → work/wordmark.json (contours vectoriels, y vers le bas, ligne de base à 0)."""
+"""Logotype « Fontshift » en Syne 600 → work/wordmark.json (contours vectoriels, y vers le bas, ligne de base à 0)."""
 import io, json, sys
 import os
 HERE = os.path.dirname(os.path.abspath(__file__))   # design/brand/source
@@ -10,7 +10,7 @@ from fontTools.pens.boundsPen import BoundsPen
 import uharfbuzz as hb
 
 SRC = os.path.join(HERE, '..', '..', '..', 'node_modules', '@fontsource-variable', 'syne', 'files', 'syne-latin-wght-normal.woff2')
-WGHT, TRACK, TEXT = 600, 0.0, 'Fontaine'
+WGHT, TRACK, TEXT = 600, 0.0, 'Fontshift'
 
 f = TTFont(SRC); f.flavor = None
 f = instancer.instantiateVariableFont(f, {'wght': WGHT}, static=True)
