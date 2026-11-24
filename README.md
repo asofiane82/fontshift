@@ -98,7 +98,7 @@ langue dans la fenêtre Réglages et contrôle que la fenêtre principale suit. 
 npm run tauri build      # sur la machine cible : .dmg/.app (macOS), .msi/.exe (Windows), .deb/.rpm/.AppImage (Linux)
 ```
 
-Avec GitHub : pousser une étiquette `v1.1.0` déclenche `.github/workflows/release.yml`, qui produit
+Avec GitHub : pousser une étiquette `v1.2.0` déclenche `.github/workflows/release.yml`, qui produit
 les installeurs macOS (Apple Silicon et Intel), Windows et Linux dans un brouillon de publication.
 Sans certificat Apple, macOS demandera d'ouvrir l'application via clic droit › Ouvrir la première fois ;
 les secrets `APPLE_*` du workflow permettent la signature et la notarisation.
