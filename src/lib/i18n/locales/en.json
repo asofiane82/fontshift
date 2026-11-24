@@ -10,7 +10,7 @@
     "main": "Main navigation",
     "conversion": "Conversion",
     "google": "Google Fonts",
-    "variables": "Variable fonts",
+    "variables": "Advanced preview",
     "results": "Results",
     "settings": "Settings",
     "resultsBadge": "{count, plural, one {# result} other {# results}}"
@@ -92,7 +92,7 @@
     "optCssInfo": "Creates a ready-to-use fontaine-fonts.css file.",
     "optDest": "Destination",
     "destPath": "~/Desktop/Fontaine",
-    "optDestInfo": "Folder where converted files are saved.",
+    "optDestInfo": "Folder where converted files are saved. Each conversion creates its own subfolder named after the font (e.g. Fontaine/Montserrat).",
     "cta": "{count, plural, one {Convert # font} other {Convert # fonts}}",
     "running": "Converting · {done} of {total}",
     "cancel": "Cancel",
@@ -176,8 +176,8 @@
     "downloadError": "Could not download {name}"
   },
   "vf": {
-    "title": "Variable fonts",
-    "subtitle": "Explore the axes, pick a position and export it.",
+    "title": "Advanced preview",
+    "subtitle": "Try a variable font in every position and export a precise one.",
     "font": "Font",
     "sampleLabel": "Preview text",
     "sample": "Sphinx of black quartz, judge my vow",

@@ -60,6 +60,12 @@ export async function homeDir(): Promise<string> {
 }
 
 /** Écrit un fichier ; un nom déjà pris reçoit un suffixe « (2) ». Renvoie le chemin final. */
+/** Chemin libre pour le sous-dossier d'une conversion (créé à l'écriture du premier fichier). */
+export async function prepareOutputDir(base: string, name: string): Promise<string> {
+  if (!isTauri) return base;
+  return invoke<string>('prepare_output_dir', { base, name });
+}
+
 export async function writeOutput(dir: string, name: string, bytes: Uint8Array): Promise<string> {
   if (!isTauri) {
     const url = URL.createObjectURL(new Blob([bytes as BlobPart]));

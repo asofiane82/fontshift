@@ -10,7 +10,7 @@
     "main": "Navegación principal",
     "conversion": "Conversión",
     "google": "Google Fonts",
-    "variables": "Fuentes variables",
+    "variables": "Vista avanzada",
     "results": "Resultados",
     "settings": "Ajustes",
     "resultsBadge": "{count, plural, one {# resultado} other {# resultados}}"
@@ -92,7 +92,7 @@
     "optCssInfo": "Crea un archivo fontaine-fonts.css listo para integrar.",
     "optDest": "Destino",
     "destPath": "~/Escritorio/Fontaine",
-    "optDestInfo": "Carpeta donde se guardan los archivos convertidos.",
+    "optDestInfo": "Carpeta donde se guardan los archivos convertidos. Cada conversión crea su propia subcarpeta con el nombre de la fuente (p. ej. Fontaine/Montserrat).",
     "cta": "{count, plural, one {Convertir # fuente} other {Convertir # fuentes}}",
     "running": "Convirtiendo · {done} de {total}",
     "cancel": "Cancelar",
@@ -176,8 +176,8 @@
     "downloadError": "No se pudo descargar {name}"
   },
   "vf": {
-    "title": "Fuentes variables",
-    "subtitle": "Explora los ejes, elige una posición y expórtala.",
+    "title": "Vista avanzada",
+    "subtitle": "Prueba una fuente variable en todas sus posiciones y exporta una posición precisa.",
     "font": "Fuente",
     "sampleLabel": "Texto de muestra",
     "sample": "El veloz murciélago hindú comía feliz",

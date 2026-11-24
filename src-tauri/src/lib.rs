@@ -91,6 +91,19 @@ fn write_file(request: Request<'_>) -> Result<String, String> {
     Ok(target.to_string_lossy().into_owned())
 }
 
+/// Sous-dossier d'une conversion, au nom des polices : « Montserrat », puis « Montserrat (2) »…
+/// Il n'est créé qu'à l'écriture du premier fichier (pas de dossier vide si la conversion est annulée).
+#[tauri::command]
+fn prepare_output_dir(base: String, name: String) -> Result<String, String> {
+    let base = PathBuf::from(base);
+    let name = sanitize_name(&name)?;
+    let dir = (1..)
+        .map(|n| if n == 1 { base.join(&name) } else { base.join(format!("{name} ({n})")) })
+        .find(|p| !p.exists())
+        .expect("dossier libre");
+    Ok(dir.to_string_lossy().into_owned())
+}
+
 /// Dossier de sortie proposé par défaut : Bureau/Fontaine (ou Documents, ou le dossier personnel).
 #[tauri::command]
 fn default_output_dir(app: tauri::AppHandle) -> Result<String, String> {
@@ -120,7 +133,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![read_file, write_file, default_output_dir, home_dir, system_locales])
+        .invoke_handler(tauri::generate_handler![read_file, write_file, prepare_output_dir, default_output_dir, home_dir, system_locales])
         .run(tauri::generate_context!())
         .expect("erreur au lancement de Fontaine");
 }

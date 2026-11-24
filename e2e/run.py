@@ -65,7 +65,10 @@ try:
     WebDriverWait(d, 240).until(lambda x: "Voir les résultats" in x.find_element(By.TAG_NAME, "main").text)
     time.sleep(0.8)
     d.save_screenshot(os.path.join(SHOTS, "04-conversion-terminee.png"))
-    out_dir = next((p for p in (os.path.join(home, "Desktop", "Fontaine"), os.path.join(home, "Documents", "Fontaine"), os.path.join(home, "Fontaine")) if os.path.isdir(p)), "")
+    base = next((p for p in (os.path.join(home, "Desktop", "Fontaine"), os.path.join(home, "Documents", "Fontaine"), os.path.join(home, "Fontaine")) if os.path.isdir(p)), "")
+    subdirs = [os.path.join(base, x) for x in sorted(os.listdir(base))] if base else []
+    out_dir = next((x for x in subdirs if os.path.isdir(x)), "")
+    print("   sous-dossier :", os.path.basename(out_dir))
     files = sorted(os.listdir(out_dir)) if os.path.isdir(out_dir) else []
     print("   fichiers :", files)
     check(any(f.endswith(".woff2") for f in files) and "fontaine-fonts.css" in files, "fichiers WOFF2/WOFF et CSS écrits sur le disque")
@@ -75,7 +78,7 @@ try:
     d.save_screenshot(os.path.join(SHOTS, "05-resultats.png"))
     check("@font-face" in d.page_source, "code @font-face affiché")
 
-    nav("variables")
+    nav("Aperçu avancé")
     time.sleep(1)
     d.save_screenshot(os.path.join(SHOTS, "06-variables.png"))
     check("Graisse" in d.page_source, "curseur d'axe wght")

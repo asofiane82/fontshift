@@ -16,16 +16,18 @@ en français, anglais et espagnol.
     devient une entrée), EOT non compressé. Type 1 et EOT compressé sont refusés avec un message clair.
   - Sorties : WOFF2, WOFF, TTF (CFF → TrueType par cu2qu), OTF (TrueType → CFF, conversion exacte),
     EOT 2.1 (Internet Explorer).
-  - Polices variables : axes conservés (un fichier) ou une police statique par instance nommée.
+  - Polices variables : « Styles à générer » — le fichier variable et/ou chaque style choisi
+    (Regular, Italic, Bold…), droit ou italique, en fichiers séparés.
     Une police variable ne peut pas sortir en OTF (CFF2 non généré) ; l'EOT est produit depuis
     l'instance par défaut. Ces deux cas sont signalés dans les Résultats.
   - Jeux de caractères : complet, latin, latin étendu (plages de Google Fonts) ou liste personnalisée.
   - Fichier `fontaine-fonts.css` prêt à intégrer, dossier de destination au choix
-    (par défaut `Bureau/Fontaine`), noms déjà pris suffixés « (2) ».
+    (par défaut `Bureau/Fontaine`). Chaque conversion range ses fichiers dans un sous-dossier
+    au nom des polices (`Fontaine/Montserrat`, puis `Montserrat (2)`…) ; rien n'est écrasé.
 - **Google Fonts** : catalogue officiel (mis en cache 7 jours), recherche, catégories,
   filtre « Variables uniquement », sélection multiple, téléchargement des fichiers officiels
   (variables quand ils existent) puis ajout à la conversion.
-- **Polices variables** : curseurs par axe, instances nommées, texte et taille d'aperçu,
+- **Aperçu avancé** (polices variables) : curseurs par axe, instances nommées, texte et taille d'aperçu,
   ligne CSS à copier, export de la police complète, d'une position précise ou de toutes les instances.
 - **Résultats** : fichiers générés (taille et gain par format), code CSS et thème Tailwind v4,
   ouverture du dossier.

@@ -2,7 +2,7 @@
 // L'état vit ici, hors des composants : changer de langue ou d'écran n'interrompt rien.
 import { engine } from '../engine/client.svelte';
 import type { ConvertOptions, ConvertResult, FaceInfo, Format, NamedInstance, OutputFile } from '../engine/types';
-import { defaultOutputDir, homeDir, readPath, writeOutput, type PickedFile } from '../platform';
+import { defaultOutputDir, homeDir, prepareOutputDir, readPath, writeOutput, type PickedFile } from '../platform';
 import { buildCss } from '../css';
 
 export type Subset = 'full' | 'latin' | 'latinExt' | 'custom';
@@ -102,6 +102,14 @@ function capability(info: FaceInfo) {
       return c;
     },
   };
+}
+
+/** Nom du sous-dossier d'une conversion : les familles, dans l'ordre de la liste (3 au plus, puis « + N »). */
+function folderName(items: FontItem[]) {
+  const families = [...new Set(items.map((i) => (i.info?.family || i.fileName.replace(/\.[^.]+$/, '')).trim()))].filter(Boolean);
+  if (!families.length) return 'Fontaine';
+  const shown = families.slice(0, 3).join(' + ');
+  return families.length > 3 ? `${shown} + ${families.length - 3}` : shown;
 }
 
 function loadOptions() {
@@ -364,7 +372,14 @@ class Session {
     this.toast = null;
     this.progress = { done: 0, total: queue.length };
     for (const item of queue) item.run = { state: 'waiting', progress: 0 };
-    const results: RunResults = { outputs: [], sources: [], warnings: [], failures: [], dest: this.dest, finishedAt: 0 };
+    // Chaque conversion range ses fichiers dans un sous-dossier au nom des polices (« Montserrat », « Roboto + Bitter »…).
+    let dest = this.dest;
+    try {
+      dest = await prepareOutputDir(this.dest, folderName(queue));
+    } catch {
+      /* dossier de destination tel quel */
+    }
+    const results: RunResults = { outputs: [], sources: [], warnings: [], failures: [], dest, finishedAt: 0 };
 
     for (const item of queue) {
       if (this.cancelled) break;
@@ -387,7 +402,7 @@ class Session {
         for (const out of outputs) {
           let path: string;
           try {
-            path = await writeOutput(this.dest, out.name, out.data);
+            path = await writeOutput(dest, out.name, out.data);
           } catch {
             throw new Error('conv.errorWrite');
           }
@@ -421,7 +436,7 @@ class Session {
       const css = buildCss(results.outputs);
       results.css = css;
       try {
-        results.cssPath = await writeOutput(this.dest, 'fontaine-fonts.css', new TextEncoder().encode(css));
+        results.cssPath = await writeOutput(dest, 'fontaine-fonts.css', new TextEncoder().encode(css));
       } catch {
         results.failures.push({ name: 'fontaine-fonts.css', error: 'conv.errorWrite' });
       }

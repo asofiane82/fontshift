@@ -10,7 +10,7 @@
     "main": "Navigation principale",
     "conversion": "Conversion",
     "google": "Google Fonts",
-    "variables": "Polices variables",
+    "variables": "Aperçu avancé",
     "results": "Résultats",
     "settings": "Réglages",
     "resultsBadge": "{count, plural, one {# résultat} other {# résultats}}"
@@ -92,7 +92,7 @@
     "optCssInfo": "Crée un fichier fontaine-fonts.css prêt à intégrer.",
     "optDest": "Destination",
     "destPath": "~/Bureau/Fontaine",
-    "optDestInfo": "Dossier où les fichiers convertis sont enregistrés.",
+    "optDestInfo": "Dossier où les fichiers convertis sont enregistrés. Chaque conversion crée son propre sous-dossier au nom de la police (ex. Fontaine/Montserrat).",
     "cta": "{count, plural, one {Convertir # police} other {Convertir # polices}}",
     "running": "Conversion en cours · {done} sur {total}",
     "cancel": "Annuler",
@@ -176,8 +176,8 @@
     "downloadError": "Téléchargement impossible : {name}"
   },
   "vf": {
-    "title": "Polices variables",
-    "subtitle": "Explorez les axes, choisissez une position et exportez-la.",
+    "title": "Aperçu avancé",
+    "subtitle": "Testez une police variable sous toutes ses positions et exportez une position précise.",
     "font": "Police",
     "sampleLabel": "Texte d’aperçu",
     "sample": "Portez ce vieux whisky au juge blond",
