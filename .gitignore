@@ -1,0 +1,11 @@
+node_modules/
+dist/
+public/engine/
+src-tauri/target/
+src-tauri/gen/
+engine/tests/out/
+engine/tests/out-pyodide/
+engine/__pycache__/
+.DS_Store
+e2e/shots/
+__pycache__/

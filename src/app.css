@@ -1,0 +1,141 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+
+/* Les composants n'utilisent que ces noms ; les valeurs viennent des tokens (--ftn-*) du thème actif. */
+@theme inline {
+  --color-bg: var(--ftn-background);
+  --color-sidebar: var(--ftn-sidebar);
+  --color-surface: var(--ftn-surface);
+  --color-sunken: var(--ftn-surface-sunken);
+  --color-elevated: var(--ftn-surface-elevated);
+  --color-line: var(--ftn-border);
+  --color-line-strong: var(--ftn-border-strong);
+  --color-fg: var(--ftn-text-primary);
+  --color-fg-muted: var(--ftn-text-secondary);
+  --color-fg-subtle: var(--ftn-text-tertiary);
+  --color-accent: var(--ftn-accent);
+  --color-accent-hover: var(--ftn-accent-hover);
+  --color-brand-gold: var(--ftn-brand-gold);
+  --color-on-accent: var(--ftn-accent-foreground);
+  --color-accent-text: var(--ftn-accent-text);
+  --color-accent-line: var(--ftn-accent-line);
+  --color-accent-dash: var(--ftn-accent-dash);
+  --color-hover: var(--ftn-hover);
+  --color-selected: var(--ftn-selected);
+  --color-selected-soft: var(--ftn-selected-soft);
+  --color-selected-strong: var(--ftn-selected-strong);
+  --color-focus: var(--ftn-focus);
+  --color-disabled: var(--ftn-disabled);
+  --color-success: var(--ftn-success);
+  --color-success-soft: var(--ftn-success-soft);
+  --color-warning: var(--ftn-warning);
+  --color-warning-soft: var(--ftn-warning-soft);
+  --color-error: var(--ftn-error);
+  --color-error-soft: var(--ftn-error-soft);
+  --color-error-line: var(--ftn-error-line);
+  --color-specimen: var(--ftn-specimen);
+  --color-leader: var(--ftn-leader);
+  --color-badge: var(--ftn-badge);
+  --color-tabbar: var(--ftn-tabbar);
+  --color-tab-active: var(--ftn-tab-active);
+  --color-code-keyword: var(--ftn-code-keyword);
+  --color-code-property: var(--ftn-code-property);
+  --color-code-string: var(--ftn-code-string);
+  --color-code-text: var(--ftn-code-text);
+  --color-code-comment: var(--ftn-code-comment);
+  --color-knob: var(--ftn-knob);
+  --color-overlay: var(--ftn-overlay);
+
+  --font-sans: 'Inter Variable', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Syne Variable', 'Inter Variable', system-ui, sans-serif; /* titres : police du logotype */
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* Surfaces et accent : aplats portés par les tokens (aucun dégradé). */
+@utility bg-app {
+  background: var(--ftn-background-fill);
+}
+@utility bg-card {
+  background: var(--ftn-surface-fill);
+}
+@utility bg-gold {
+  background: var(--ftn-accent-fill);
+  color: var(--ftn-accent-foreground);
+  box-shadow: inset 0 1px 0 var(--ftn-accent-edge), var(--ftn-button-shadow);
+  &:where(button:not(:disabled), a):hover {
+    background: var(--ftn-accent-hover);
+  }
+}
+@utility bg-gold-flat {
+  background: var(--ftn-accent-fill);
+  color: var(--ftn-accent-foreground);
+  box-shadow: inset 0 1px 0 var(--ftn-accent-edge);
+}
+@utility shadow-pop {
+  box-shadow: var(--ftn-shadow);
+}
+@utility shadow-card {
+  box-shadow: var(--ftn-shadow-soft);
+}
+@utility ring-sel {
+  box-shadow: 0 0 0 3px var(--ftn-selected-soft);
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--ftn-background-fill);
+    color: var(--ftn-text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+  }
+  #app {
+    height: 100%;
+  }
+  input,
+  textarea,
+  code,
+  pre,
+  [data-selectable] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  button,
+  a,
+  [role='button'],
+  label {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ftn-focus);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--ftn-selected);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ftn-border-strong) transparent;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}

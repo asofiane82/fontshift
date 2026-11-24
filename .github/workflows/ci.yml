@@ -1,0 +1,33 @@
+name: Vérifications
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: npm ci
+      - run: pip install fonttools==4.62.1 brotli
+      - name: Interface (types et composants)
+        run: npm run check
+      - name: Moteur (CPython puis Pyodide)
+        run: npm run test:engine
+      - name: Dépendances système de Tauri
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Côté natif
+        run: npm run build && cargo test --manifest-path src-tauri/Cargo.toml
