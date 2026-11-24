@@ -6,7 +6,7 @@
   import Toast from '../components/Toast.svelte';
   import Specimen from '../components/Specimen.svelte';
   import { t, fmt } from '../lib/i18n/index.svelte';
-  import { session, type FontItem, type Subset } from '../lib/state/session.svelte';
+  import { session, styleKey, styleName, type FontItem, type Subset } from '../lib/state/session.svelte';
   import { ui } from '../lib/state/ui.svelte';
   import { engine } from '../lib/engine/client.svelte';
   import type { Format } from '../lib/engine/types';
@@ -64,14 +64,6 @@
   const subsetOptions = $derived(
     (['full', 'latin', 'latinExt', 'custom'] as Subset[]).map((k) => ({ id: k, label: t('conv.subset.' + k), hint: t('conv.subsetHint.' + k) })),
   );
-  const variableOptions = $derived([
-    { id: 'keep' as const, label: t('conv.optVariableKeep'), hint: t('conv.optVariableInfo') },
-    {
-      id: 'static' as const,
-      label: t('conv.optVariableStatic'),
-      hint: t('vf.exportAllSub', { count: session.ready.reduce((a, i) => a + (i.info?.variable ? Math.max(1, i.info.instances.length) : 0), 0) }),
-    },
-  ]);
 
   const details = $derived.by(() => {
     const info = sel?.info;
@@ -286,6 +278,46 @@
     </div>
 
     <div class="bg-card shadow-card flex flex-col gap-3.5 rounded-xl border border-line px-5 py-[18px]">
+      {#if session.variableItems.length}
+        {@const choices = session.styleChoices}
+        {@const withItalic = choices.some((c) => c.italic)}
+        <div class="flex items-center gap-2.5">
+          <Icon name="variables" size={19} class="text-fg" />
+          <h2 id="sty-{id}" class="m-0 flex-1 text-[15px] font-semibold text-fg">{t('conv.stylesTitle')}</h2>
+          <InfoTip topic={t('conv.stylesTitle')} text={t('conv.stylesInfo')} />
+        </div>
+        <div role="group" aria-labelledby="sty-{id}" class="grid gap-1.5 {withItalic ? 'grid-cols-2' : 'grid-cols-3'}">
+          {#snippet chip(key: string, label: string, sub: string, wide = false)}
+            {@const on = session.styles.includes(key)}
+            <button
+              type="button"
+              aria-pressed={on}
+              onclick={() => session.toggleStyle(key)}
+              class="flex min-h-10 items-center gap-2 rounded-[9px] px-2.5 text-left {wide ? 'col-span-full' : ''} {on
+                ? 'border-[1.5px] border-accent bg-selected text-fg'
+                : 'border border-line bg-sunken text-fg-muted hover:border-line-strong hover:text-fg'}"
+            >
+              <span class="flex size-4 shrink-0 items-center justify-center">{#if on}<Icon name="check" size={15} />{/if}</span>
+              <span class="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{label}</span>
+              <span class="shrink-0 text-[12px] whitespace-nowrap opacity-80">{sub}</span>
+            </button>
+          {/snippet}
+          {@render chip('variable', t('conv.styleVariable'), t('conv.styleVariableSub'), true)}
+          {#each choices as c (c.weight)}
+            {#if c.upright}
+              {@render chip(styleKey(c.weight, false), styleName(c.weight, false), String(c.weight))}
+            {:else if withItalic}
+              <span></span>
+            {/if}
+            {#if c.italic}
+              {@render chip(styleKey(c.weight, true), styleName(c.weight, true), String(c.weight))}
+            {:else if withItalic}
+              <span></span>
+            {/if}
+          {/each}
+        </div>
+        <div class="h-px bg-line"></div>
+      {/if}
       <div class="flex items-center gap-2.5">
         <Icon name="layers" size={19} class="text-fg" />
         <h2 class="m-0 text-[15px] font-semibold text-fg">{t('conv.formatsTitle')}</h2>
@@ -320,21 +352,6 @@
         <h2 class="m-0 text-[15px] font-semibold text-fg">{t('conv.optionsTitle')}</h2>
       </div>
       <div class="flex flex-col gap-2">
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          <span id="var-{id}" class="flex-[1_1_140px] text-[14.5px] text-fg-muted">{t('conv.optVariable')}</span>
-          <div class="min-w-[180px] flex-[0_1_236px]">
-            <Select
-              value={session.variableMode}
-              options={variableOptions}
-              labelledby="var-{id}"
-              onchange={(v) => {
-                session.variableMode = v;
-                session.saveOptions();
-              }}
-            />
-          </div>
-          <InfoTip topic={t('conv.optVariable')} text={t('conv.optVariableInfo')} />
-        </div>
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <span id="sub-{id}" class="flex-[1_1_140px] text-[14.5px] text-fg-muted">{t('conv.optSubset')}</span>
           <div class="min-w-[180px] flex-[0_1_236px]">

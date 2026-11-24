@@ -1,7 +1,7 @@
 // Session de conversion : file des polices, options, exécution et résultats.
 // L'état vit ici, hors des composants : changer de langue ou d'écran n'interrompt rien.
 import { engine } from '../engine/client.svelte';
-import type { ConvertOptions, FaceInfo, Format, NamedInstance, OutputFile } from '../engine/types';
+import type { ConvertOptions, ConvertResult, FaceInfo, Format, NamedInstance, OutputFile } from '../engine/types';
 import { defaultOutputDir, homeDir, readPath, writeOutput, type PickedFile } from '../platform';
 import { buildCss } from '../css';
 
@@ -63,6 +63,47 @@ const ERROR_KEYS: Record<string, string> = {
 let counter = 0;
 const uid = () => `f${Date.now().toString(36)}${(++counter).toString(36)}`;
 
+/** Graisses standard proposées pour les polices variables (noms repris dans les fichiers). */
+export const WEIGHTS: { value: number; name: string }[] = [
+  { value: 100, name: 'Thin' },
+  { value: 200, name: 'ExtraLight' },
+  { value: 300, name: 'Light' },
+  { value: 400, name: 'Regular' },
+  { value: 500, name: 'Medium' },
+  { value: 600, name: 'SemiBold' },
+  { value: 700, name: 'Bold' },
+  { value: 800, name: 'ExtraBold' },
+  { value: 900, name: 'Black' },
+];
+
+/** Style à générer : « variable » (le fichier variable complet) ou une graisse, droite ou italique (« 700i »). */
+export type StyleKey = string;
+export const styleKey = (weight: number, italic: boolean): StyleKey => `${weight}${italic ? 'i' : ''}`;
+export function styleName(weight: number, italic: boolean) {
+  const name = WEIGHTS.find((w) => w.value === weight)?.name ?? String(weight);
+  return italic ? (weight === 400 ? 'Italic' : `${name} Italic`) : name;
+}
+
+/** Ce qu'une police variable sait produire : plage de graisse, versions droite et italique. */
+function capability(info: FaceInfo) {
+  const axis = (tag: string) => info.axes.find((a) => a.tag === tag);
+  const wght = axis('wght'), ital = axis('ital'), slnt = axis('slnt');
+  const slanted = !!ital || !!slnt;
+  return {
+    min: wght ? wght.min : 400,
+    max: wght ? wght.max : 400,
+    upright: !info.italic || slanted,
+    italic: info.italic || slanted,
+    coords(weight: number, italic: boolean): Record<string, number> {
+      const c: Record<string, number> = {};
+      if (wght) c.wght = weight;
+      if (ital) c.ital = italic ? ital.max : ital.min;
+      else if (slnt) c.slnt = italic ? slnt.min : Math.min(Math.max(0, slnt.min), slnt.max);
+      return c;
+    },
+  };
+}
+
 function loadOptions() {
   try {
     return JSON.parse(localStorage.getItem(OPTIONS_KEY) || '{}');
@@ -76,7 +117,7 @@ class Session {
   selectedId = $state<string | null>(null);
 
   formats = $state<Record<Format, boolean>>({ woff2: true, woff: true, ttf: false, otf: false, eot: false });
-  variableMode = $state<'keep' | 'static'>('keep');
+  styles = $state<StyleKey[]>(['variable']);
   subset = $state<Subset>('full');
   customText = $state('');
   css = $state(true);
@@ -95,7 +136,7 @@ class Session {
   constructor() {
     const o = loadOptions();
     if (o.formats) this.formats = { ...this.formats, ...o.formats };
-    if (o.variableMode) this.variableMode = o.variableMode;
+    if (Array.isArray(o.styles) && o.styles.length) this.styles = o.styles;
     if (o.subset) this.subset = o.subset;
     if (typeof o.customText === 'string') this.customText = o.customText;
     if (typeof o.css === 'boolean') this.css = o.css;
@@ -105,9 +146,9 @@ class Session {
   }
 
   saveOptions() {
-    const { formats, variableMode, subset, customText, css, dest } = this;
+    const { formats, styles, subset, customText, css, dest } = this;
     try {
-      localStorage.setItem(OPTIONS_KEY, JSON.stringify({ formats, variableMode, subset, customText, css, dest }));
+      localStorage.setItem(OPTIONS_KEY, JSON.stringify({ formats, styles, subset, customText, css, dest }));
     } catch {
       /* options gardées pour la session */
     }
@@ -127,6 +168,28 @@ class Session {
   }
   get displayDest() {
     return this.home && this.dest.startsWith(this.home) ? '~' + this.dest.slice(this.home.length) : this.dest;
+  }
+
+  /** Ajoute ou retire un style ; au moins un reste choisi. */
+  toggleStyle(k: StyleKey) {
+    const next = this.styles.includes(k) ? this.styles.filter((x) => x !== k) : [...this.styles, k];
+    if (!next.length) return;
+    this.styles = next;
+    this.saveOptions();
+  }
+
+  /** Polices variables de la liste concernées par le choix des styles. */
+  get variableItems() {
+    return this.ready.filter((i) => i.info?.variable && i.exportSpec.kind === 'auto');
+  }
+
+  /** Styles que les polices variables de la liste savent produire, par graisse. */
+  get styleChoices(): { weight: number; name: string; upright: boolean; italic: boolean }[] {
+    const caps = this.variableItems.map((i) => capability(i.info!));
+    return WEIGHTS.map((w) => {
+      const fits = caps.filter((c) => w.value >= c.min && w.value <= c.max);
+      return { weight: w.value, name: w.name, upright: fits.some((c) => c.upright), italic: fits.some((c) => c.italic) };
+    }).filter((w) => w.upright || w.italic);
   }
 
   toggleFormat(f: Format) {
@@ -264,19 +327,31 @@ class Session {
     if (this.phase === 'done') this.phase = 'idle';
   }
 
-  private optionsFor(item: FontItem): ConvertOptions {
+  /** Une ou deux conversions par police : le fichier variable et/ou les styles statiques choisis. */
+  private jobsFor(item: FontItem): ConvertOptions[] {
     const spec = item.exportSpec;
     const base: ConvertOptions = {
       formats: this.chosenFormats,
-      variable: this.variableMode,
+      variable: 'keep',
       subset: this.subset,
       customText: this.customText,
       stem: item.fileName.replace(/\.[^.]+$/, '').replace(/ · .*$/, ''),
     };
-    if (spec.kind === 'keep') base.variable = 'keep';
-    if (spec.kind === 'all') base.variable = 'static';
-    if (spec.kind === 'instance') base.instances = [spec.instance];
-    return base;
+    if (spec.kind === 'all') return [{ ...base, variable: 'static' }];
+    if (spec.kind === 'instance') return [{ ...base, instances: [spec.instance] }];
+    if (spec.kind !== 'auto' || !item.info?.variable) return [base];
+
+    const cap = capability(item.info);
+    const instances = WEIGHTS.flatMap((w) =>
+      [false, true]
+        .filter((it) => this.styles.includes(styleKey(w.value, it)))
+        .filter((it) => w.value >= cap.min && w.value <= cap.max && (it ? cap.italic : cap.upright))
+        .map((it) => ({ name: styleName(w.value, it), coords: cap.coords(w.value, it) })),
+    );
+    const jobs: ConvertOptions[] = [];
+    if (this.styles.includes('variable')) jobs.push(base);
+    if (instances.length) jobs.push({ ...base, variable: 'static', instances });
+    return jobs.length ? jobs : [base]; // aucun style choisi n'existe dans cette police : fichier variable
   }
 
   async start() {
@@ -298,11 +373,18 @@ class Session {
       live.run = { state: 'running', progress: 0 };
       this.animate(live);
       try {
-        const res = await engine.convert(live.bytes, live.fileName, this.optionsFor(live));
+        const outputs: NonNullable<ConvertResult['outputs']> = [];
+        const warnings: NonNullable<ConvertResult['warnings']> = [];
+        for (const job of this.jobsFor(live)) {
+          const res = await engine.convert(live.bytes, live.fileName, job);
+          if (this.cancelled) break;
+          if (res.error || !res.outputs) throw new Error(ERROR_KEYS[res.error ?? 'convertFailed'] ?? 'conv.errorConvert');
+          outputs.push(...res.outputs);
+          warnings.push(...(res.warnings ?? []));
+        }
         if (this.cancelled) break;
-        if (res.error || !res.outputs) throw new Error(ERROR_KEYS[res.error ?? 'convertFailed'] ?? 'conv.errorConvert');
         const saved: SavedOutput[] = [];
-        for (const out of res.outputs) {
+        for (const out of outputs) {
           let path: string;
           try {
             path = await writeOutput(this.dest, out.name, out.data);
@@ -313,7 +395,7 @@ class Session {
           saved.push({ ...meta, name: path.split(/[\\/]/).pop() || out.name, path, sourceId: live.id, sourceName: live.fileName, sourceSize: live.size, previewFamily: live.previewFamily });
         }
         results.outputs.push(...saved);
-        results.warnings.push(...(res.warnings ?? []));
+        results.warnings.push(...warnings);
         results.sources.push({ id: live.id, name: live.fileName, family: live.info?.family ?? live.fileName, size: live.size, previewFamily: live.previewFamily });
         const primary = saved.find((o) => o.format === 'woff2') ?? saved[0];
         live.run = { state: 'done', progress: 1, outputs: saved, gain: primary ? primary.size / live.size - 1 : 0 };

@@ -9,7 +9,8 @@ en français, anglais et espagnol.
 ## Ce que fait l'application
 
 - **Conversion** : glisser-déposer sur toute la fenêtre ou bouton « Parcourir », file d'attente,
-  aperçu de la police (lignes de référence réelles, détails, caractères), formats de sortie,
+  aperçu de la police (lignes de référence réelles, détails, caractères), styles à générer pour les
+  polices variables (fichier variable et/ou Regular, Italic, Bold… en fichiers séparés), formats de sortie,
   options, progression, annulation immédiate.
   - Entrées : TTF, OTF (CFF et CFF2), WOFF, WOFF2, TTC/OTC (chaque police de la collection
     devient une entrée), EOT non compressé. Type 1 et EOT compressé sont refusés avec un message clair.
