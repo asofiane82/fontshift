@@ -17,10 +17,7 @@
   },
   "top": {
     "tabs": "Workspaces",
-    "newSession": "New conversion",
-    "search": "Search fonts",
-    "notifications": "Notifications",
-    "more": "More options"
+    "newSession": "New conversion"
   },
   "conv": {
     "title": "Convert your fonts",
@@ -97,7 +94,9 @@
     "running": "Converting · {done} of {total}",
     "cancel": "Cancel",
     "viewResults": "View results",
-    "replay": "Start over",
+    "replay": "Convert again",
+    "replayHint": "Keep these fonts to convert them again, for example to other formats.",
+    "newHint": "Clear the list to convert other fonts. Files already created are kept.",
     "closeList": "Close list",
     "infoAria": "Learn more: {topic}",
     "errorCorrupt": "Unreadable or damaged font file",

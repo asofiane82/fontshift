@@ -17,10 +17,7 @@
   },
   "top": {
     "tabs": "Espaces de travail",
-    "newSession": "Nouvelle conversion",
-    "search": "Rechercher une police",
-    "notifications": "Notifications",
-    "more": "Plus d’options"
+    "newSession": "Nouvelle conversion"
   },
   "conv": {
     "title": "Convertir vos polices",
@@ -97,7 +94,9 @@
     "running": "Conversion en cours · {done} sur {total}",
     "cancel": "Annuler",
     "viewResults": "Voir les résultats",
-    "replay": "Recommencer",
+    "replay": "Reconvertir",
+    "replayHint": "Garde ces polices pour les convertir à nouveau, par exemple dans d’autres formats.",
+    "newHint": "Vide la liste pour convertir d’autres polices. Les fichiers déjà créés sont conservés.",
     "closeList": "Fermer la liste",
     "infoAria": "En savoir plus : {topic}",
     "errorCorrupt": "Fichier de police illisible ou endommagé",

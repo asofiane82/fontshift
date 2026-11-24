@@ -420,22 +420,28 @@
           </button>
         </div>
       {:else if session.phase === 'done'}
-        <div class="flex flex-wrap gap-2.5">
+        <div class="flex flex-col gap-2">
           <button
             type="button"
             onclick={() => {
               session.unseen = false;
               ui.go('results');
             }}
-            class="bg-gold flex min-h-[50px] flex-[1_1_200px] items-center justify-center gap-2.5 rounded-[10px] px-[18px] text-[16px] font-semibold"
+            class="bg-gold flex min-h-[50px] items-center justify-center gap-2.5 rounded-[10px] px-[18px] text-[16px] font-semibold"
           >
             <span class="whitespace-nowrap">{t('conv.viewResults')}</span>
             <Icon name="arrowRight" size={19} stroke={1.7} />
           </button>
-          <button type="button" onclick={() => session.replay()} class="inline-flex min-h-[50px] shrink-0 items-center gap-2 rounded-[10px] border border-line-strong px-4 text-[14.5px] font-medium whitespace-nowrap text-fg hover:bg-hover">
-            <Icon name="replay" size={18} />
-            {t('conv.replay')}
-          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick={() => session.replay()} title={t('conv.replayHint')} class="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-line-strong px-3 text-[14px] font-medium whitespace-nowrap text-fg hover:bg-hover">
+              <Icon name="replay" size={17} />
+              {t('conv.replay')}
+            </button>
+            <button type="button" onclick={() => session.newSession()} title={t('conv.newHint')} class="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-line-strong px-3 text-[14px] font-medium whitespace-nowrap text-fg hover:bg-hover">
+              <Icon name="plus" size={17} />
+              {t('top.newSession')}
+            </button>
+          </div>
         </div>
       {:else}
         <button

@@ -17,10 +17,7 @@
   },
   "top": {
     "tabs": "Espacios de trabajo",
-    "newSession": "Nueva conversión",
-    "search": "Buscar fuentes",
-    "notifications": "Notificaciones",
-    "more": "Más opciones"
+    "newSession": "Nueva conversión"
   },
   "conv": {
     "title": "Convertir tus fuentes",
@@ -97,7 +94,9 @@
     "running": "Convirtiendo · {done} de {total}",
     "cancel": "Cancelar",
     "viewResults": "Ver resultados",
-    "replay": "Empezar de nuevo",
+    "replay": "Volver a convertir",
+    "replayHint": "Conserva estas fuentes para volver a convertirlas, por ejemplo a otros formatos.",
+    "newHint": "Vacía la lista para convertir otras fuentes. Los archivos ya creados se conservan.",
     "closeList": "Cerrar lista",
     "infoAria": "Más información: {topic}",
     "errorCorrupt": "Archivo de fuente ilegible o dañado",
