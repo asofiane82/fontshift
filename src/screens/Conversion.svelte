@@ -18,6 +18,15 @@
   let tab = $state<'preview' | 'details' | 'glyphs'>('preview');
   let expanded = $state(false);
 
+  // Destination : affiche le sous-dossier réel de la prochaine conversion (polices, dossier, fin de conversion).
+  $effect(() => {
+    void session.folderLabel;
+    void session.dest;
+    void session.phase;
+    void session.results;
+    void session.refreshNextFolder();
+  });
+
   const sel = $derived(session.selected);
   const dragging = $derived(ui.dragging || htmlDrag);
   const count = $derived(session.ready.length);
@@ -397,11 +406,18 @@
             type="button"
             aria-labelledby="dest-{id} destv-{id}"
             onclick={chooseDest}
-            title={t('conv.destChoose')}
+            title={session.nextFolder ? `${session.displayDest}/${session.nextFolder} — ${t('conv.destChoose')}` : t('conv.destChoose')}
             class="flex min-h-10 min-w-[180px] flex-[0_1_236px] items-center gap-2 rounded-lg border border-line-strong bg-elevated px-3 text-left text-[14px] text-fg hover:border-focus"
           >
             <Icon name="folder" size={17} class="text-fg-muted" />
-            <span id="destv-{id}" class="min-w-0 flex-1 truncate">{session.displayDest}</span>
+            <span id="destv-{id}" class="flex min-w-0 flex-1">
+              {#if session.nextFolder}
+                <span class="min-w-0 shrink truncate text-fg-muted">{session.displayDest}/</span>
+                <span class="min-w-0 shrink-[0.2] truncate font-semibold">{session.nextFolder}</span>
+              {:else}
+                <span class="min-w-0 truncate">{session.displayDest}</span>
+              {/if}
+            </span>
           </button>
           <InfoTip topic={t('conv.optDest')} text={t('conv.optDestInfo')} />
         </div>

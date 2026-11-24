@@ -178,6 +178,30 @@ class Session {
     return this.home && this.dest.startsWith(this.home) ? '~' + this.dest.slice(this.home.length) : this.dest;
   }
 
+  /** Sous-dossier où ira la prochaine conversion (« Montserrat », « Montserrat (2) »…), affiché dans Destination. */
+  nextFolder = $state('');
+  get folderLabel() {
+    return this.ready.length ? folderName(this.ready) : '';
+  }
+  async refreshNextFolder() {
+    const name = this.folderLabel, base = this.dest;
+    // Conversion terminée : on montre le dossier où les fichiers viennent d'être enregistrés.
+    if (this.phase === 'done' && this.results?.dest && this.results.dest !== base) {
+      this.nextFolder = this.results.dest.split(/[\\/]/).pop() || name;
+      return;
+    }
+    if (!name || !base) {
+      this.nextFolder = '';
+      return;
+    }
+    try {
+      const dir = await prepareOutputDir(base, name);
+      this.nextFolder = dir === base ? name : dir.split(/[\\/]/).pop() || name;
+    } catch {
+      this.nextFolder = name;
+    }
+  }
+
   /** Ajoute ou retire un style ; au moins un reste choisi. */
   toggleStyle(k: StyleKey) {
     const next = this.styles.includes(k) ? this.styles.filter((x) => x !== k) : [...this.styles, k];
