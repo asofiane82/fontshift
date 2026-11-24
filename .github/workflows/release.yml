@@ -1,7 +1,8 @@
 name: Publication
 
 # Crée les installeurs macOS (Apple Silicon et Intel), Windows et Linux
-# à chaque étiquette « v* » (ex. git tag v1.0.0 && git push --tags), ou à la demande.
+# à chaque étiquette « v* » (ex. git tag v1.1.0 && git push --tags), ou à la demande
+# (onglet Actions › Publication › Run workflow) : l'étiquette v<version> est alors créée avec la publication.
 on:
   push:
     tags: ['v*']
@@ -52,8 +53,8 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
-          tagName: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
-          releaseName: 'Fontaine ${{ github.ref_name }}'
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
+          releaseName: 'Fontaine v__VERSION__'
           releaseBody: 'Installeurs macOS, Windows et Linux.'
           releaseDraft: true
           prerelease: false
