@@ -50,9 +50,9 @@ y = 0
 # --- En-tête
 parts.append(rect(0, 0, W, 300, C['ink'], rx=0))
 parts.append(logo(80, 90, 120, C['gold'], C['ivory'], C['ivory']))
-parts.append(text(W - 80, 118, 'Identité visuelle · logo n° 05 « Futuriste & Fluide » · version 3', 30, 600, '#F4EFE6', 'end'))
-parts.append(text(W - 80, 162, 'Fontshift — coin bas du F affiné (69°), intégré dans l’application', 22, 400, '#C9C2B4', 'end'))
-parts.append(text(W - 80, 200, 'Formes du F nettement séparées · or & encre, sans vert · logotype Syne 600 en contours · aucune image incorporée', 18, 400, '#A69F92', 'end'))
+parts.append(text(W - 80, 118, 'Identité visuelle · logo n° 05 « Futuriste & Fluide » · version 4', 30, 600, '#F4EFE6', 'end'))
+parts.append(text(W - 80, 162, 'Logotype Instrument Sans 600 · titres de l’application en Inter', 22, 400, '#C9C2B4', 'end'))
+parts.append(text(W - 80, 200, 'Formes du F nettement séparées · or & encre, sans vert · logotype Instrument Sans 600 en contours · aucune image incorporée', 18, 400, '#A69F92', 'end'))
 y = 360
 
 
@@ -110,7 +110,7 @@ parts.append(text(tx, y + 96, 'Logo horizontal : 24 px de haut minimum', 17, 400
 parts.append(text(tx, y + 122, 'Monogramme seul : 16 px minimum', 17, 400, MUTED))
 parts.append(text(tx, y + 148, 'Proportions : logotype en capitales = 0,365 × monogramme', 17, 400, MUTED))
 parts.append(text(tx, y + 174, 'Écart monogramme / logotype = 0,168 × monogramme', 17, 400, MUTED))
-parts.append(text(tx, y + 200, 'Logotype : Syne 600 (SIL OFL 1.1), en contours', 17, 400, MUTED))
+parts.append(text(tx, y + 200, 'Logotype : Instrument Sans 600 (SIL OFL 1.1), en contours, espacement affiné', 17, 400, MUTED))
 parts.append(text(tx, y + 226, 'Séparation des formes : 0,045 × monogramme', 17, 400, MUTED))
 # petites tailles réelles
 sx = lx - pad

@@ -1,6 +1,6 @@
 """Construit les assets de marque Fontshift (logo n° 05, aplats) à partir des tracés vectorisés.
 
-Entrées : work/monogram.json (monogramme séparé, work/separate.py), work/wordmark.json (logotype Syne 600, work/gen_wordmark.py).
+Entrées : work/monogram.json (monogramme séparé, work/separate.py), work/wordmark.json (logotype Instrument Sans 600, gen_wordmark.py).
 Sortie : out/fontshift-brand/ (SVG, PNG, icônes macOS, favicons).
 """
 import json, os, re, subprocess, sys, shutil

@@ -47,7 +47,7 @@
   --color-overlay: var(--ftn-overlay);
 
   --font-sans: 'Inter Variable', -apple-system, 'Segoe UI', system-ui, sans-serif;
-  --font-display: 'Syne Variable', 'Inter Variable', system-ui, sans-serif; /* titres : police du logotype */
+  --font-display: 'Inter Variable', -apple-system, 'Segoe UI', system-ui, sans-serif; /* titres : Inter, comme le texte (tailles d'affichage via l'axe opsz) */
   --font-mono: 'JetBrains Mono Variable', ui-monospace, Menlo, Consolas, monospace;
 }
 

@@ -1,4 +1,6 @@
-"""Logotype « Fontshift » en Syne 600 → work/wordmark.json (contours vectoriels, y vers le bas, ligne de base à 0)."""
+"""Logotype « Fontshift » en Instrument Sans 600 → wordmark.json (contours vectoriels, y vers le bas, ligne de base à 0).
+
+Espacement affiné : approche générale −1 % du cadratin, « Fo » resserré, « ft » gardé séparé (barres non soudées)."""
 import io, json, sys
 import os
 HERE = os.path.dirname(os.path.abspath(__file__))   # design/brand/source
@@ -9,8 +11,9 @@ from fontTools.pens.recordingPen import DecomposingRecordingPen
 from fontTools.pens.boundsPen import BoundsPen
 import uharfbuzz as hb
 
-SRC = os.path.join(HERE, '..', '..', '..', 'node_modules', '@fontsource-variable', 'syne', 'files', 'syne-latin-wght-normal.woff2')
-WGHT, TRACK, TEXT = 600, 0.0, 'Fontshift'
+SRC = os.path.join(HERE, '..', '..', '..', 'node_modules', '@fontsource-variable', 'instrument-sans', 'files', 'instrument-sans-latin-wght-normal.woff2')
+WGHT, TRACK, TEXT = 600, -0.01, 'Fontshift'
+KERN_ADJ = {('F', 'o'): -18, ('f', 't'): 8}          # unités de la police (1000 par cadratin), en plus du crénage d'origine
 
 f = TTFont(SRC); f.flavor = None
 f = instancer.instantiateVariableFont(f, {'wght': WGHT}, static=True)
@@ -25,8 +28,9 @@ hb.shape(font, b, {'kern': True, 'liga': False})
 cmds, d, kern = [], [], []
 x = 0.0; xmin, xmax, ymin = 1e9, -1e9, 1e9
 P = lambda px, py: [round(x + px, 2), round(-py, 2)]
-for info, pos in zip(b.glyph_infos, b.glyph_positions):
-    g = order[info.codepoint]
+names = [order[i.codepoint] for i in b.glyph_infos]
+for n, (info, pos) in enumerate(zip(b.glyph_infos, b.glyph_positions)):
+    g = names[n]
     rp = DecomposingRecordingPen(gs); gs[g].draw(rp)
     for op, args in rp.value:
         if op == 'moveTo': cmds.append(['M', [P(*args[0])]])
@@ -42,11 +46,12 @@ for info, pos in zip(b.glyph_infos, b.glyph_positions):
     bp = BoundsPen(gs); gs[g].draw(bp)
     if bp.bounds:
         xmin = min(xmin, x + bp.bounds[0]); xmax = max(xmax, x + bp.bounds[2]); ymin = min(ymin, bp.bounds[1])
-    kern.append([g, pos.x_advance])
-    x += pos.x_advance + TRACK * upem
+    adj = KERN_ADJ.get((g, names[n + 1] if n + 1 < len(names) else None), 0)
+    kern.append([g, pos.x_advance + adj])
+    x += pos.x_advance + adj + TRACK * upem
 
 fmt = lambda v: f'{v:.2f}'.rstrip('0').rstrip('.')
 dd = ''.join(op + ' '.join(f'{fmt(a)} {fmt(c)}' for a, c in pts) for op, pts in cmds)
-json.dump({'font': f'Syne {WGHT}', 'd': dd, 'upem': upem, 'cap': cap, 'ink': [round(xmin, 2), round(ymin, 2), round(xmax, 2), cap],
+json.dump({'font': f'Instrument Sans {WGHT}', 'd': dd, 'upem': upem, 'cap': cap, 'ink': [round(xmin, 2), round(ymin, 2), round(xmax, 2), cap],
            'advance': x, 'kern': kern, 'tracking': TRACK, 'cmds': cmds}, open(HERE + '/wordmark.json', 'w'))
-print('Syne', WGHT, 'upem', upem, 'cap', cap, 'ink', round(xmin, 1), round(xmax, 1), 'glyphs', [k[0] for k in kern])
+print('Instrument Sans', WGHT, 'upem', upem, 'cap', cap, 'ink', round(xmin, 1), round(xmax, 1), 'glyphs', [k[0] for k in kern])

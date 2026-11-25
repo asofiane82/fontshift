@@ -1,5 +1,5 @@
 // Identité Fontshift dans l'interface : une seule source, les fichiers de design/brand.
-// Géométrie vectorielle (monogramme séparé + logotype Syne 600 en contours) produite par
+// Géométrie vectorielle (monogramme séparé + logotype Instrument Sans 600 en contours) produite par
 // design/brand/source/build_brand.py ; l'icône d'application est le même SVG que l'icône macOS.
 import geometry from '../../../design/brand/source/brand-geometry.json';
 import appIconSvg from '../../../design/brand/macos/fontshift-app-icon.svg?raw';

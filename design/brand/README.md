@@ -1,8 +1,11 @@
-# Fontshift — identité visuelle (logo n° 05, aplats) · version 3
+# Fontshift — identité visuelle (logo n° 05, aplats) · version 4
 
 Assets de marque intégrés dans l'application (icônes, logo de l'interface, favicons).
 
-Version 3 : l'application s'appelle Fontshift (logotype recomposé en Syne 600) et le coin haut-droit
+Version 4 : logotype en Instrument Sans 600, espacement affiné (approche −1 %, « Fo » resserré, « ft » séparé) ;
+Syne est abandonnée, les titres de l'application passent en Inter comme le reste du texte.
+
+Version 3 : l'application s'appelle Fontshift et le coin haut-droit
 de la forme basse du F est affiné (environ 69° au lieu de 82°) : son bord droit penche dans le même sens
 que l'extrémité de la barre or.
 
@@ -44,5 +47,6 @@ en `currentColor`, pour l'interface.
 La forme haute du monogramme est reprise sans modification du tracé validé (courbes de Bézier).
 Le bord supérieur de la forme basse suit une courbe parallèle au bord inférieur de la forme haute,
 à distance constante, jusqu'au contour gauche du F. Les autres bords conservent leurs courbes d'origine.
-Le logotype est composé en Syne (SIL Open Font License 1.1, graisse 600, chevauchements supprimés),
+Le logotype est composé en Instrument Sans (SIL Open Font License 1.1, graisse 600, chevauchements supprimés,
+espacement affiné),
 puis converti en contours : aucune police n'est nécessaire pour afficher le logo.

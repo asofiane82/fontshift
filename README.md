@@ -3,7 +3,7 @@
 Application de bureau légère (macOS, Windows, Linux) pour convertir des polices :
 TTF, OTF, WOFF, WOFF2 et EOT, polices variables comprises, avec import depuis Google Fonts
 et génération du CSS `@font-face`. Identité visuelle : logo n° 05 « Futuriste & Fluide » (monogramme F
-or et encre, logotype Syne). Anciennement « Fontaine » (renommée en 1.5.0). 5 thèmes en aplats (Champagne & Encre par défaut, puis Navy, Emerald, Burgundy et Plum) en clair et en sombre,
+or et encre, logotype Instrument Sans, interface et titres en Inter). Anciennement « Fontaine » (renommée en 1.5.0). 5 thèmes en aplats (Champagne & Encre par défaut, puis Navy, Emerald, Burgundy et Plum) en clair et en sombre,
 en français, anglais et espagnol.
 
 ## Ce que fait l'application

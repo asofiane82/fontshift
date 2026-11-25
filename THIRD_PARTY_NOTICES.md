@@ -9,7 +9,7 @@
 | [Svelte](https://svelte.dev) 5, [Vite](https://vite.dev), [Tailwind CSS](https://tailwindcss.com) 4 | interface | MIT |
 | [intl-messageformat](https://formatjs.github.io) | messages ICU (pluriels, variables) | BSD-3-Clause |
 | [Heroicons](https://heroicons.com) 2 | icônes | MIT |
-| [Inter](https://rsms.me/inter/), [Syne](https://gitlab.com/bonjour-monde/fonderie/syne-typeface), [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (via Fontsource) | polices de l'interface ; Syne 600 sert aussi au logotype, converti en contours | SIL OFL 1.1 |
+| [Inter](https://rsms.me/inter/), [Instrument Sans](https://fonts.google.com/specimen/Instrument+Sans), [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (via Fontsource) | Inter et JetBrains Mono : polices de l'interface ; Instrument Sans 600 : logotype, converti en contours (aucune police chargée par l'application) | SIL OFL 1.1 |
 | [Playfair Display](https://github.com/clauseggers/Playfair) | contours du spécimen anatomique « Ag » (src/lib/glyphs.ts) | SIL OFL 1.1 |
 | [sys-locale](https://github.com/1Password/sys-locale) | langue du système | MIT ou Apache-2.0 |
 
