@@ -162,6 +162,7 @@
     "selNames": "{list} · archivos variables, todos los estilos",
     "selHint": "Se usan los archivos variables oficiales cuando existen.",
     "cta": "Descargar y convertir",
+    "ctaPreview": "Descargar y previsualizar",
     "nothing": "Nada seleccionado",
     "sample": "El veloz murciélago hindú comía feliz cardillo y kiwi",
     "loading": "Cargando el catálogo…",
@@ -213,7 +214,8 @@
     "emptyBody": "Añade una fuente variable en Conversión o desde Google Fonts.",
     "goConvert": "Ir a la conversión",
     "added": "Añadido a la conversión",
-    "axisGeneric": "Eje {tag}"
+    "axisGeneric": "Eje {tag}",
+    "preparing": "Preparando la fuente…"
   },
   "res": {
     "title": "Resultados",

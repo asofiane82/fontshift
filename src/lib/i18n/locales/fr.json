@@ -162,6 +162,7 @@
     "selNames": "{list} · fichiers variables, tous les styles",
     "selHint": "Les fichiers variables officiels sont utilisés quand ils existent.",
     "cta": "Télécharger et convertir",
+    "ctaPreview": "Télécharger et prévisualiser",
     "nothing": "Aucune sélection",
     "sample": "Portez ce vieux whisky au juge blond qui fume",
     "loading": "Chargement du catalogue…",
@@ -213,7 +214,8 @@
     "emptyBody": "Ajoutez une police variable dans Conversion ou depuis Google Fonts.",
     "goConvert": "Aller à la conversion",
     "added": "Ajouté à la conversion",
-    "axisGeneric": "Axe {tag}"
+    "axisGeneric": "Axe {tag}",
+    "preparing": "Préparation de la police…"
   },
   "res": {
     "title": "Résultats",

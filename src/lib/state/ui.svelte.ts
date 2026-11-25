@@ -5,8 +5,11 @@ class Ui {
   route = $state<Route>('conversion');
   dragging = $state(false);
   dragCount = $state(1);
-  go(r: Route) {
+  /** Écran à rouvrir après un téléchargement Google Fonts (l'Aperçu avancé quand on vient de lui). */
+  returnTo = $state<Route | null>(null);
+  go(r: Route, returnTo: Route | null = null) {
     this.route = r;
+    this.returnTo = returnTo;
   }
 }
 

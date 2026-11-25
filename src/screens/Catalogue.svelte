@@ -33,10 +33,18 @@
     return { destroy: () => io.disconnect() };
   }
 
+  // Ouvert depuis l'Aperçu avancé : on n'y montre que les polices variables et on y revient après le téléchargement.
+  const forPreview = ui.returnTo === 'variables';
+  if (forPreview) catalog.variableOnly = true;
+
   async function download() {
     const added = await catalog.downloadSelected();
-    if (added > 0) {
-      session.toast = { kind: 'added', count: added };
+    if (!added.length) return;
+    session.toast = { kind: 'added', count: added.length };
+    if (forPreview) {
+      session.selectedId = added[0];
+      ui.go('variables');
+    } else {
       ui.go('conversion');
     }
   }
@@ -176,7 +184,7 @@
     {#if selNames.length}
       <button type="button" onclick={download} disabled={!!catalog.download && catalog.download.done < catalog.download.total} class="bg-gold inline-flex min-h-[46px] items-center gap-2.5 rounded-[10px] px-5 text-[15px] font-semibold disabled:opacity-70">
         <Icon name="cloudDown" size={20} stroke={1.6} />
-        <span class="whitespace-nowrap">{t('gf.cta')}</span>
+        <span class="whitespace-nowrap">{t(forPreview ? 'gf.ctaPreview' : 'gf.cta')}</span>
       </button>
     {:else}
       <span class="inline-flex min-h-[46px] items-center rounded-[10px] bg-surface px-[18px] text-[14.5px] whitespace-nowrap text-disabled">{t('gf.nothing')}</span>

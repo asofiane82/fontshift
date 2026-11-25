@@ -162,6 +162,7 @@
     "selNames": "{list} · variable files, all styles",
     "selHint": "Official variable files are used whenever available.",
     "cta": "Download and convert",
+    "ctaPreview": "Download and preview",
     "nothing": "Nothing selected",
     "sample": "Sphinx of black quartz, judge my vow",
     "loading": "Loading the catalogue…",
@@ -213,7 +214,8 @@
     "emptyBody": "Add a variable font in Conversion or from Google Fonts.",
     "goConvert": "Go to conversion",
     "added": "Added to the conversion",
-    "axisGeneric": "{tag} axis"
+    "axisGeneric": "{tag} axis",
+    "preparing": "Preparing the font…"
   },
   "res": {
     "title": "Results",

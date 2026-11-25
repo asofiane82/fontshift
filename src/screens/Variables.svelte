@@ -8,6 +8,7 @@
 
   const id = $props.id();
   const fonts = $derived(session.items.filter((i) => i.status === 'ready' && i.info?.variable));
+  const preparing = $derived(session.items.some((i) => i.status === 'analysing'));
   let chosenId = $state<string | null>(null);
   const font = $derived<FontItem | undefined>(fonts.find((f) => f.id === chosenId) ?? (session.selected?.info?.variable ? session.selected : fonts[0]));
   const info = $derived(font?.info);
@@ -128,7 +129,12 @@
     {/if}
   </div>
 
-  {#if !font || !info}
+  {#if (!font || !info) && preparing}
+    <div role="status" class="flex min-h-[360px] flex-col items-center justify-center gap-3 rounded-xl border-[1.5px] border-dashed border-accent-dash bg-sunken p-8 text-center">
+      <span class="size-7 animate-spin rounded-full border-[2.5px] border-line-strong border-t-accent"></span>
+      <p class="m-0 text-[15px] text-fg-muted">{t('vf.preparing')}</p>
+    </div>
+  {:else if !font || !info}
     <div class="flex min-h-[360px] flex-col items-center justify-center gap-3 rounded-xl border-[1.5px] border-dashed border-accent-dash bg-sunken p-8 text-center">
       <Icon name="variables" size={40} stroke={1.2} class="text-accent-text" />
       <p class="m-0 font-display text-[22px] font-semibold text-fg">{t('vf.emptyTitle')}</p>
@@ -137,7 +143,7 @@
         <button type="button" onclick={() => ui.go('conversion')} class="bg-gold inline-flex min-h-11 items-center gap-2 rounded-[9px] px-4 text-[14.5px] font-semibold">
           <Icon name="convert" size={18} />{t('vf.goConvert')}
         </button>
-        <button type="button" onclick={() => ui.go('google')} class="inline-flex min-h-11 items-center gap-2 rounded-[9px] border border-line-strong px-4 text-[14.5px] text-fg hover:bg-hover">
+        <button type="button" onclick={() => ui.go('google', 'variables')} class="inline-flex min-h-11 items-center gap-2 rounded-[9px] border border-line-strong px-4 text-[14.5px] text-fg hover:bg-hover">
           <Icon name="google" size={18} />{t('nav.google')}
         </button>
       </div>

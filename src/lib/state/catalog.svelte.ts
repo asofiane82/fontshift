@@ -117,11 +117,11 @@ class Catalog {
   }
 
   /** Télécharge les familles choisies et les place dans la file de conversion. */
-  async downloadSelected(): Promise<number> {
+  async downloadSelected(): Promise<string[]> {
     const names = [...this.selected];
-    if (!names.length || this.download) return 0;
+    if (!names.length || this.download) return [];
     this.download = { done: 0, total: names.length, failed: [] };
-    let added = 0;
+    const added: string[] = [];
     for (const name of names) {
       try {
         const res = await httpFetch(LIST_URL + encodeURIComponent(name));
@@ -136,8 +136,7 @@ class Catalog {
           if (!r.ok) throw new Error(String(r.status));
           files.push({ name: ref.filename.split('/').pop() || ref.filename, bytes: new Uint8Array(await r.arrayBuffer()) });
         }
-        await session.addFiles(files, 'google');
-        added += files.length;
+        added.push(...(await session.addFiles(files, 'google')));
       } catch {
         this.download.failed.push(name);
       }
