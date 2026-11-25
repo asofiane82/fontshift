@@ -3,7 +3,7 @@
 Application de bureau légère (macOS, Windows, Linux) pour convertir des polices :
 TTF, OTF, WOFF, WOFF2 et EOT, polices variables comprises, avec import depuis Google Fonts
 et génération du CSS `@font-face`. Identité visuelle : logo n° 05 « Futuriste & Fluide » (monogramme F
-or et encre, logotype Syne). Anciennement « Fontaine » (renommée en 1.5.0). 8 thèmes en aplats (Champagne & Encre par défaut) en clair et en sombre,
+or et encre, logotype Syne). Anciennement « Fontaine » (renommée en 1.5.0). 5 thèmes en aplats (Champagne & Encre par défaut, puis Navy, Emerald, Burgundy et Plum) en clair et en sombre,
 en français, anglais et espagnol.
 
 ## Ce que fait l'application
@@ -43,7 +43,7 @@ la vérification des mises à jour utilisent le réseau.
 
 ```
 src/                     Interface Svelte 5 + Tailwind CSS 4
-  lib/theme/palette.js   Source unique des couleurs (8 thèmes × 2 apparences, aplats, tokens sémantiques)
+  lib/theme/palette.js   Source unique des couleurs (5 thèmes × 2 apparences, aplats, tokens sémantiques)
   lib/brand/             Logo et icône dans l'interface, lus depuis design/brand (aucune copie des tracés)
   styles/tokens.css      Généré : propriétés --ftn-* sur :root[data-theme][data-mode]
   app.css                @theme inline : les classes Tailwind lisent les tokens (bg-surface, text-fg-muted…)
@@ -77,7 +77,9 @@ npm run dev              # interface seule dans le navigateur (sans Google Fonts
 
 Modifier les couleurs : `src/lib/theme/palette.js`, puis `npm run prepare:assets`
 (régénère `tokens.css`). Les nuances dérivées et les contrastes des thèmes sont calculés par
-`design/brand/source/themes_build.py` à partir des trios de couleurs.
+`design/brand/source/themes_build.py` à partir des trios de couleurs (ajustements validés compris) ;
+la planche des thèmes (`design/brand/preview/fontshift-themes.png`) est faite de captures réelles :
+`python3 e2e/themes_board.py` après une compilation (mêmes prérequis que le test de bout en bout).
 
 Régénérer la marque (Python 3, fontTools, uharfbuzz, shapely, numpy, rsvg-convert) :
 `python3 design/brand/source/gen_wordmark.py && python3 design/brand/source/separate.py && python3 design/brand/source/build_brand.py`,

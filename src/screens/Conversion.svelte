@@ -306,11 +306,11 @@
               onclick={() => session.toggleStyle(key)}
               class="flex min-h-10 items-center gap-2 rounded-[9px] px-2.5 text-left {wide ? 'col-span-full' : ''} {on
                 ? 'border-[1.5px] border-accent bg-selected text-fg'
-                : 'border border-line bg-sunken text-fg-muted hover:border-line-strong hover:text-fg'}"
+                : 'border border-line-strong bg-sunken text-fg-muted hover:border-fg-muted hover:text-fg'}"
             >
               <span class="flex size-4 shrink-0 items-center justify-center">{#if on}<Icon name="check" size={15} />{/if}</span>
               <span class="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{label}</span>
-              <span class="shrink-0 text-[12px] whitespace-nowrap opacity-80">{sub}</span>
+              <span class="shrink-0 text-[12px] whitespace-nowrap text-fg-muted">{sub}</span>
             </button>
           {/snippet}
           {@render chip('variable', t('conv.styleVariable'), t('conv.styleVariableSub'), true)}
@@ -342,7 +342,7 @@
             onclick={() => session.toggleFormat(f.id)}
             class="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-[10px] px-2.5 text-[14px] font-semibold whitespace-nowrap {on
               ? 'border-[1.5px] border-accent bg-selected text-fg'
-              : 'border border-line bg-sunken text-fg-muted hover:border-line-strong hover:text-fg'}"
+              : 'border border-line-strong bg-sunken text-fg-muted hover:border-fg-muted hover:text-fg'}"
           >
             {#if on}<Icon name="check" size={15} />{/if}
             {f.label}

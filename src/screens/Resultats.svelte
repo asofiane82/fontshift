@@ -97,7 +97,7 @@
               </span>
               <span class="flex flex-wrap gap-1.5">
                 {#each s.outs as o (o.path)}
-                  <button type="button" onclick={() => reveal(o.path)} title={o.name} class="inline-flex min-h-[30px] items-center gap-[7px] rounded-[7px] border border-line bg-sunken px-2.5 text-[12.5px] whitespace-nowrap hover:border-line-strong">
+                  <button type="button" onclick={() => reveal(o.path)} title={o.name} class="inline-flex min-h-[30px] items-center gap-[7px] rounded-[7px] border border-line-strong bg-sunken px-2.5 text-[12.5px] whitespace-nowrap hover:border-fg-muted">
                     <span class="font-semibold text-accent-text">{o.format.toUpperCase()}</span>
                     <span class="text-fg">{fmt.size(o.size)}</span>
                     <span class="font-semibold text-success">{fmt.pct(o.size / s.size - 1)}</span>

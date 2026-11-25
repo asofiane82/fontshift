@@ -3,12 +3,9 @@
  "order": [
   "champagne",
   "navy",
-  "charcoal",
   "emerald",
   "burgundy",
-  "teal",
-  "plum",
-  "terracotta"
+  "plum"
  ],
  "themes": {
   "champagne": {
@@ -19,31 +16,31 @@
     "neutral": "#FCF8EF"
    },
    "light": {
-    "sidebar": "#F0ECE3",
-    "background": "#FCF8EF",
+    "sidebar": "#EEECE9",
+    "background": "#FAF8F6",
     "backgroundEnd": "#FCF8EF",
-    "surface": "#FEFDF9",
-    "surfaceSunken": "#F5F1E8",
+    "surface": "#FDFDFC",
+    "surfaceSunken": "#F3F1EE",
     "surfaceElevated": "#FFFFFF",
-    "border": "#D6D2CA",
-    "borderStrong": "#BCB8B0",
+    "border": "#D4D2CF",
+    "borderStrong": "#8F8D89",
     "textPrimary": "#16140F",
     "textSecondary": "#57554F",
     "textTertiary": "#6B6962",
     "disabled": "#A7A49D",
     "specimen": "#16140F",
-    "tabbar": "#F0ECE3",
-    "tabActive": "#FEFDF9",
+    "tabbar": "#EEECE9",
+    "tabActive": "#FDFDFC",
     "ornament": "#7C570C",
-    "accent": "#16140F",
-    "accentHover": "#26241F",
-    "accentOn": "#FCF8EF",
+    "accent": "#B5863A",
+    "accentHover": "#C99A45",
+    "accentOn": "#16140F",
     "highlight": "#DDB66E",
-    "tint": "#F9F2E3",
-    "tintStrong": "#F5E9D2",
-    "tintSoft": "#FBF7EE",
+    "tint": "#F3E8D3",
+    "tintStrong": "#F1E9DA",
+    "tintSoft": "#F9F7F2",
     "focus": "#7C570C",
-    "badge": "#F9F2E3",
+    "badge": "#F3E8D3",
     "success": "#05704E",
     "warning": "#965200",
     "error": "#B42318"
@@ -56,7 +53,7 @@
     "surfaceSunken": "#100F0A",
     "surfaceElevated": "#26241F",
     "border": "#302E28",
-    "borderStrong": "#45433C",
+    "borderStrong": "#6B6962",
     "textPrimary": "#FCF8EF",
     "textSecondary": "#BCB8B0",
     "textTertiary": "#9B9891",
@@ -94,7 +91,7 @@
     "surfaceSunken": "#F8F8F8",
     "surfaceElevated": "#FFFFFF",
     "border": "#D3D9E5",
-    "borderStrong": "#B8BFCC",
+    "borderStrong": "#8C93A2",
     "textPrimary": "#0F172A",
     "textSecondary": "#4C5569",
     "textTertiary": "#646C7E",
@@ -103,14 +100,14 @@
     "tabbar": "#EEF4FF",
     "tabActive": "#FFFFFF",
     "ornament": "#105BCF",
-    "accent": "#0F172A",
-    "accentHover": "#1F283C",
+    "accent": "#2563EB",
+    "accentHover": "#1D4ED8",
     "accentOn": "#FFFFFF",
     "highlight": "#3B82F6",
     "tint": "#E0EBFE",
     "tintStrong": "#C8DCFC",
     "tintSoft": "#EFF5FE",
-    "focus": "#3B82F6",
+    "focus": "#2563EB",
     "badge": "#E0EBFE",
     "success": "#05704E",
     "warning": "#965200",
@@ -124,7 +121,7 @@
     "surfaceSunken": "#0A1124",
     "surfaceElevated": "#1F283C",
     "border": "#283249",
-    "borderStrong": "#3C475F",
+    "borderStrong": "#636C7F",
     "textPrimary": "#FFFFFF",
     "textSecondary": "#BCBEC3",
     "textTertiary": "#9A9EA6",
@@ -147,74 +144,6 @@
     "error": "#FFA897"
    }
   },
-  "charcoal": {
-   "name": "Charcoal & Lime",
-   "trio": {
-    "deep": "#1F2937",
-    "accent": "#A3E635",
-    "neutral": "#F3F4F6"
-   },
-   "light": {
-    "sidebar": "#E2E9F3",
-    "background": "#F3F4F6",
-    "backgroundEnd": "#F3F4F6",
-    "surface": "#FBFBFC",
-    "surfaceSunken": "#ECEDEF",
-    "surfaceElevated": "#FFFFFF",
-    "border": "#CBD2DC",
-    "borderStrong": "#B3BBC6",
-    "textPrimary": "#1F2937",
-    "textSecondary": "#4B5666",
-    "textTertiary": "#5B6777",
-    "disabled": "#9DA5B1",
-    "specimen": "#1F2937",
-    "tabbar": "#E2E9F3",
-    "tabActive": "#FBFBFC",
-    "ornament": "#416504",
-    "accent": "#1F2937",
-    "accentHover": "#303B4A",
-    "accentOn": "#F3F4F6",
-    "highlight": "#A3E635",
-    "tint": "#E1F5C0",
-    "tintStrong": "#CBEF8F",
-    "tintSoft": "#EDF8DC",
-    "focus": "#416504",
-    "badge": "#E1F5C0",
-    "success": "#05704E",
-    "warning": "#965200",
-    "error": "#B42318"
-   },
-   "dark": {
-    "sidebar": "#17202E",
-    "background": "#1F2937",
-    "backgroundEnd": "#1F2937",
-    "surface": "#273240",
-    "surfaceSunken": "#192331",
-    "surfaceElevated": "#303B4A",
-    "border": "#394556",
-    "borderStrong": "#4F5B6D",
-    "textPrimary": "#F1F2F4",
-    "textSecondary": "#D1D5DA",
-    "textTertiary": "#A8ADB4",
-    "disabled": "#6F757F",
-    "specimen": "#F1F2F4",
-    "tabbar": "#17202E",
-    "tabActive": "#303B4A",
-    "ornament": "#A3E635",
-    "accent": "#A3E635",
-    "accentHover": "#B3F74C",
-    "accentOn": "#17202E",
-    "highlight": "#A3E635",
-    "tint": "#3D523E",
-    "tintStrong": "#4F6C3C",
-    "tintSoft": "#32423F",
-    "focus": "#A3E635",
-    "badge": "#3D523E",
-    "success": "#6FE3B5",
-    "warning": "#F7C27A",
-    "error": "#FFA897"
-   }
-  },
   "emerald": {
    "name": "Emerald & Mint",
    "trio": {
@@ -223,21 +152,21 @@
     "neutral": "#FFF8E7"
    },
    "light": {
-    "sidebar": "#F3ECDB",
-    "background": "#FFF8E7",
+    "sidebar": "#E7EFEB",
+    "background": "#F5FAF7",
     "backgroundEnd": "#FFF8E7",
-    "surface": "#FFFDF7",
-    "surfaceSunken": "#F8F1E0",
+    "surface": "#FCFDFD",
+    "surfaceSunken": "#ECF3F0",
     "surfaceElevated": "#FFFFFF",
-    "border": "#D6D5C4",
-    "borderStrong": "#B9BDAD",
+    "border": "#CBD7D2",
+    "borderStrong": "#7D948C",
     "textPrimary": "#00291C",
     "textSecondary": "#435C51",
     "textTertiary": "#566C62",
     "disabled": "#99A9A2",
     "specimen": "#00291C",
-    "tabbar": "#F3ECDB",
-    "tabActive": "#FFFDF7",
+    "tabbar": "#E7EFEB",
+    "tabActive": "#FCFDFD",
     "ornament": "#065F46",
     "accent": "#065F46",
     "accentHover": "#01503A",
@@ -260,7 +189,7 @@
     "surfaceSunken": "#03120C",
     "surfaceElevated": "#162821",
     "border": "#1E332B",
-    "borderStrong": "#33483F",
+    "borderStrong": "#5E6D62",
     "textPrimary": "#FFF8E7",
     "textSecondary": "#B9B9AB",
     "textTertiary": "#969A8D",
@@ -291,21 +220,21 @@
     "neutral": "#FFFDF7"
    },
    "light": {
-    "sidebar": "#FCEEEC",
-    "background": "#FFFDF7",
+    "sidebar": "#F9EFEE",
+    "background": "#FFFCFC",
     "backgroundEnd": "#FFFDF7",
-    "surface": "#FFFEFC",
-    "surfaceSunken": "#F8F6F0",
+    "surface": "#FFFEFE",
+    "surfaceSunken": "#FAF5F4",
     "surfaceElevated": "#FFFFFF",
-    "border": "#E5D4D2",
-    "borderStrong": "#CDBAB8",
+    "border": "#E2D5D4",
+    "borderStrong": "#A38C8B",
     "textPrimary": "#3A1412",
     "textSecondary": "#684E4B",
     "textTertiary": "#7C6563",
     "disabled": "#B1A09E",
     "specimen": "#3A1412",
-    "tabbar": "#FCEEEC",
-    "tabActive": "#FFFEFC",
+    "tabbar": "#F9EFEE",
+    "tabActive": "#FFFEFE",
     "ornament": "#7F1D1D",
     "accent": "#7F1D1D",
     "accentHover": "#6F080F",
@@ -328,7 +257,7 @@
     "surfaceSunken": "#1B0807",
     "surfaceElevated": "#331D1B",
     "border": "#3F2624",
-    "borderStrong": "#553B38",
+    "borderStrong": "#796460",
     "textPrimary": "#FFFDF7",
     "textSecondary": "#C1BAB5",
     "textTertiary": "#A29894",
@@ -351,74 +280,6 @@
     "error": "#FFA897"
    }
   },
-  "teal": {
-   "name": "Teal & Coral",
-   "trio": {
-    "deep": "#0F766E",
-    "accent": "#FF7F50",
-    "neutral": "#F5E6CA"
-   },
-   "light": {
-    "sidebar": "#EBDCC0",
-    "background": "#F5E6CA",
-    "backgroundEnd": "#F5E6CA",
-    "surface": "#FCF6EC",
-    "surfaceSunken": "#EEDFC3",
-    "surfaceElevated": "#FFFFFF",
-    "border": "#CFC6AD",
-    "borderStrong": "#B3B19B",
-    "textPrimary": "#022825",
-    "textSecondary": "#36534F",
-    "textTertiary": "#496360",
-    "disabled": "#97A9A7",
-    "specimen": "#022825",
-    "tabbar": "#EBDCC0",
-    "tabActive": "#FCF6EC",
-    "ornament": "#0B5F59",
-    "accent": "#0F766E",
-    "accentHover": "#0B665F",
-    "accentOn": "#FFFFFF",
-    "highlight": "#FF7F50",
-    "tint": "#FCE3D3",
-    "tintStrong": "#FDD5C0",
-    "tintSoft": "#FCECE0",
-    "focus": "#0B5F59",
-    "badge": "#FCE3D3",
-    "success": "#0E6C4C",
-    "warning": "#8E4D03",
-    "error": "#B42318"
-   },
-   "dark": {
-    "sidebar": "#00100E",
-    "background": "#041816",
-    "backgroundEnd": "#041816",
-    "surface": "#0B201E",
-    "surfaceSunken": "#011210",
-    "surfaceElevated": "#132826",
-    "border": "#1B3330",
-    "borderStrong": "#304845",
-    "textPrimary": "#F5E6CA",
-    "textSecondary": "#BBB5A1",
-    "textTertiary": "#969584",
-    "disabled": "#60665A",
-    "specimen": "#F5E6CA",
-    "tabbar": "#00100E",
-    "tabActive": "#132826",
-    "ornament": "#FF7F50",
-    "accent": "#FF7F50",
-    "accentHover": "#FC9D7B",
-    "accentOn": "#00100E",
-    "highlight": "#FF7F50",
-    "tint": "#373127",
-    "tintStrong": "#593E2E",
-    "tintSoft": "#212922",
-    "focus": "#FF7F50",
-    "badge": "#373127",
-    "success": "#6FE3B5",
-    "warning": "#F7C27A",
-    "error": "#FFA897"
-   }
-  },
   "plum": {
    "name": "Plum & Lavender",
    "trio": {
@@ -434,7 +295,7 @@
     "surfaceSunken": "#F3F0F8",
     "surfaceElevated": "#FFFFFF",
     "border": "#D7D2E0",
-    "borderStrong": "#BEB9C9",
+    "borderStrong": "#918BA0",
     "textPrimary": "#231B3C",
     "textSecondary": "#565267",
     "textTertiary": "#696679",
@@ -464,7 +325,7 @@
     "surfaceSunken": "#0F0B1C",
     "surfaceElevated": "#242134",
     "border": "#2E2A40",
-    "borderStrong": "#433F55",
+    "borderStrong": "#696679",
     "textPrimary": "#FAF7FF",
     "textSecondary": "#BAB7C1",
     "textTertiary": "#9996A2",
@@ -482,74 +343,6 @@
     "tintSoft": "#2B273E",
     "focus": "#C4B5FD",
     "badge": "#3A3551",
-    "success": "#6FE3B5",
-    "warning": "#F7C27A",
-    "error": "#FFA897"
-   }
-  },
-  "terracotta": {
-   "name": "Terracotta & Mustard",
-   "trio": {
-    "deep": "#C2410C",
-    "accent": "#EAB308",
-    "neutral": "#FFF7E6"
-   },
-   "light": {
-    "sidebar": "#F3EBDA",
-    "background": "#FFF7E6",
-    "backgroundEnd": "#FFF7E6",
-    "surface": "#FFFCF6",
-    "surfaceSunken": "#F8F0DF",
-    "surfaceElevated": "#FFFFFF",
-    "border": "#DDD1C1",
-    "borderStrong": "#C6B8A8",
-    "textPrimary": "#39160A",
-    "textSecondary": "#674F47",
-    "textTertiary": "#79635C",
-    "disabled": "#B0A19B",
-    "specimen": "#39160A",
-    "tabbar": "#F3EBDA",
-    "tabActive": "#FFFCF6",
-    "ornament": "#A83706",
-    "accent": "#C2410C",
-    "accentHover": "#AA390B",
-    "accentOn": "#FFF7E6",
-    "highlight": "#EAB308",
-    "tint": "#FCF0D0",
-    "tintStrong": "#F9E8B3",
-    "tintSoft": "#FDF6E3",
-    "focus": "#A83706",
-    "badge": "#FCF0D0",
-    "success": "#05704E",
-    "warning": "#965200",
-    "error": "#B42318"
-   },
-   "dark": {
-    "sidebar": "#180703",
-    "background": "#210E08",
-    "backgroundEnd": "#210E08",
-    "surface": "#2A160F",
-    "surfaceSunken": "#1B0804",
-    "surfaceElevated": "#331E17",
-    "border": "#3F271F",
-    "borderStrong": "#553B33",
-    "textPrimary": "#FFF7E6",
-    "textSecondary": "#C1B6A8",
-    "textTertiary": "#A29589",
-    "disabled": "#75675C",
-    "specimen": "#FFF7E6",
-    "tabbar": "#180703",
-    "tabActive": "#331E17",
-    "ornament": "#EAB308",
-    "accent": "#EAB308",
-    "accentHover": "#FBC32F",
-    "accentOn": "#180703",
-    "highlight": "#EAB308",
-    "tint": "#4D320E",
-    "tintStrong": "#67480D",
-    "tintSoft": "#3B240E",
-    "focus": "#EAB308",
-    "badge": "#4D320E",
     "success": "#6FE3B5",
     "warning": "#F7C27A",
     "error": "#FFA897"
@@ -589,21 +382,28 @@
    {
     "mode": "light",
     "check": "texte sur bouton",
-    "ratio": 14.63,
+    "ratio": 5.64,
     "min": 4.5,
     "ok": true
    },
    {
     "mode": "light",
     "check": "texte sur sélection",
-    "ratio": 15.31,
+    "ratio": 15.26,
     "min": 4.5,
     "ok": true
    },
    {
     "mode": "light",
+    "check": "contour des contrôles",
+    "ratio": 3.13,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
     "check": "bouton / surface (graphique)",
-    "ratio": 18.08,
+    "ratio": 3.21,
     "min": 3.0,
     "ok": true
    },
@@ -665,6 +465,13 @@
    },
    {
     "mode": "dark",
+    "check": "contour des contrôles",
+    "ratio": 3.1,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
     "check": "bouton / surface (graphique)",
     "ratio": 8.91,
     "min": 1.0,
@@ -717,7 +524,7 @@
    {
     "mode": "light",
     "check": "texte sur bouton",
-    "ratio": 14.72,
+    "ratio": 5.17,
     "min": 4.5,
     "ok": true
    },
@@ -730,15 +537,22 @@
    },
    {
     "mode": "light",
+    "check": "contour des contrôles",
+    "ratio": 3.08,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
     "check": "bouton / surface (graphique)",
-    "ratio": 17.85,
+    "ratio": 5.17,
     "min": 3.0,
     "ok": true
    },
    {
     "mode": "light",
     "check": "focus / surface",
-    "ratio": 3.68,
+    "ratio": 5.17,
     "min": 3.0,
     "ok": true
    },
@@ -793,6 +607,13 @@
    },
    {
     "mode": "dark",
+    "check": "contour des contrôles",
+    "ratio": 3.11,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
     "check": "bouton / surface (graphique)",
     "ratio": 4.46,
     "min": 1.0,
@@ -813,160 +634,32 @@
     "ok": true
    }
   ],
-  "charcoal": [
-   {
-    "mode": "light",
-    "check": "texte principal",
-    "ratio": 12.01,
-    "min": 7.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte secondaire",
-    "ratio": 6.09,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte tertiaire",
-    "ratio": 4.71,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte en couleur",
-    "ratio": 5.56,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte sur bouton",
-    "ratio": 10.31,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte sur sélection",
-    "ratio": 11.38,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "bouton / surface (graphique)",
-    "ratio": 14.19,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "focus / surface",
-    "ratio": 6.58,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "succès / avertissement / erreur",
-    "ratio": 5.12,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte principal",
-    "ratio": 10.13,
-    "min": 7.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte secondaire",
-    "ratio": 7.7,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte tertiaire",
-    "ratio": 5.03,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte en couleur",
-    "ratio": 7.53,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte sur bouton",
-    "ratio": 10.86,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte sur sélection",
-    "ratio": 5.29,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "bouton / surface (graphique)",
-    "ratio": 8.62,
-    "min": 1.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "focus / surface",
-    "ratio": 8.62,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "succès / avertissement / erreur",
-    "ratio": 6.99,
-    "min": 4.5,
-    "ok": true
-   }
-  ],
   "emerald": [
    {
     "mode": "light",
     "check": "texte principal",
-    "ratio": 13.37,
+    "ratio": 13.45,
     "min": 7.0,
     "ok": true
    },
    {
     "mode": "light",
     "check": "texte secondaire",
-    "ratio": 6.17,
+    "ratio": 6.21,
     "min": 4.5,
     "ok": true
    },
    {
     "mode": "light",
     "check": "texte tertiaire",
-    "ratio": 4.8,
+    "ratio": 4.83,
     "min": 4.5,
     "ok": true
    },
    {
     "mode": "light",
     "check": "texte en couleur",
-    "ratio": 6.52,
+    "ratio": 6.57,
     "min": 4.5,
     "ok": true
    },
@@ -986,15 +679,22 @@
    },
    {
     "mode": "light",
+    "check": "contour des contrôles",
+    "ratio": 3.07,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
     "check": "bouton / surface (graphique)",
-    "ratio": 7.55,
+    "ratio": 7.54,
     "min": 3.0,
     "ok": true
    },
    {
     "mode": "light",
     "check": "focus / surface",
-    "ratio": 7.55,
+    "ratio": 7.54,
     "min": 3.0,
     "ok": true
    },
@@ -1049,6 +749,13 @@
    },
    {
     "mode": "dark",
+    "check": "contour des contrôles",
+    "ratio": 3.1,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
     "check": "bouton / surface (graphique)",
     "ratio": 13.21,
     "min": 1.0,
@@ -1073,14 +780,14 @@
    {
     "mode": "light",
     "check": "texte principal",
-    "ratio": 14.42,
+    "ratio": 14.44,
     "min": 7.0,
     "ok": true
    },
    {
     "mode": "light",
     "check": "texte secondaire",
-    "ratio": 6.68,
+    "ratio": 6.69,
     "min": 4.5,
     "ok": true
    },
@@ -1094,7 +801,7 @@
    {
     "mode": "light",
     "check": "texte en couleur",
-    "ratio": 8.87,
+    "ratio": 8.88,
     "min": 4.5,
     "ok": true
    },
@@ -1114,15 +821,22 @@
    },
    {
     "mode": "light",
+    "check": "contour des contrôles",
+    "ratio": 3.08,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
     "check": "bouton / surface (graphique)",
-    "ratio": 9.94,
+    "ratio": 9.95,
     "min": 3.0,
     "ok": true
    },
    {
     "mode": "light",
     "check": "focus / surface",
-    "ratio": 9.94,
+    "ratio": 9.95,
     "min": 3.0,
     "ok": true
    },
@@ -1177,6 +891,13 @@
    },
    {
     "mode": "dark",
+    "check": "contour des contrôles",
+    "ratio": 3.13,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
     "check": "bouton / surface (graphique)",
     "ratio": 12.61,
     "min": 1.0,
@@ -1193,134 +914,6 @@
     "mode": "dark",
     "check": "succès / avertissement / erreur",
     "ratio": 9.3,
-    "min": 4.5,
-    "ok": true
-   }
-  ],
-  "teal": [
-   {
-    "mode": "light",
-    "check": "texte principal",
-    "ratio": 11.65,
-    "min": 7.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte secondaire",
-    "ratio": 6.19,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte tertiaire",
-    "ratio": 4.8,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte en couleur",
-    "ratio": 5.56,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte sur bouton",
-    "ratio": 5.47,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte sur sélection",
-    "ratio": 11.6,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "bouton / surface (graphique)",
-    "ratio": 5.09,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "focus / surface",
-    "ratio": 6.99,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "succès / avertissement / erreur",
-    "ratio": 4.89,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte principal",
-    "ratio": 12.55,
-    "min": 7.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte secondaire",
-    "ratio": 7.53,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte tertiaire",
-    "ratio": 5.1,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte en couleur",
-    "ratio": 6.18,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte sur bouton",
-    "ratio": 7.78,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte sur sélection",
-    "ratio": 7.92,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "bouton / surface (graphique)",
-    "ratio": 6.78,
-    "min": 1.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "focus / surface",
-    "ratio": 6.78,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "succès / avertissement / erreur",
-    "ratio": 9.12,
     "min": 4.5,
     "ok": true
    }
@@ -1366,6 +959,13 @@
     "check": "texte sur sélection",
     "ratio": 11.64,
     "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "contour des contrôles",
+    "ratio": 3.09,
+    "min": 3.0,
     "ok": true
    },
    {
@@ -1433,6 +1033,13 @@
    },
    {
     "mode": "dark",
+    "check": "contour des contrôles",
+    "ratio": 3.09,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
     "check": "bouton / surface (graphique)",
     "ratio": 9.3,
     "min": 1.0,
@@ -1449,134 +1056,6 @@
     "mode": "dark",
     "check": "succès / avertissement / erreur",
     "ratio": 9.24,
-    "min": 4.5,
-    "ok": true
-   }
-  ],
-  "terracotta": [
-   {
-    "mode": "light",
-    "check": "texte principal",
-    "ratio": 13.69,
-    "min": 7.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte secondaire",
-    "ratio": 6.36,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte tertiaire",
-    "ratio": 4.72,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte en couleur",
-    "ratio": 5.51,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte sur bouton",
-    "ratio": 4.86,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "texte sur sélection",
-    "ratio": 13.32,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "bouton / surface (graphique)",
-    "ratio": 5.06,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "focus / surface",
-    "ratio": 6.38,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "light",
-    "check": "succès / avertissement / erreur",
-    "ratio": 5.29,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte principal",
-    "ratio": 14.71,
-    "min": 7.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte secondaire",
-    "ratio": 7.86,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte tertiaire",
-    "ratio": 5.38,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte en couleur",
-    "ratio": 8.18,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte sur bouton",
-    "ratio": 10.23,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "texte sur sélection",
-    "ratio": 7.85,
-    "min": 4.5,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "bouton / surface (graphique)",
-    "ratio": 8.97,
-    "min": 1.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "focus / surface",
-    "ratio": 8.97,
-    "min": 3.0,
-    "ok": true
-   },
-   {
-    "mode": "dark",
-    "check": "succès / avertissement / erreur",
-    "ratio": 9.26,
     "min": 4.5,
     "ok": true
    }

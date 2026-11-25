@@ -72,22 +72,49 @@ TRIOS = [
     # clé, nom, profonde, accent, neutre
     ('champagne', 'Champagne & Encre', '#16140F', '#DDB66E', '#FCF8EF'),
     ('navy', 'Navy & Electric Blue', '#0F172A', '#3B82F6', '#FFFFFF'),
-    ('charcoal', 'Charcoal & Lime', '#1F2937', '#A3E635', '#F3F4F6'),
     ('emerald', 'Emerald & Mint', '#065F46', '#A7F3D0', '#FFF8E7'),
     ('burgundy', 'Burgundy & Blush', '#7F1D1D', '#F3D5D8', '#FFFDF7'),
-    ('teal', 'Teal & Coral', '#0F766E', '#FF7F50', '#F5E6CA'),
     ('plum', 'Plum & Lavender', '#6D28D9', '#C4B5FD', '#FAF7FF'),
-    ('terracotta', 'Terracotta & Mustard', '#C2410C', '#EAB308', '#FFF7E6'),
 ]
 DEFAULT = 'champagne'
 SEM = {'light': {'success': '#05704E', 'warning': '#965200', 'error': '#B42318'},
        'dark': {'success': '#6FE3B5', 'warning': '#F7C27A', 'error': '#FFA897'}}
 
 
+# Ajustements validés (version 3 des thèmes, novembre 2026), appliqués après la dérivation automatique :
+# - 8 thèmes ramenés à 5 (Charcoal, Teal et Terracotta retirés : quasi-doublons) ;
+# - modes clairs sans dominante jaune : fonds blancs cassés teintés par la couleur du thème (même luminosité,
+#   saturation divisée par 3 à 4) ;
+# - Champagne : accent or en clair (boutons #B5863A, texte des boutons en encre) ; Navy : bleu électrique #2563EB ;
+# - borderStrong (contours des champs, menus et boutons de sélection) porté à 3:1 contre fond et carte.
+AJUSTEMENTS = {
+    'champagne': {
+        'light': {'sidebar': '#EEECE9', 'background': '#FAF8F6', 'surface': '#FDFDFC', 'surfaceSunken': '#F3F1EE', 'border': '#D4D2CF', 'borderStrong': '#8F8D89', 'badge': '#F3E8D3', 'tabbar': '#EEECE9', 'tabActive': '#FDFDFC', 'accent': '#B5863A', 'accentHover': '#C99A45', 'accentOn': '#16140F', 'tint': '#F3E8D3', 'tintStrong': '#F1E9DA', 'tintSoft': '#F9F7F2'},
+        'dark': {'borderStrong': '#6B6962'},
+    },
+    'navy': {
+        'light': {'borderStrong': '#8C93A2', 'accent': '#2563EB', 'accentHover': '#1D4ED8', 'focus': '#2563EB'},
+        'dark': {'borderStrong': '#636C7F'},
+    },
+    'emerald': {
+        'light': {'sidebar': '#E7EFEB', 'background': '#F5FAF7', 'surface': '#FCFDFD', 'surfaceSunken': '#ECF3F0', 'border': '#CBD7D2', 'borderStrong': '#7D948C', 'tabbar': '#E7EFEB', 'tabActive': '#FCFDFD'},
+        'dark': {'borderStrong': '#5E6D62'},
+    },
+    'burgundy': {
+        'light': {'sidebar': '#F9EFEE', 'background': '#FFFCFC', 'surface': '#FFFEFE', 'surfaceSunken': '#FAF5F4', 'border': '#E2D5D4', 'borderStrong': '#A38C8B', 'tabbar': '#F9EFEE', 'tabActive': '#FFFEFE'},
+        'dark': {'borderStrong': '#796460'},
+    },
+    'plum': {
+        'light': {'borderStrong': '#918BA0'},
+        'dark': {'borderStrong': '#696679'},
+    },
+}
+
+
 def build(key, name, deep, accent, neutral):
     Ld, Cd, Hd = to_oklch(deep)
     Ln, Cn, Hn = to_oklch(neutral)
-    colored_deep = Cd >= 0.06                       # Navy, Charcoal, Encre : profonde quasi neutre
+    colored_deep = Cd >= 0.06                       # Navy, Encre : profonde quasi neutre
     out = {'name': name, 'trio': {'deep': deep, 'accent': accent, 'neutral': neutral}}
 
     # ----------------------------- clair
@@ -130,7 +157,7 @@ def build(key, name, deep, accent, neutral):
 
     # ----------------------------- sombre
     if Cd < 0.06 and Ld <= 0.30:
-        base_L, base_C = Ld, Cd                      # Encre, Navy, Charcoal : la couleur profonde sert directement de fond
+        base_L, base_C = Ld, Cd                      # Encre, Navy : la couleur profonde sert directement de fond
     else:
         base_L, base_C = 0.19, min(Cd * 0.32, 0.035)
     D = lambda dl, cm=1.0: oklch(base_L + dl, base_C * cm, Hd)
@@ -157,6 +184,8 @@ def build(key, name, deep, accent, neutral):
     })
     dk['badge'] = dk['tint']
     for k, v in SEM['dark'].items(): dk[k] = readable(v, [dbg, dsurf, delev], 6.0, +1)
+    for mode, part in (('light', lt), ('dark', dk)):
+        part.update(AJUSTEMENTS.get(key, {}).get(mode, {}))
     out['light'], out['dark'] = lt, dk
     return out
 
@@ -173,6 +202,7 @@ def report(t):
             'texte en couleur': (min(cr(b['ornament'], s) for s in surf), 4.5),
             'texte sur bouton': (min(cr(b['accentOn'], b['accent']), cr(b['accentOn'], b['accentHover'])), 4.5),
             'texte sur sélection': (cr(b['textPrimary'], b['tintStrong']), 4.5),
+            'contour des contrôles': (min(cr(b['borderStrong'], b['background']), cr(b['borderStrong'], b['surface'])), 3.0),
             'bouton / surface (graphique)': (max(cr(b['accent'], b['surface']), 1.0), 3.0 if mode == 'light' else 1.0),
             'focus / surface': (cr(b['focus'], b['surface']), 3.0),
             'succès / avertissement / erreur': (min(cr(b[k], s) for k in ('success', 'warning', 'error') for s in surf[:3]), 4.5),
