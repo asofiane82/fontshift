@@ -74,6 +74,7 @@ TRIOS = [
     ('navy', 'Navy & Electric Blue', '#0F172A', '#3B82F6', '#FFFFFF'),
     ('emerald', 'Emerald & Mint', '#065F46', '#A7F3D0', '#FFF8E7'),
     ('burgundy', 'Burgundy & Blush', '#7F1D1D', '#F3D5D8', '#FFFDF7'),
+    ('rose', 'Raspberry & Rose', '#C71F72', '#F472B6', '#FFF7FB'),
     ('plum', 'Plum & Lavender', '#6D28D9', '#C4B5FD', '#FAF7FF'),
 ]
 DEFAULT = 'champagne'
@@ -82,12 +83,16 @@ SEM = {'light': {'success': '#05704E', 'warning': '#965200', 'error': '#B42318'}
 
 
 # Ajustements validés (version 3 des thèmes, novembre 2026), appliqués après la dérivation automatique :
-# - 8 thèmes ramenés à 5 (Charcoal, Teal et Terracotta retirés : quasi-doublons) ;
+# - 8 thèmes ramenés à 5 (Charcoal, Teal et Terracotta retirés : quasi-doublons), puis Raspberry & Rose ajouté (rose vif) ;
 # - modes clairs sans dominante jaune : fonds blancs cassés teintés par la couleur du thème (même luminosité,
 #   saturation divisée par 3 à 4) ;
 # - Champagne : accent or en clair (boutons #B5863A, texte des boutons en encre) ; Navy : bleu électrique #2563EB ;
 # - borderStrong (contours des champs, menus et boutons de sélection) porté à 3:1 contre fond et carte.
 AJUSTEMENTS = {
+    'rose': {
+        'light': {'background': '#FCF8F9', 'sidebar': '#F5EBEE', 'tabbar': '#F5EBEE', 'surfaceSunken': '#F6F1F2', 'surface': '#FEFDFD', 'tabActive': '#FEFDFD', 'border': '#DED1D6', 'borderStrong': '#9E8890'},
+        'dark': {'borderStrong': '#786269'},
+    },
     'champagne': {
         'light': {'sidebar': '#EEECE9', 'background': '#FAF8F6', 'surface': '#FDFDFC', 'surfaceSunken': '#F3F1EE', 'border': '#D4D2CF', 'borderStrong': '#8F8D89', 'badge': '#F3E8D3', 'tabbar': '#EEECE9', 'tabActive': '#FDFDFC', 'accent': '#B5863A', 'accentHover': '#C99A45', 'accentOn': '#16140F', 'tint': '#F3E8D3', 'tintStrong': '#F1E9DA', 'tintSoft': '#F9F7F2'},
         'dark': {'borderStrong': '#6B6962'},

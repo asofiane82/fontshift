@@ -5,6 +5,7 @@
   "navy",
   "emerald",
   "burgundy",
+  "rose",
   "plum"
  ],
  "themes": {
@@ -275,6 +276,74 @@
     "tintSoft": "#3C2625",
     "focus": "#F3D5D8",
     "badge": "#4E3836",
+    "success": "#6FE3B5",
+    "warning": "#F7C27A",
+    "error": "#FFA897"
+   }
+  },
+  "rose": {
+   "name": "Raspberry & Rose",
+   "trio": {
+    "deep": "#C71F72",
+    "accent": "#F472B6",
+    "neutral": "#FFF7FB"
+   },
+   "light": {
+    "sidebar": "#F5EBEE",
+    "background": "#FCF8F9",
+    "backgroundEnd": "#FFF7FB",
+    "surface": "#FEFDFD",
+    "surfaceSunken": "#F6F1F2",
+    "surfaceElevated": "#FFFFFF",
+    "border": "#DED1D6",
+    "borderStrong": "#9E8890",
+    "textPrimary": "#371422",
+    "textSecondary": "#664D55",
+    "textTertiary": "#786269",
+    "disabled": "#B0A0A5",
+    "specimen": "#371422",
+    "tabbar": "#F5EBEE",
+    "tabActive": "#FEFDFD",
+    "ornament": "#B70266",
+    "accent": "#C71F72",
+    "accentHover": "#B20F64",
+    "accentOn": "#FFF7FB",
+    "highlight": "#F472B6",
+    "tint": "#FDE6F2",
+    "tintStrong": "#FCD5EA",
+    "tintSoft": "#FEF1F8",
+    "focus": "#B70266",
+    "badge": "#FDE6F2",
+    "success": "#05704E",
+    "warning": "#965200",
+    "error": "#B42318"
+   },
+   "dark": {
+    "sidebar": "#18060C",
+    "background": "#200D14",
+    "backgroundEnd": "#200D14",
+    "surface": "#29151C",
+    "surfaceSunken": "#1A070E",
+    "surfaceElevated": "#321D24",
+    "border": "#3E262E",
+    "borderStrong": "#786269",
+    "textPrimary": "#FFF7FB",
+    "textSecondary": "#C1B5BA",
+    "textTertiary": "#A1959A",
+    "disabled": "#75666C",
+    "specimen": "#FFF7FB",
+    "tabbar": "#18060C",
+    "tabActive": "#321D24",
+    "ornament": "#F875B9",
+    "accent": "#F472B6",
+    "accentHover": "#FF88C4",
+    "accentOn": "#18060C",
+    "highlight": "#F472B6",
+    "tint": "#4E2638",
+    "tintStrong": "#6A334D",
+    "tintSoft": "#3B1D2A",
+    "focus": "#F875B9",
+    "badge": "#4E2638",
     "success": "#6FE3B5",
     "warning": "#F7C27A",
     "error": "#FFA897"
@@ -914,6 +983,148 @@
     "mode": "dark",
     "check": "succès / avertissement / erreur",
     "ratio": 9.3,
+    "min": 4.5,
+    "ok": true
+   }
+  ],
+  "rose": [
+   {
+    "mode": "light",
+    "check": "texte principal",
+    "ratio": 14.0,
+    "min": 7.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "texte secondaire",
+    "ratio": 6.53,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "texte tertiaire",
+    "ratio": 4.8,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "texte en couleur",
+    "ratio": 5.6,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "texte sur bouton",
+    "ratio": 5.16,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "texte sur sélection",
+    "ratio": 12.32,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "contour des contrôles",
+    "ratio": 3.13,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "bouton / surface (graphique)",
+    "ratio": 5.35,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "focus / surface",
+    "ratio": 6.44,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "light",
+    "check": "succès / avertissement / erreur",
+    "ratio": 5.36,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "texte principal",
+    "ratio": 14.92,
+    "min": 7.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "texte secondaire",
+    "ratio": 7.92,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "texte tertiaire",
+    "ratio": 5.45,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "texte en couleur",
+    "ratio": 6.16,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "texte sur bouton",
+    "ratio": 7.41,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "texte sur sélection",
+    "ratio": 9.09,
+    "min": 4.5,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "contour des contrôles",
+    "ratio": 3.08,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "bouton / surface (graphique)",
+    "ratio": 6.51,
+    "min": 1.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "focus / surface",
+    "ratio": 6.76,
+    "min": 3.0,
+    "ok": true
+   },
+   {
+    "mode": "dark",
+    "check": "succès / avertissement / erreur",
+    "ratio": 9.28,
     "min": 4.5,
     "ok": true
    }

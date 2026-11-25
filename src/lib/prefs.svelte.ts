@@ -3,7 +3,7 @@
 import { ORDER, DEFAULT_THEME } from './theme/palette.js';
 import { broadcast, listenAll, systemLocales } from './platform';
 
-export type ThemeKey = 'champagne' | 'navy' | 'emerald' | 'burgundy' | 'plum';
+export type ThemeKey = 'champagne' | 'navy' | 'emerald' | 'burgundy' | 'rose' | 'plum';
 export type Appearance = 'light' | 'dark' | 'system';
 export type Lang = 'fr' | 'en' | 'es';
 export type LangPref = Lang | 'system';

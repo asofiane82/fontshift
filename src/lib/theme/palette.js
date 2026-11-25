@@ -1,6 +1,6 @@
 /*
  * Fontshift — palettes et tokens sémantiques.
- * Source unique des couleurs : 5 thèmes × 2 apparences (un par famille : or, bleu, vert, rouge, violet),
+ * Source unique des couleurs : 6 thèmes × 2 apparences (un par famille : or, bleu, vert, rouge, rose, violet),
  * mêmes clés, couleurs en aplat (sans dégradé).
  * Chaque thème part d'un trio (couleur profonde, accent, neutre clair) :
  *   clair  : fond = blanc cassé teinté par le thème (sans dominante jaune), boutons = couleur profonde
@@ -83,6 +83,24 @@ var BASE = {
       tintSoft: '#3C2625', focus: '#F3D5D8'
     }
   },
+  rose: {
+    name: 'Raspberry & Rose',
+    trio: { deep: '#C71F72', accent: '#F472B6', neutral: '#FFF7FB' },
+    light: {
+      sidebar: '#F5EBEE', background: '#FCF8F9', surface: '#FEFDFD', surfaceSunken: '#F6F1F2', surfaceElevated: '#FFFFFF',
+      border: '#DED1D6', borderStrong: '#9E8890', textPrimary: '#371422', textSecondary: '#664D55', textTertiary: '#786269',
+      ornament: '#B70266', specimen: '#371422', badge: '#FDE6F2', disabled: '#B0A0A5', success: '#05704E', warning: '#965200',
+      error: '#B42318', tabbar: '#F5EBEE', tabActive: '#FEFDFD', accent: '#C71F72', accentHover: '#B20F64', accentOn: '#FFF7FB',
+      tint: '#FDE6F2', tintStrong: '#FCD5EA', tintSoft: '#FEF1F8', focus: '#B70266'
+    },
+    dark: {
+      sidebar: '#18060C', background: '#200D14', surface: '#29151C', surfaceSunken: '#1A070E', surfaceElevated: '#321D24',
+      border: '#3E262E', borderStrong: '#786269', textPrimary: '#FFF7FB', textSecondary: '#C1B5BA', textTertiary: '#A1959A',
+      ornament: '#F875B9', specimen: '#FFF7FB', badge: '#4E2638', disabled: '#75666C', success: '#6FE3B5', warning: '#F7C27A',
+      error: '#FFA897', tabbar: '#18060C', tabActive: '#321D24', accent: '#F472B6', accentHover: '#FF88C4', accentOn: '#18060C',
+      tint: '#4E2638', tintStrong: '#6A334D', tintSoft: '#3B1D2A', focus: '#F875B9'
+    }
+  },
   plum: {
     name: 'Plum & Lavender',
     trio: { deep: '#6D28D9', accent: '#C4B5FD', neutral: '#FAF7FF' },
@@ -102,7 +120,7 @@ var BASE = {
     }
   }
 };
-var ORDER = ['champagne', 'navy', 'emerald', 'burgundy', 'plum'];
+var ORDER = ['champagne', 'navy', 'emerald', 'burgundy', 'rose', 'plum'];
 
 function hx(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
 function rgba(h, a) { var v = hx(h); return 'rgba(' + v[0] + ', ' + v[1] + ', ' + v[2] + ', ' + a + ')'; }

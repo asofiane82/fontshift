@@ -22,7 +22,7 @@ Changements de la version 2 par rapport à la version 1 :
 | `png/` | Logos 2400 px et monogrammes 1024 px, fond transparent |
 | `macos/` | Icône 1024 px (SVG + PNG), `Fontshift.iconset` (16 à 1024 px), `Fontshift.icns` |
 | `web/` | `favicon.svg`, `favicon.ico` (16/32/48), PNG 16/32/48, `apple-touch-icon.png`, `icon-192/512.png`, `site.webmanifest`, balises `head.html` |
-| `preview/` | Planche d'identité, variantes de couleur du monogramme, planche des 5 thèmes (captures réelles, `e2e/themes_board.py`) et fichier JSON des thèmes |
+| `preview/` | Planche d'identité, variantes de couleur du monogramme, planche des 6 thèmes (captures réelles, `e2e/themes_board.py`) et fichier JSON des thèmes |
 
 Logos SVG : `fontshift-logo-{dark,light,black,white}.svg` (horizontal) et
 `fontshift-monogram-{dark,light,black,white}.svg`. `fontshift-wordmark.svg` est le logotype seul
