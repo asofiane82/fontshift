@@ -72,6 +72,50 @@ f = TTFont(io.BytesIO(res["outputs"][0]["data"]))
 got = set(chr(c) for c in f.getBestCmap())
 check({"A", "B", "C", "x", "y", "z"} <= got and got <= set("ABCxyz \u00a0"), f"plage U+0041-0043 + xyz : {sorted(got)}")
 
+# Fusion de statiques en police variable
+from fontTools.varLib import instancer as _inst
+pf = load("playfair-display-latin-wght-normal.woff2")
+res = E.convert(pf, "p.woff2", json.dumps({"formats": ["ttf", "otf"], "instances": [{"name": n, "coords": {"wght": w}} for n, w in (("Regular", 400), ("Bold", 700), ("Black", 900))]}))
+statics = {o["name"]: o["data"] for o in res["outputs"]}
+for ext in ("ttf", "otf"):
+    names = sorted(n for n in statics if n.endswith(ext))
+    chk = E.merge([statics[n] for n in names], names, json.dumps({"family": "Playfair Display"}))
+    check(chk.get("ok") and "font" not in chk and [a["tag"] for a in chk["axes"]] == ["wght"], f"fusion {ext} : vérification seule {chk.get('axes')}")
+    built = E.merge([statics[n] for n in names], names, json.dumps({"family": "Playfair Display", "build": True}))
+    vf = TTFont(io.BytesIO(built["font"]))
+    axis = vf["fvar"].axes[0]
+    styles = sorted(vf["name"].getDebugName(i.subfamilyNameID) for i in vf["fvar"].instances)
+    check("glyf" in vf and (axis.minValue, axis.defaultValue, axis.maxValue) == (400, 400, 900) and styles == ["Black", "Bold", "Regular"] and built["stem"] == "PlayfairDisplay-VariableFont_wght",
+          f"fusion {ext} : police variable {built['size']} octets, instances {styles}")
+    out = E.convert(built["font"], built["stem"] + ".ttf", json.dumps({"formats": ["woff2"], "stem": built["stem"]}))
+    check(out["outputs"][0]["variable"] and out["outputs"][0]["weight"] == "400 900", f"fusion {ext} → WOFF2 {out['outputs'][0]['name']}")
+bold = TTFont(io.BytesIO(statics["PlayfairDisplay-Bold.ttf"]))
+at700 = _inst.instantiateVariableFont(TTFont(io.BytesIO(E.merge([statics[n] for n in sorted(statics) if n.endswith("ttf")], sorted(n for n in statics if n.endswith("ttf")), '{"build": true}')["font"])), {"wght": 700}, static=True)
+from fontTools.pens.areaPen import AreaPen
+from fontTools.pens.boundsPen import BoundsPen
+def _shape(font, g):
+    gs = font.getGlyphSet(); a, b = AreaPen(gs), BoundsPen(gs); gs[g].draw(a); gs[g].draw(b)
+    return a.value, b.bounds or (0, 0, 0, 0)
+def _same(x, y):  # l'optimisation des variations tolère une demi-unité par point
+    return abs(x[0] - y[0]) <= max(1.0, abs(y[0]) * 0.01) and all(abs(p - q) <= 1 for p, q in zip(x[1], y[1]))
+check(all(_same(_shape(at700, g), _shape(bold, g)) for g in bold.getGlyphOrder()), "fusion : le Bold recalculé correspond au fichier Bold (aire à 1 % près, boîte à 1 unité)")
+# Contours fusionnés à l'export (cas courant des polices du commerce) : refus explicite
+from fontTools.varLib.instancer import OverlapMode
+try:
+    import pathops  # noqa: F401
+    rm = []
+    for w in (100, 400, 900):
+        f = TTFont(io.BytesIO(load("inter-latin-opsz-normal.woff2")))
+        s = _inst.instantiateVariableFont(f, {"wght": w, "opsz": 14}, overlap=OverlapMode.REMOVE, static=True)
+        s.flavor = None; b = io.BytesIO(); s.save(b); rm.append(b.getvalue())
+    bad = E.merge(rm, ["a.ttf", "b.ttf", "c.ttf"], "{}")
+    check(bad.get("error") == "mergeIncompatible" and bad["count"] > 0 and "&" in bad["chars"], f"fusion refusée : {bad.get('count')} glyphes incompatibles sur {bad.get('total')} ({bad.get('chars', '')[:12]}…)")
+except ImportError:
+    print("SKIP fusion contours fusionnés (skia-pathops absent)")
+check(E.merge([statics["PlayfairDisplay-Bold.ttf"], statics["PlayfairDisplay-Black.otf"]], ["a.ttf", "b.otf"], "{}").get("error") == "mergeMixed", "fusion TTF + OTF refusée")
+check(E.merge([statics["PlayfairDisplay-Bold.ttf"]] * 2, ["a.ttf", "b.ttf"], "{}").get("error") == "mergeSameStyle", "fusion de deux fichiers de même graisse refusée")
+check(E.merge([pf, statics["PlayfairDisplay-Bold.ttf"]], ["v.woff2", "b.ttf"], "{}").get("error") == "mergeVariable", "fusion avec une police déjà variable refusée")
+
 # Erreurs
 check(E.open_faces(b"\x80\x01abcdef", "Ancienne-Police.pfb").get("error") == "type1", "Type 1 refusé avec code")
 check(E.open_faces(b"garbage-data-here", "x.ttf").get("error") in ("unknownFormat", "corrupt"), "fichier illisible refusé")

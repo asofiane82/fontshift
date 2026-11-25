@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '../components/Icon.svelte';
   import { t, fmt } from '../lib/i18n/index.svelte';
-  import { session } from '../lib/state/session.svelte';
+  import { session, isComparable, resultSummary } from '../lib/state/session.svelte';
   import { ui } from '../lib/state/ui.svelte';
   import { faceRules, highlight, tailwindSnippet } from '../lib/css';
   import { reveal } from '../lib/platform';
@@ -17,18 +17,19 @@
       return { ...s, outs };
     }),
   );
-  const fromBytes = $derived(rows.reduce((a, s) => a + s.size, 0));
-  const toBytes = $derived(rows.reduce((a, s) => a + (s.outs.length ? Math.min(...s.outs.map((o) => o.size)) : 0), 0));
+  // Gain affiché seulement quand il compare des fichiers complets ; le total compte tous les fichiers écrits.
+  const summary = $derived(r ? resultSummary(r) : { files: 0, total: 0, gain: null });
   const formatsUsed = $derived([...new Set((r?.outputs ?? []).map((o) => o.format.toUpperCase()))]);
   const anyVariable = $derived((r?.outputs ?? []).some((o) => o.variable));
   const meta = $derived(
-    [t('res.meta', { from: fmt.size(fromBytes), to: fmt.size(toBytes), formats: fmt.list(formatsUsed) }), anyVariable ? t('res.axesKept') : '']
+    [t('res.meta', { files: t('res.filesCount', { count: summary.files }), formats: fmt.list(formatsUsed) }), anyVariable ? t('res.axesKept') : '']
       .filter(Boolean)
       .join(' · '),
   );
   const code = $derived(r ? (tab === 'css' ? (r.css ?? '') : tailwindSnippet(r.outputs, t('res.twComment'))) : '');
   const lines = $derived(highlight(code.trimEnd()));
   const ruleCount = $derived(r ? faceRules(r.outputs).length : 0);
+  const WARNINGS: Record<string, string> = { otfVariable: 'conv.warnOtfVariable', eotStatic: 'conv.warnEotStatic', mergeLayoutStatic: 'conv.warnMergeLayout' };
   const COLORS = { k: 'text-code-keyword', p: 'text-code-property', s: 'text-code-string', x: 'text-code-text', m: 'text-code-comment' };
   const destShort = $derived(r ? (session.home && r.dest.startsWith(session.home) ? '~' + r.dest.slice(session.home.length) : r.dest) : '');
 
@@ -93,14 +94,16 @@
               <span aria-hidden="true" class="flex size-[42px] shrink-0 items-center justify-center rounded-lg border border-line bg-elevated text-[19px] text-fg" style:font-family={s.previewFamily ?? 'inherit'}>Aa</span>
               <span class="flex min-w-0 flex-[1_1_150px] flex-col gap-[3px]">
                 <span class="text-[14.5px] font-semibold text-fg">{s.family}</span>
-                <span class="text-[12.5px] [overflow-wrap:anywhere] text-fg-muted">{t('res.from', { file: s.name })}</span>
+                <span class="text-[12.5px] [overflow-wrap:anywhere] text-fg-muted">{s.mergedFrom ? t('res.fromMerged', { count: s.mergedFrom.length, files: fmt.list(s.mergedFrom) }) : t('res.from', { file: s.name })}</span>
               </span>
               <span class="flex flex-wrap gap-1.5">
                 {#each s.outs as o (o.path)}
+                  {@const whole = isComparable(o, s)}
                   <button type="button" onclick={() => reveal(o.path)} title={o.name} class="inline-flex min-h-[30px] items-center gap-[7px] rounded-[7px] border border-line-strong bg-sunken px-2.5 text-[12.5px] whitespace-nowrap hover:border-fg-muted">
                     <span class="font-semibold text-accent-text">{o.format.toUpperCase()}</span>
-                    <span class="text-fg">{fmt.size(o.size)}</span>
-                    <span class="font-semibold text-success">{fmt.pct(o.size / s.size - 1)}</span>
+                    {#if !whole}<span class="text-fg">{o.styleName || t('conv.static')}</span>{/if}
+                    <span class={whole ? 'text-fg' : 'text-fg-muted'}>{fmt.size(o.size)}</span>
+                    {#if whole}<span class="font-semibold {o.size < s.size ? 'text-success' : 'text-fg-muted'}">{fmt.pct(o.size / s.size - 1)}</span>{/if}
                   </button>
                 {/each}
               </span>
@@ -108,9 +111,14 @@
           {/each}
         </ul>
         <div class="flex items-center gap-3.5 px-[18px] py-4">
-          <span aria-hidden="true" class="shrink-0 font-display text-[32px] leading-none font-semibold text-accent-text">{fmt.pct(toBytes / Math.max(1, fromBytes) - 1)}</span>
+          <span aria-hidden="true" class="shrink-0 font-display text-[32px] leading-none font-semibold text-accent-text">{summary.gain !== null ? fmt.pct(summary.gain) : fmt.num(summary.files)}</span>
           <span class="text-[13.5px] leading-[1.45] text-fg-muted">
-            {t('toast.doneBody', { pct: fmt.pct(toBytes / Math.max(1, fromBytes) - 1), size: fmt.size(toBytes) })}<br />
+            {#if summary.gain !== null}
+              {t('res.gainLabel', { pct: fmt.pct(summary.gain) })}<br />
+              {t('res.total', { count: summary.files, size: fmt.size(summary.total) })}<br />
+            {:else}
+              {t('res.createdTotal', { count: summary.files, size: fmt.size(summary.total) })}<br />
+            {/if}
             {t('res.savedIn', { path: destShort })}
           </span>
         </div>
@@ -122,7 +130,7 @@
             {/each}
             {#each r.warnings as w, i (i)}
               <p class="m-0 flex items-start gap-2 text-[13px] text-warning">
-                <Icon name="info" size={16} />{t(w.code === 'otfVariable' ? 'conv.warnOtfVariable' : 'conv.warnEotStatic', { file: w.file })}
+                <Icon name="info" size={16} />{t(WARNINGS[w.code] ?? 'conv.warnEotStatic', { file: w.file })}
               </p>
             {/each}
           </div>

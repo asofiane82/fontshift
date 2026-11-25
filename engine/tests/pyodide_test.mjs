@@ -40,4 +40,15 @@ let t = Date.now();
 const res = toJs(E.convert(new Uint8Array(readFileSync(here + 'playfair-display-latin-wght-normal.woff2')), 'p.woff2', JSON.stringify({ formats: ['woff2'], variable: 'static' })));
 console.log('instances statiques', res.outputs?.length, Date.now() - t, 'ms');
 ok = ok && res.outputs?.length === 6;
+// Fusion de statiques en police variable (tableau de Uint8Array, comme dans le worker)
+t = Date.now();
+const st = toJs(E.convert(new Uint8Array(readFileSync(here + 'playfair-display-latin-wght-normal.woff2')), 'p.woff2', JSON.stringify({ formats: ['ttf'], instances: [['Regular', 400], ['Bold', 700], ['Black', 900]].map(([name, w]) => ({ name, coords: { wght: w } })) })));
+const files = st.outputs.map((o) => o.data);
+const names = st.outputs.map((o) => o.name);
+const check = toJs(E.merge(files, names, JSON.stringify({ family: 'Playfair Display' })));
+console.log('fusion vérification', check.ok, check.axes?.map((a) => `${a.tag} ${a.min}-${a.max}`), Date.now() - t, 'ms');
+t = Date.now();
+const merged = toJs(E.merge(files, names, JSON.stringify({ family: 'Playfair Display', build: true })));
+console.log('fusion', merged.ok, merged.stem, merged.size, 'octets', Date.now() - t, 'ms');
+ok = ok && check.ok && merged.ok && merged.font instanceof Uint8Array && merged.font.length === merged.size;
 console.log('RESULT', ok ? 'PASS' : 'FAIL');

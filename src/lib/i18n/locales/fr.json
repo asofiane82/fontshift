@@ -123,11 +123,13 @@
     "destChoose": "Choisir un dossier",
     "cancelled": "Conversion annulée",
     "failedCount": "{count, plural, one {# fichier n’a pas pu être converti} other {# fichiers n’ont pas pu être convertis}}",
-    "remaining": "Le reste de la file continue."
+    "remaining": "Le reste de la file continue.",
+    "errorMerge": "La fusion en police variable a échoué",
+    "warnMergeLayout": "{file} : l’espacement entre certaines paires de lettres (crénage) ne varie pas avec la graisse ; celui du style de base est utilisé partout."
   },
   "toast": {
     "doneTitle": "{count, plural, one {# police convertie} other {# polices converties}}",
-    "doneBody": "Gain de {pct} · {size} au total",
+    "doneBody": "Gain de {pct} · {total}",
     "close": "Fermer la notification",
     "resetDone": "Réglages par défaut rétablis",
     "errorTitle": "Conversion terminée avec des erreurs",
@@ -220,7 +222,7 @@
   "res": {
     "title": "Résultats",
     "heading": "{count, plural, one {# police convertie} other {# polices converties}}",
-    "meta": "{from} → {to} · {formats}",
+    "meta": "{files} · {formats}",
     "files": "Fichiers générés",
     "from": "depuis {file}",
     "cssRules": "{count, plural, one {# règle @font-face} other {# règles @font-face}}",
@@ -235,7 +237,12 @@
     "emptyBody": "Lancez une conversion : les fichiers générés et leur code d’intégration apparaîtront ici.",
     "notes": "Remarques",
     "savedIn": "Enregistrés dans {path}",
-    "cssFile": "Feuille de style"
+    "cssFile": "Feuille de style",
+    "filesCount": "{count, plural, one {# fichier} other {# fichiers}}",
+    "fromMerged": "fusion de {count} fichiers : {files}",
+    "gainLabel": "Gain de poids avec le format le plus léger",
+    "total": "{count, plural, one {# fichier} other {# fichiers}} · {size} au total",
+    "createdTotal": "{count, plural, one {fichier créé} other {fichiers créés}} · {size} au total"
   },
   "set": {
     "title": "Réglages",
@@ -275,5 +282,33 @@
     "upToDate": "Fontshift est à jour.",
     "error": "Impossible de vérifier les mises à jour pour le moment.",
     "installError": "La mise à jour n’a pas pu être installée. Réessayez plus tard."
+  },
+  "merge": {
+    "title": "Fusionner en police variable",
+    "intro": "Plusieurs graisses d’une même police sont dans la liste : vous pouvez les réunir en un seul fichier variable.",
+    "howTitle": "Comment ça marche ?",
+    "how1": "Une police variable réunit toutes les graisses dans un seul fichier. Fontshift la construit à partir de vos fichiers : chacun sert de repère (par exemple Light et Bold) et les graisses intermédiaires sont calculées entre eux.",
+    "how2": "Ce calcul n’est possible que si chaque caractère est dessiné de la même façon dans tous les fichiers : mêmes points, dans le même ordre. Fontshift le vérifie avant de fusionner. Sinon, il refuse plutôt que de créer une police défectueuse, et convertit les fichiers séparément.",
+    "limitsTitle": "Bon à savoir",
+    "limit1": "La police ne va que d’une graisse fournie à l’autre : avec Light et Bold, pas de Thin ni de Black.",
+    "limit2": "Les graisses intermédiaires sont calculées : elles peuvent différer légèrement des fichiers officiels. Ajoutez toutes les graisses dont vous disposez pour plus de fidélité.",
+    "limit3": "Les styles droits et italiques donnent deux polices variables séparées.",
+    "limit4": "Beaucoup de polices du commerce sont refusées : leurs fichiers sont souvent retouchés un par un à l’export.",
+    "limit5": "Vérifiez que la licence de la police autorise sa modification.",
+    "group": "{family} · {count} fichiers",
+    "toggleAria": "Fusionner {family} en police variable",
+    "checking": "Vérification de la compatibilité…",
+    "ok": "Compatible : peut devenir un seul fichier variable ({range}).",
+    "okOn": "Ces {count} fichiers deviendront un seul fichier variable ({range}).",
+    "rangeWeight": "graisse {min} à {max}",
+    "rangeWidth": "chasse {min} % à {max} %",
+    "errIncompatible": "Fusion impossible : {count, plural, one {# caractère n’est pas dessiné} other {# caractères ne sont pas dessinés}} de la même façon d’un fichier à l’autre{chars}.",
+    "errGlyphSet": "Fusion impossible : les fichiers ne contiennent pas les mêmes caractères ({count, plural, one {# différence} other {# différences}}).",
+    "errSameStyle": "Fusion impossible : {files} ont la même graisse ({weight}). Retirez l’un des deux.",
+    "errMixed": "Fusion impossible : la liste mélange des fichiers TTF et OTF de cette police. Gardez un seul type.",
+    "errOther": "Fusion impossible : ces fichiers ne sont pas compatibles.",
+    "separately": "Ils seront convertis séparément.",
+    "inList": "fusion en police variable",
+    "badgeDone": "Fusionnée"
   }
 }

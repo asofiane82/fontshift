@@ -1,5 +1,5 @@
 // Client du moteur : file d'appels vers le worker, état de démarrage, annulation immédiate.
-import type { ConvertOptions, ConvertResult, OpenResult } from './types';
+import type { ConvertOptions, ConvertResult, MergeResult, OpenResult } from './types';
 
 type Pending = { resolve: (v: unknown) => void; reject: (e: Error) => void };
 
@@ -50,6 +50,12 @@ class EngineClient {
   convert(bytes: Uint8Array, filename: string, options: ConvertOptions) {
     const copy = bytes.slice();
     return this.call<ConvertResult>({ op: 'convert', bytes: copy, filename, options }, [copy.buffer]);
+  }
+
+  /** Fusionne des polices statiques d'une même famille ; build = false se limite à la vérification. */
+  merge(files: { bytes: Uint8Array; name: string }[], options: { family: string; build: boolean }) {
+    const copies = files.map((f) => f.bytes.slice());
+    return this.call<MergeResult>({ op: 'merge', bytes: copies, filename: files.map((f) => f.name), options }, copies.map((c) => c.buffer));
   }
 
   /** Arrête net le travail en cours ; le moteur redémarre en arrière-plan. */

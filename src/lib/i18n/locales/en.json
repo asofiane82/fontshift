@@ -123,11 +123,13 @@
     "destChoose": "Choose a folder",
     "cancelled": "Conversion cancelled",
     "failedCount": "{count, plural, one {# file could not be converted} other {# files could not be converted}}",
-    "remaining": "The rest of the queue carries on."
+    "remaining": "The rest of the queue carries on.",
+    "errorMerge": "Merging into a variable font failed",
+    "warnMergeLayout": "{file}: the spacing between some letter pairs (kerning) does not vary with the weight; the base style’s spacing is used everywhere."
   },
   "toast": {
     "doneTitle": "{count, plural, one {# font converted} other {# fonts converted}}",
-    "doneBody": "Saved {pct} · {size} in total",
+    "doneBody": "Saved {pct} · {total}",
     "close": "Dismiss notification",
     "resetDone": "Defaults restored",
     "errorTitle": "Conversion finished with errors",
@@ -220,7 +222,7 @@
   "res": {
     "title": "Results",
     "heading": "{count, plural, one {# font converted} other {# fonts converted}}",
-    "meta": "{from} → {to} · {formats}",
+    "meta": "{files} · {formats}",
     "files": "Generated files",
     "from": "from {file}",
     "cssRules": "{count, plural, one {# @font-face rule} other {# @font-face rules}}",
@@ -235,7 +237,12 @@
     "emptyBody": "Run a conversion: the generated files and their embed code will appear here.",
     "notes": "Notes",
     "savedIn": "Saved in {path}",
-    "cssFile": "Stylesheet"
+    "cssFile": "Stylesheet",
+    "filesCount": "{count, plural, one {# file} other {# files}}",
+    "fromMerged": "merged from {count} files: {files}",
+    "gainLabel": "Size saved with the lightest format",
+    "total": "{count, plural, one {# file} other {# files}} · {size} in total",
+    "createdTotal": "{count, plural, one {file created} other {files created}} · {size} in total"
   },
   "set": {
     "title": "Settings",
@@ -275,5 +282,33 @@
     "upToDate": "Fontshift is up to date.",
     "error": "Unable to check for updates right now.",
     "installError": "The update could not be installed. Please try again later."
+  },
+  "merge": {
+    "title": "Merge into a variable font",
+    "intro": "Several weights of the same font are in the list: you can combine them into a single variable file.",
+    "howTitle": "How does it work?",
+    "how1": "A variable font holds every weight in a single file. Fontshift builds it from your files: each one serves as a reference point (for example Light and Bold), and the weights in between are calculated from them.",
+    "how2": "This only works if every character is drawn the same way in all the files: same points, in the same order. Fontshift checks this before merging. If it isn’t the case, it refuses rather than create a faulty font, and converts the files separately.",
+    "limitsTitle": "Good to know",
+    "limit1": "The font only spans the weights you provide: with Light and Bold, there is no Thin or Black.",
+    "limit2": "The weights in between are calculated: they may differ slightly from the official files. Add every weight you have for a closer result.",
+    "limit3": "Upright and italic styles give two separate variable fonts.",
+    "limit4": "Many commercial fonts are refused: their files are often adjusted one by one when exported.",
+    "limit5": "Make sure the font’s license allows it to be modified.",
+    "group": "{family} · {count} files",
+    "toggleAria": "Merge {family} into a variable font",
+    "checking": "Checking compatibility…",
+    "ok": "Compatible: can become a single variable file ({range}).",
+    "okOn": "These {count} files will become a single variable file ({range}).",
+    "rangeWeight": "weight {min} to {max}",
+    "rangeWidth": "width {min}% to {max}%",
+    "errIncompatible": "Can’t merge: {count, plural, one {# character is not drawn} other {# characters are not drawn}} the same way from one file to the next{chars}.",
+    "errGlyphSet": "Can’t merge: the files don’t contain the same characters ({count, plural, one {# difference} other {# differences}}).",
+    "errSameStyle": "Can’t merge: {files} have the same weight ({weight}). Remove one of them.",
+    "errMixed": "Can’t merge: the list mixes TTF and OTF files of this font. Keep a single type.",
+    "errOther": "Can’t merge: these files are not compatible.",
+    "separately": "They will be converted separately.",
+    "inList": "merged into a variable font",
+    "badgeDone": "Merged"
   }
 }

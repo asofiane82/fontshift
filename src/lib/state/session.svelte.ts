@@ -1,7 +1,7 @@
 // Session de conversion : file des polices, options, exécution et résultats.
 // L'état vit ici, hors des composants : changer de langue ou d'écran n'interrompt rien.
 import { engine } from '../engine/client.svelte';
-import type { ConvertOptions, ConvertResult, FaceInfo, Format, NamedInstance, OutputFile } from '../engine/types';
+import type { ConvertOptions, ConvertResult, FaceInfo, Format, MergeResult, NamedInstance, OutputFile } from '../engine/types';
 import { defaultOutputDir, homeDir, prepareOutputDir, readPath, writeOutput, type PickedFile } from '../platform';
 import { buildCss } from '../css';
 
@@ -13,7 +13,11 @@ export interface RunState {
   progress: number;
   error?: string;
   outputs?: SavedOutput[];
+  /** Gain de poids d'un fichier complet ; absent quand seuls des styles ont été extraits. */
   gain?: number;
+  files?: number;
+  /** Police fusionnée avec d'autres graisses en une police variable. */
+  merged?: boolean;
 }
 
 export interface FontItem {
@@ -39,9 +43,20 @@ export interface SavedOutput extends Omit<OutputFile, 'data'> {
   previewFamily?: string;
 }
 
+export interface ResultSource {
+  id: string;
+  name: string;
+  family: string;
+  size: number;
+  previewFamily?: string;
+  variable: boolean;
+  /** Fusion : noms des fichiers réunis en une police variable. */
+  mergedFrom?: string[];
+}
+
 export interface RunResults {
   outputs: SavedOutput[];
-  sources: { id: string; name: string; family: string; size: number; previewFamily?: string }[];
+  sources: ResultSource[];
   warnings: { code: string; file: string }[];
   failures: { name: string; error: string }[];
   dest: string;
@@ -52,6 +67,7 @@ export interface RunResults {
 
 const OPTIONS_KEY = 'fontaine.options';
 const ERROR_KEYS: Record<string, string> = {
+  mergeFailed: 'conv.errorMerge',
   type1: 'conv.errorType1',
   unknownFormat: 'conv.errorUnknown',
   corrupt: 'conv.errorCorrupt',
@@ -112,6 +128,51 @@ function folderName(items: FontItem[]) {
   return families.length > 3 ? `${shown} + ${families.length - 3}` : shown;
 }
 
+/** Un fichier produit est-il la même police que sa source (donc comparable en poids) ?
+ *  Non pour un style extrait d'une police variable : il ne contient qu'une partie de la police. */
+export function isComparable(o: SavedOutput, s: ResultSource) {
+  return s.mergedFrom ? o.variable : o.variable === s.variable;
+}
+
+/** Bilan d'une conversion : nombre et poids réels des fichiers, gain quand il a un sens pour toute la conversion. */
+export function resultSummary(r: RunResults) {
+  const total = r.outputs.reduce((a, o) => a + o.size, 0);
+  let from = 0, to = 0, comparable = r.sources.length > 0;
+  for (const s of r.sources) {
+    const outs = r.outputs.filter((o) => o.sourceId === s.id && isComparable(o, s));
+    if (!outs.length) comparable = false;
+    else {
+      from += s.size;
+      to += Math.min(...outs.map((o) => o.size));
+    }
+  }
+  return { files: r.outputs.length, total, gain: comparable && from ? to / from - 1 : null };
+}
+
+/** Graisses statiques d'une même famille qui peuvent devenir une police variable. */
+export interface MergeGroup {
+  key: string;
+  family: string;
+  italic: boolean;
+  ids: string[];
+  status: 'checking' | 'ok' | 'refused';
+  check?: MergeResult;
+  enabled: boolean;
+  seq?: number;
+}
+
+const STYLE_WORD = /[\s-]+(thin|hairline|(extra|ultra)[\s-]?light|light|book|regular|normal|roman|medium|(semi|demi)[\s-]?bold|(extra|ultra)[\s-]?bold|bold|black|heavy|italic|oblique|((semi|extra|ultra)[\s-]?)?condensed|narrow|((semi|extra|ultra)[\s-]?)?expanded|extended|wide)$/i;
+
+/** Nom de famille sans le style (« Inter Light » → « Inter ») pour regrouper les graisses. */
+export function baseFamily(name: string) {
+  let n = name.trim(), prev = '';
+  while (n && n !== prev) {
+    prev = n;
+    n = n.replace(STYLE_WORD, '').trim();
+  }
+  return n || name.trim();
+}
+
 function loadOptions() {
   try {
     return JSON.parse(localStorage.getItem(OPTIONS_KEY) || '{}');
@@ -131,6 +192,9 @@ class Session {
   css = $state(true);
   dest = $state('');
   home = $state('');
+
+  merges = $state<MergeGroup[]>([]);
+  private mergeSeq = 0;
 
   phase = $state<'idle' | 'running' | 'done'>('idle');
   progress = $state({ done: 0, total: 0 });
@@ -299,6 +363,7 @@ class Session {
         i.status = 'error';
         i.error = engine.state === 'error' ? 'conv.errorEngine' : 'conv.errorCorrupt';
       });
+      this.refreshMerges();
     }
   }
 
@@ -325,11 +390,13 @@ class Session {
       i.previewFamily = previewFamily;
       if (extracted && i.fileName.endsWith('.eot')) i.size = item.size;
     });
+    this.refreshMerges();
   }
 
   remove(id: string) {
     this.items = this.items.filter((i) => i.id !== id);
     if (this.selectedId === id) this.selectedId = this.items[0]?.id ?? null;
+    this.refreshMerges();
   }
 
   clear() {
@@ -337,6 +404,61 @@ class Session {
     this.items = [];
     this.selectedId = null;
     this.phase = 'idle';
+    this.merges = [];
+  }
+
+  /** Regroupe les polices statiques d'une même famille (au moins deux graisses ou chasses) et vérifie leur fusion. */
+  refreshMerges() {
+    if (this.items.some((i) => i.status === 'analysing')) return; // on attend la fin de l'analyse
+    const groups = new Map<string, FontItem[]>();
+    for (const item of this.ready) {
+      const info = item.info!;
+      if (info.variable || item.exportSpec.kind !== 'auto') continue;
+      const key = `${baseFamily(info.family || item.fileName).toLowerCase()}|${info.italic ? 'i' : ''}`;
+      groups.set(key, [...(groups.get(key) ?? []), item]);
+    }
+    const next: MergeGroup[] = [];
+    for (const [key, members] of groups) {
+      if (new Set(members.map((m) => `${m.info!.weight}/${m.info!.widthClass}`)).size < 2) continue;
+      members.sort((a, b) => a.info!.widthClass - b.info!.widthClass || a.info!.weight - b.info!.weight);
+      const ids = members.map((m) => m.id);
+      const prev = this.merges.find((g) => g.key === key);
+      if (prev && prev.ids.join() === ids.join()) {
+        next.push(prev);
+        continue;
+      }
+      const group: MergeGroup = { key, family: baseFamily(members[0].info!.family || members[0].fileName), italic: !!members[0].info!.italic, ids, status: 'checking', enabled: prev?.enabled ?? false };
+      next.push(group);
+      void this.checkMerge(group, members);
+    }
+    this.merges = next;
+  }
+
+  private async checkMerge(group: MergeGroup, members: FontItem[]) {
+    const seq = (group.seq = ++this.mergeSeq);
+    let res: MergeResult;
+    try {
+      res = await engine.merge(members.map((m) => ({ bytes: m.bytes, name: m.fileName })), { family: group.family, build: false });
+    } catch (err) {
+      if ((err as Error).message === 'cancelled') return void this.checkMerge(group, members);
+      res = { error: 'mergeFailed' };
+    }
+    const live = this.merges.find((g) => g.seq === seq);
+    if (!live) return; // la liste a changé entre-temps
+    live.check = res;
+    live.status = res.ok ? 'ok' : 'refused';
+    if (!res.ok) live.enabled = false;
+  }
+
+  setMerge(key: string, enabled: boolean) {
+    const g = this.merges.find((x) => x.key === key);
+    if (g && g.status === 'ok') g.enabled = enabled;
+    if (this.phase === 'done') this.phase = 'idle';
+  }
+
+  /** Groupe de fusion actif auquel appartient une police (fusion demandée et possible). */
+  mergeOf(id: string) {
+    return this.merges.find((g) => g.enabled && g.status === 'ok' && g.ids.includes(id)) ?? null;
   }
 
   newSession() {
@@ -394,7 +516,17 @@ class Session {
     this.cancelled = false;
     this.phase = 'running';
     this.toast = null;
-    this.progress = { done: 0, total: queue.length };
+    // Unités de travail : une police seule, ou les graisses d'une famille fusionnées en police variable.
+    const units: FontItem[][] = [];
+    const taken = new Set<string>();
+    for (const item of queue) {
+      if (taken.has(item.id)) continue;
+      const group = this.mergeOf(item.id);
+      const unit = group ? queue.filter((i) => group.ids.includes(i.id)) : [item];
+      unit.forEach((i) => taken.add(i.id));
+      units.push(unit);
+    }
+    this.progress = { done: 0, total: units.length };
     for (const item of queue) item.run = { state: 'waiting', progress: 0 };
     // Chaque conversion range ses fichiers dans un sous-dossier au nom des polices (« Montserrat », « Roboto + Bitter »…).
     let dest = this.dest;
@@ -405,17 +537,32 @@ class Session {
     }
     const results: RunResults = { outputs: [], sources: [], warnings: [], failures: [], dest, finishedAt: 0 };
 
-    for (const item of queue) {
+    for (const unit of units) {
       if (this.cancelled) break;
-      const live = this.items.find((i) => i.id === item.id);
-      if (!live) continue;
-      live.run = { state: 'running', progress: 0 };
-      this.animate(live);
+      const lives = unit.map((u) => this.items.find((i) => i.id === u.id)).filter((i): i is FontItem => !!i);
+      if (!lives.length) continue;
+      const lead = lives[0];
+      const group = lives.length > 1 ? this.mergeOf(lead.id) : null;
+      for (const l of lives) l.run = { state: 'running', progress: 0 };
+      this.animate(lives);
       try {
         const outputs: NonNullable<ConvertResult['outputs']> = [];
         const warnings: NonNullable<ConvertResult['warnings']> = [];
-        for (const job of this.jobsFor(live)) {
-          const res = await engine.convert(live.bytes, live.fileName, job);
+        let bytes = lead.bytes, name = lead.fileName, jobs = this.jobsFor(lead);
+        let source: ResultSource = { id: lead.id, name: lead.fileName, family: lead.info?.family ?? lead.fileName, size: lead.size, previewFamily: lead.previewFamily, variable: !!lead.info?.variable };
+        if (group) {
+          const merged = await engine.merge(lives.map((l) => ({ bytes: l.bytes, name: l.fileName })), { family: group.family, build: true });
+          if (this.cancelled) break;
+          if (!merged.ok || !merged.font || !merged.stem) throw new Error('conv.errorMerge');
+          warnings.push(...(merged.warnings ?? []));
+          bytes = merged.font;
+          name = merged.stem + '.ttf';
+          jobs = [{ formats: this.chosenFormats, variable: 'keep', subset: this.subset, customText: this.customText, stem: merged.stem }];
+          const regular = lives.find((l) => l.info?.weight === 400) ?? lead;
+          source = { id: group.key, name: lives.map((l) => l.fileName).join(', '), family: group.family, size: lives.reduce((a, l) => a + l.size, 0), previewFamily: regular.previewFamily, variable: true, mergedFrom: lives.map((l) => l.fileName) };
+        }
+        for (const job of jobs) {
+          const res = await engine.convert(bytes, name, job);
           if (this.cancelled) break;
           if (res.error || !res.outputs) throw new Error(ERROR_KEYS[res.error ?? 'convertFailed'] ?? 'conv.errorConvert');
           outputs.push(...res.outputs);
@@ -431,22 +578,23 @@ class Session {
             throw new Error('conv.errorWrite');
           }
           const { data: _data, ...meta } = out;
-          saved.push({ ...meta, name: path.split(/[\\/]/).pop() || out.name, path, sourceId: live.id, sourceName: live.fileName, sourceSize: live.size, previewFamily: live.previewFamily });
+          saved.push({ ...meta, name: path.split(/[\\/]/).pop() || out.name, path, sourceId: source.id, sourceName: source.name, sourceSize: source.size, previewFamily: source.previewFamily });
         }
         results.outputs.push(...saved);
         results.warnings.push(...warnings);
-        results.sources.push({ id: live.id, name: live.fileName, family: live.info?.family ?? live.fileName, size: live.size, previewFamily: live.previewFamily });
-        const primary = saved.find((o) => o.format === 'woff2') ?? saved[0];
-        live.run = { state: 'done', progress: 1, outputs: saved, gain: primary ? primary.size / live.size - 1 : 0 };
+        results.sources.push(source);
+        const whole = saved.filter((o) => isComparable(o, source));
+        const primary = whole.find((o) => o.format === 'woff2') ?? whole[0];
+        for (const l of lives) l.run = { state: 'done', progress: 1, outputs: saved, gain: primary ? primary.size / source.size - 1 : undefined, files: saved.length, merged: !!group };
       } catch (err) {
         if (this.cancelled || (err as Error).message === 'cancelled') break;
         const key = (err as Error).message.startsWith('conv.') ? (err as Error).message : 'conv.errorConvert';
-        live.run = { state: 'failed', progress: 0, error: key };
-        results.failures.push({ name: live.fileName, error: key });
+        for (const l of lives) l.run = { state: 'failed', progress: 0, error: key };
+        results.failures.push({ name: lives.map((l) => l.fileName).join(', '), error: key });
       } finally {
         this.stopAnimation();
       }
-      this.progress = { done: this.progress.done + 1, total: queue.length };
+      this.progress = { done: this.progress.done + 1, total: units.length };
     }
 
     if (this.cancelled) {
@@ -474,15 +622,18 @@ class Session {
     this.toast = { kind: results.failures.length ? 'error' : 'done', count: results.sources.length, failed: results.failures.length };
   }
 
-  /** Progression estimée pendant qu'une police est traitée par le moteur. */
-  private animate(item: FontItem) {
+  /** Progression estimée pendant qu'une police (ou un groupe fusionné) est traitée par le moteur. */
+  private animate(items: FontItem[]) {
     const t0 = Date.now();
-    const expected = 900 + (item.size / 1000) * 6 * Math.max(1, this.chosenFormats.length);
+    const size = items.reduce((a, i) => a + i.size, 0);
+    const expected = 900 * items.length + (size / 1000) * 6 * Math.max(1, this.chosenFormats.length);
+    const ids = items.map((i) => i.id);
     this.ticker = setInterval(() => {
-      const live = this.items.find((i) => i.id === item.id);
-      if (!live?.run || live.run.state !== 'running') return;
       const x = (Date.now() - t0) / expected;
-      live.run.progress = Math.min(0.95, 1 - Math.exp(-2.2 * x));
+      for (const live of this.items) {
+        if (!ids.includes(live.id) || live.run?.state !== 'running') continue;
+        live.run.progress = Math.min(0.95, 1 - Math.exp(-2.2 * x));
+      }
     }, 80);
   }
 

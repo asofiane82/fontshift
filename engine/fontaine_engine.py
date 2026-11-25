@@ -4,10 +4,11 @@ Ce module tourne dans Pyodide (WebAssembly, dans un Web Worker de l'application)
 et, pour les tests, dans un CPython classique. Il ne dépend que de fontTools et
 d'un module `brotli` (natif sous CPython, relié à brotli-wasm dans l'application).
 
-Deux points d'entrée, appelés par le worker :
+Trois points d'entrée, appelés par le worker :
 
     open_faces(data, filename)            -> dict  (analyse, une entrée par police du fichier)
     convert(data, filename, options_json) -> dict  (fichiers produits et avertissements)
+    merge(datas, filenames, options_json) -> dict  (polices statiques fusionnées en police variable)
 
 Aucune chaîne d'interface ici : erreurs et avertissements sont des codes que
 l'interface traduit.
@@ -410,15 +411,21 @@ def to_truetype(font: TTFont) -> TTFont:
 
         convertCFF2ToCFF(font)
     upem = font["head"].unitsPerEm
-    order = font.getGlyphOrder()
     gs = font.getGlyphSet()
-    glyf = newTable("glyf")
-    glyf.glyphOrder = order
-    glyf.glyphs = {}
-    for gname in order:
+    glyphs = {}
+    for gname in font.getGlyphOrder():
         tt = TTGlyphPen(gs)
         gs[gname].draw(Cu2QuPen(tt, max_err=upem / 1000.0, reverse_direction=True))
-        glyf[gname] = tt.glyph(dropImpliedOnCurves=True)
+        glyphs[gname] = tt.glyph(dropImpliedOnCurves=True)
+    return _install_glyf(font, glyphs)
+
+
+def _install_glyf(font: TTFont, glyphs: dict) -> TTFont:
+    """Remplace les contours CFF par une table glyf déjà construite (glyphes TrueType)."""
+    order = font.getGlyphOrder()
+    glyf = newTable("glyf")
+    glyf.glyphOrder = order
+    glyf.glyphs = dict(glyphs)
     font["glyf"] = glyf
     font["loca"] = newTable("loca")
     for tag in ("CFF ", "VORG"):
@@ -675,3 +682,278 @@ def convert(data: bytes, filename: str, options_json: str) -> dict:
     except Exception as exc:
         return {"error": "convertFailed", "detail": f"{type(exc).__name__}: {exc}"}
     return {"outputs": outputs, "warnings": warnings}
+
+
+# --------------------------------------------------------------------------- #
+#  Fusion de polices statiques en une police variable                          #
+# --------------------------------------------------------------------------- #
+
+WEIGHT_NAMES = {100: "Thin", 200: "ExtraLight", 300: "Light", 400: "Regular", 500: "Medium",
+                600: "SemiBold", 700: "Bold", 800: "ExtraBold", 900: "Black"}
+WIDTH_NAMES = {50: "UltraCondensed", 62.5: "ExtraCondensed", 75: "Condensed", 87.5: "SemiCondensed",
+               100: "", 112.5: "SemiExpanded", 125: "Expanded", 150: "ExtraExpanded", 200: "UltraExpanded"}
+
+
+def _location(font: TTFont) -> tuple[float, float]:
+    """Graisse et chasse (en %) annoncées par une police statique."""
+    os2 = font.get("OS/2")
+    weight = getattr(os2, "usWeightClass", 400) if os2 else 400
+    width = WIDTH_CLASS_TO_PCT.get(getattr(os2, "usWidthClass", 5) if os2 else 5, 100)
+    return float(weight), float(width)
+
+
+def _location_name(weight: float, width: float, italic: bool, fallback: str) -> str:
+    """Nom de style d'une position : « Bold », « Condensed Light », « SemiBold Italic », « Italic »."""
+    wname = WEIGHT_NAMES.get(int(weight)) if float(weight).is_integer() else None
+    if wname is None or width not in WIDTH_NAMES:
+        return fallback or _num(weight)
+    parts = [p for p in (WIDTH_NAMES[width], wname) if p]
+    if wname == "Regular" and (WIDTH_NAMES[width] or italic):
+        parts.remove("Regular")
+    if italic:
+        parts.append("Italic")
+    return " ".join(parts)
+
+
+def _axis_label(tag: str, value: float) -> str:
+    if tag == "wght":
+        return WEIGHT_NAMES.get(int(value)) if float(value).is_integer() and int(value) in WEIGHT_NAMES else _num(value)
+    return WIDTH_NAMES.get(value) or ("Normal" if value == 100 else f"{_num(value)}%")
+
+
+def _chars_for(fonts: list[TTFont], glyph_names) -> str:
+    """Caractères visibles correspondant à des glyphes (pour l'explication donnée à l'utilisateur)."""
+    wanted = set(glyph_names)
+    chars = set()
+    for font in fonts:
+        for cp, gname in (font.getBestCmap() or {}).items():
+            if gname in wanted and cp > 0x20 and not 0x7F <= cp < 0xA1 and not 0xD800 <= cp <= 0xDFFF:
+                chars.add(chr(cp))
+    return "".join(sorted(chars, key=ord))
+
+
+def _clear_overlap_flags(font: TTFont) -> None:
+    """Les drapeaux de chevauchement ne changent pas le dessin : on les ignore pour comparer."""
+    from fontTools.ttLib.tables._g_l_y_f import OVERLAP_COMPOUND, flagOverlapSimple
+
+    glyf = font["glyf"]
+    for gname in font.getGlyphOrder():
+        glyph = glyf[gname]
+        if glyph.isComposite():
+            for comp in glyph.components:
+                comp.flags &= ~OVERLAP_COMPOUND
+        elif glyph.numberOfContours > 0:
+            glyph.flags = bytearray(f & ~flagOverlapSimple for f in glyph.flags)
+
+
+def _cff_masters_to_glyf(masters: list[TTFont]) -> tuple[list[TTFont], list[str]]:
+    """Contours CFF vers TrueType, convertis ensemble pour rester interpolables."""
+    from fontTools.pens.cu2quPen import Cu2QuMultiPen
+    from fontTools.pens.recordingPen import RecordingPen
+    from fontTools.pens.ttGlyphPen import TTGlyphPen
+
+    for m in masters:
+        if "CFF2" in m:
+            from fontTools.cffLib.CFF2ToCFF import convertCFF2ToCFF
+
+            convertCFF2ToCFF(m)
+    order = masters[0].getGlyphOrder()
+    sets = [m.getGlyphSet() for m in masters]
+    max_err = masters[0]["head"].unitsPerEm / 1000.0
+    out = [{} for _ in masters]
+    bad = []
+    for gname in order:
+        recs = []
+        for gs in sets:
+            pen = RecordingPen()
+            gs[gname].draw(pen)
+            recs.append(pen.value)
+        shape = [(op, len(args)) for op, args in recs[0]]
+        if any([(op, len(args)) for op, args in r] != shape for r in recs[1:]):
+            bad.append(gname)
+            continue
+        pens = [TTGlyphPen(None) for _ in masters]
+        try:
+            multi = Cu2QuMultiPen(pens, max_err, reverse_direction=True)
+            for i, (op, _args) in enumerate(recs[0]):
+                if op in ("closePath", "endPath"):
+                    getattr(multi, op)()
+                else:
+                    getattr(multi, op)([r[i][1] for r in recs])
+            for k, pen in enumerate(pens):
+                out[k][gname] = pen.glyph(dropImpliedOnCurves=False)
+        except Exception:
+            bad.append(gname)
+    if bad:
+        return masters, bad
+    return [_install_glyf(m, glyphs) for m, glyphs in zip(masters, out)], []
+
+
+def _incompatible_glyphs(masters: list[TTFont], default_idx: int) -> list[str]:
+    """Glyphes que l'interpolation ne peut pas relier (même critère que fontTools.varLib)."""
+    datas = [(m["glyf"], m["hmtx"].metrics) for m in masters]
+    bad = []
+    for gname in masters[default_idx].getGlyphOrder():
+        found = [glyf._getCoordinatesAndControls(gname, hm) for glyf, hm in datas]
+        if any(d is None for d in found):
+            bad.append(gname)
+            continue
+        ctrls = [d[1] for d in found]
+        if ctrls[default_idx].numberOfContours != 0:
+            # Un glyphe vide dans un fichier compte comme absent : la fusion le calcule.
+            ctrls = [c for c in ctrls if c.numberOfContours != 0]
+        if any(c != ctrls[0] for c in ctrls[1:]):
+            bad.append(gname)
+    return bad
+
+
+def _stat_table(font: TTFont, axes: list[tuple[str, list[float], float]], italic: bool) -> None:
+    """Table STAT : nomme les positions des axes pour les menus des logiciels."""
+    from fontTools.otlLib.builder import buildStatTable
+
+    stat_axes = []
+    for tag, values, default in axes:
+        entries = []
+        for value in values:
+            label = _axis_label(tag, value)
+            entry = {"value": value, "name": label}
+            if value == default and label in ("Regular", "Normal"):
+                entry["flags"] = 0x2  # nom omis : « Inter » plutôt que « Inter Regular »
+            entries.append(entry)
+        stat_axes.append({"tag": tag, "name": {"wght": "Weight", "wdth": "Width"}[tag], "values": entries})
+    if italic:
+        stat_axes.append({"tag": "ital", "name": "Italic", "values": [{"value": 1, "name": "Italic"}]})
+    else:
+        stat_axes.append({"tag": "ital", "name": "Italic", "values": [{"value": 0, "name": "Roman", "flags": 0x2, "linkedValue": 1}]})
+    buildStatTable(font, stat_axes, elidedFallbackName="Regular")
+
+
+def _merge_masters(raw: list[tuple[bytes, str]]) -> tuple[list[TTFont], str]:
+    """Charge les fichiers à fusionner ; renvoie aussi le type de contours (glyf ou cff)."""
+    masters = []
+    for data, name in raw:
+        font, _kind = _load(data, name)[0]
+        if "fvar" in font:
+            raise EngineError("mergeVariable")
+        masters.append(_clone(font))
+    kinds = {"glyf" if "glyf" in m else "cff" if ("CFF " in m or "CFF2" in m) else "other" for m in masters}
+    if "other" in kinds:
+        raise EngineError("mergeFailed", "bitmap")
+    if len(kinds) > 1:
+        raise EngineError("mergeMixed")
+    return masters, kinds.pop()
+
+
+def merge(datas, filenames, options_json: str = "{}") -> dict:
+    """Fusionne des polices statiques d'une même famille en une police variable TrueType.
+
+    options : { family: "Inter", build: false }
+      build = false : vérification seule, build = true : renvoie aussi la police (« font »).
+
+    La fusion est refusée dès qu'un glyphe n'est pas interpolable, plutôt que de livrer une
+    police dont certains caractères resteraient figés.
+    """
+    from fontTools import varLib
+    from fontTools.designspaceLib import AxisDescriptor, DesignSpaceDocument, InstanceDescriptor, SourceDescriptor
+    from fontTools.varLib.instancer import setMacOverlapFlags
+
+    opts = json.loads(options_json or "{}")
+    names = [str(n) for n in filenames]
+    raw = [(_as_bytes(d), n) for d, n in zip(datas, names)]
+    if len(raw) < 2:
+        return {"error": "mergeTooFew"}
+    try:
+        masters, kind = _merge_masters(raw)
+    except EngineError as err:
+        return {"error": err.code, "detail": err.detail}
+    if len({m["head"].unitsPerEm for m in masters}) > 1:
+        return {"error": "mergeFailed", "detail": "unitsPerEm"}
+
+    locs = [_location(m) for m in masters]
+    seen: dict[tuple[float, float], str] = {}
+    for loc, name in zip(locs, names):
+        if loc in seen:
+            return {"error": "mergeSameStyle", "files": [seen[loc], name], "weight": _num(loc[0])}
+        seen[loc] = name
+
+    glyph_sets = [set(m.getGlyphOrder()) for m in masters]
+    differ = set().union(*glyph_sets) - set.intersection(*glyph_sets)
+    if differ:
+        return {"error": "mergeGlyphSet", "count": len(differ), "chars": _chars_for(masters, differ)}
+
+    default_idx = min(range(len(locs)), key=lambda i: (abs(locs[i][0] - 400), abs(locs[i][1] - 100), locs[i][0]))
+    total = len(masters[0].getGlyphOrder())
+
+    def prepared(fonts: list[TTFont]) -> tuple[list[TTFont], list[str]]:
+        if kind == "cff":
+            fonts, bad = _cff_masters_to_glyf(fonts)
+            if bad:
+                return fonts, bad
+        for f in fonts:
+            _clear_overlap_flags(f)
+        return fonts, _incompatible_glyphs(fonts, default_idx)
+
+    try:
+        masters, bad = prepared(masters)
+    except Exception as exc:
+        return {"error": "mergeFailed", "detail": f"{type(exc).__name__}: {exc}"}
+    if bad:
+        return {"error": "mergeIncompatible", "count": len(bad), "total": total, "chars": _chars_for(masters, bad)}
+
+    family = (opts.get("family") or _name(masters[default_idx], 16, 1) or _stem(names[0])).strip()
+    italic = _is_italic(masters[default_idx])
+    axes = []
+    for tag, axis_name, idx in (("wght", "Weight", 0), ("wdth", "Width", 1)):
+        values = sorted({loc[idx] for loc in locs})
+        if len(values) > 1:
+            axes.append((tag, axis_name, values, locs[default_idx][idx]))
+    styles = [_location_name(w, wd, italic, _name(m, 17, 2)) for m, (w, wd) in zip(masters, locs)]
+    info = {
+        "family": family,
+        "italic": italic,
+        "axes": [{"tag": tag, "min": vals[0], "default": dflt, "max": vals[-1]} for tag, _n, vals, dflt in axes],
+        "masters": [{"file": n, "style": s, "weight": w, "width": wd} for n, s, (w, wd) in zip(names, styles, locs)],
+        "stem": f"{_safe(family)}{'-Italic' if italic else ''}-VariableFont_{','.join(sorted(a[0] for a in axes))}",
+    }
+    if not opts.get("build"):
+        return {"ok": True, **info}
+
+    def design(fonts: list[TTFont]) -> DesignSpaceDocument:
+        ds = DesignSpaceDocument()
+        for tag, axis_name, vals, dflt in axes:
+            a = AxisDescriptor()
+            a.tag, a.name, a.minimum, a.default, a.maximum = tag, axis_name, vals[0], dflt, vals[-1]
+            ds.addAxis(a)
+        for i, (font, (w, wd), style) in enumerate(zip(fonts, locs, styles)):
+            where = {"Weight": w, "Width": wd}
+            src = SourceDescriptor()
+            src.name, src.font = f"master{i}", font
+            src.location = {a[1]: where[a[1]] for a in axes}
+            ds.addSource(src)
+            inst = InstanceDescriptor()
+            inst.familyName, inst.styleName = family, style
+            inst.location = dict(src.location)
+            ds.addInstance(inst)
+        return ds
+
+    warnings = []
+    try:
+        try:
+            vf, _model, _ = varLib.build(design(masters), exclude=["STAT"], drop_implied_oncurves=True)
+        except Exception:
+            # Crénage impossible à faire varier : on repart de fichiers neufs et on garde celui du style par défaut.
+            fresh, _bad = prepared(_merge_masters(raw)[0])
+            vf, _model, _ = varLib.build(design(fresh), exclude=["STAT", "GDEF", "GPOS"], drop_implied_oncurves=True)
+            for tag in ("GDEF", "GPOS"):
+                if tag in fresh[default_idx]:
+                    vf[tag] = fresh[default_idx][tag]
+            warnings.append({"code": "mergeLayoutStatic", "file": family})
+        setMacOverlapFlags(vf["glyf"])
+        _set_static_names(vf, family, styles[default_idx])
+        vf["name"].setName(re.sub(r"[^A-Za-z0-9]", "", family), 25, 3, 1, 0x409)
+        _stat_table(vf, [(tag, vals, dflt) for tag, _n, vals, dflt in axes], italic)
+        blob = _sfnt_bytes(vf)
+        TTFont(io.BytesIO(blob)).getGlyphOrder()  # relecture : la police produite doit s'ouvrir
+    except Exception as exc:
+        return {"error": "mergeFailed", "detail": f"{type(exc).__name__}: {exc}"}
+    return {"ok": True, **info, "font": blob, "size": len(blob), "warnings": warnings}

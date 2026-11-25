@@ -20,6 +20,14 @@ en français, anglais et espagnol.
     (Regular, Italic, Bold…), droit ou italique, en fichiers séparés.
     Une police variable ne peut pas sortir en OTF (CFF2 non généré) ; l'EOT est produit depuis
     l'instance par défaut. Ces deux cas sont signalés dans les Résultats.
+  - Fusion en police variable : quand la liste contient plusieurs graisses statiques d'une même
+    famille (droites ou italiques), l'app propose de les réunir en une police variable TrueType
+    (axe `wght`, et `wdth` si les chasses diffèrent ; nommée `Famille-VariableFont_wght`).
+    Graisse et chasse sont lues dans chaque fichier ; la compatibilité est vérifiée avant toute
+    création (mêmes glyphes, mêmes points dans le même ordre, critère de `fontTools.varLib`).
+    Au moindre glyphe incompatible, la fusion est refusée avec les caractères en cause et les
+    fichiers sont convertis séparément. Les OTF sont passés ensemble en TrueType (cu2qu compatible).
+    Si le crénage ne peut pas varier, celui du style de base est conservé et c'est signalé.
   - Jeux de caractères : complet, latin, latin étendu (plages de Google Fonts) ou liste personnalisée.
   - Fichier `fontshift-fonts.css` prêt à intégrer, dossier de destination au choix
     (par défaut `Bureau/Fontshift`). Chaque conversion range ses fichiers dans un sous-dossier
@@ -29,8 +37,10 @@ en français, anglais et espagnol.
   (variables quand ils existent) puis ajout à la conversion.
 - **Aperçu avancé** (polices variables) : curseurs par axe, instances nommées, texte et taille d'aperçu,
   ligne CSS à copier, export de la police complète, d'une position précise ou de toutes les instances.
-- **Résultats** : fichiers générés (taille et gain par format), code CSS et thème Tailwind v4,
-  ouverture du dossier.
+- **Résultats** : fichiers générés, code CSS et thème Tailwind v4, ouverture du dossier.
+  Le gain de poids n'est affiché que pour un fichier qui contient toute la police d'origine ;
+  un style extrait d'une police variable affiche son nom à la place. Le total compte tous les
+  fichiers réellement écrits.
 - **Réglages** (fenêtre séparée) : thème, apparence (clair, sombre, système) et langue
   (système, français, anglais, espagnol), indépendants, enregistrés automatiquement,
   appliqués aussitôt à toutes les fenêtres. Changer de langue n'interrompt pas une conversion.

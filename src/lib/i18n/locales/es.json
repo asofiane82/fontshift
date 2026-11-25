@@ -123,11 +123,13 @@
     "destChoose": "Elegir una carpeta",
     "cancelled": "Conversión cancelada",
     "failedCount": "{count, plural, one {# archivo no se pudo convertir} other {# archivos no se pudieron convertir}}",
-    "remaining": "El resto de la cola continúa."
+    "remaining": "El resto de la cola continúa.",
+    "errorMerge": "No se pudo fusionar en una fuente variable",
+    "warnMergeLayout": "{file}: el espaciado entre algunos pares de letras (kerning) no varía con el grosor; se usa en todas partes el del estilo base."
   },
   "toast": {
     "doneTitle": "{count, plural, one {# fuente convertida} other {# fuentes convertidas}}",
-    "doneBody": "Ahorro del {pct} · {size} en total",
+    "doneBody": "Ahorro del {pct} · {total}",
     "close": "Cerrar notificación",
     "resetDone": "Valores predeterminados restablecidos",
     "errorTitle": "Conversión terminada con errores",
@@ -220,7 +222,7 @@
   "res": {
     "title": "Resultados",
     "heading": "{count, plural, one {# fuente convertida} other {# fuentes convertidas}}",
-    "meta": "{from} → {to} · {formats}",
+    "meta": "{files} · {formats}",
     "files": "Archivos generados",
     "from": "desde {file}",
     "cssRules": "{count, plural, one {# regla @font-face} other {# reglas @font-face}}",
@@ -235,7 +237,12 @@
     "emptyBody": "Inicia una conversión: aquí aparecerán los archivos generados y su código de integración.",
     "notes": "Observaciones",
     "savedIn": "Guardados en {path}",
-    "cssFile": "Hoja de estilos"
+    "cssFile": "Hoja de estilos",
+    "filesCount": "{count, plural, one {# archivo} other {# archivos}}",
+    "fromMerged": "fusión de {count} archivos: {files}",
+    "gainLabel": "Ahorro de peso con el formato más ligero",
+    "total": "{count, plural, one {# archivo} other {# archivos}} · {size} en total",
+    "createdTotal": "{count, plural, one {archivo creado} other {archivos creados}} · {size} en total"
   },
   "set": {
     "title": "Ajustes",
@@ -275,5 +282,33 @@
     "upToDate": "Fontshift está actualizado.",
     "error": "No se pueden buscar actualizaciones en este momento.",
     "installError": "No se pudo instalar la actualización. Inténtalo de nuevo más tarde."
+  },
+  "merge": {
+    "title": "Fusionar en una fuente variable",
+    "intro": "Hay varios grosores de una misma fuente en la lista: puedes reunirlos en un solo archivo variable.",
+    "howTitle": "¿Cómo funciona?",
+    "how1": "Una fuente variable reúne todos los grosores en un solo archivo. Fontshift la construye a partir de tus archivos: cada uno sirve de referencia (por ejemplo Light y Bold) y los grosores intermedios se calculan entre ellos.",
+    "how2": "Este cálculo solo es posible si cada carácter está dibujado de la misma manera en todos los archivos: mismos puntos, en el mismo orden. Fontshift lo comprueba antes de fusionar. Si no es así, lo rechaza en lugar de crear una fuente defectuosa, y convierte los archivos por separado.",
+    "limitsTitle": "Conviene saber",
+    "limit1": "La fuente solo va de un grosor proporcionado a otro: con Light y Bold, no hay Thin ni Black.",
+    "limit2": "Los grosores intermedios se calculan: pueden diferir ligeramente de los archivos oficiales. Añade todos los grosores que tengas para un resultado más fiel.",
+    "limit3": "Los estilos rectos y cursivos dan dos fuentes variables separadas.",
+    "limit4": "Muchas fuentes comerciales se rechazan: sus archivos suelen retocarse uno a uno al exportarlos.",
+    "limit5": "Comprueba que la licencia de la fuente permite modificarla.",
+    "group": "{family} · {count} archivos",
+    "toggleAria": "Fusionar {family} en una fuente variable",
+    "checking": "Comprobando la compatibilidad…",
+    "ok": "Compatible: puede convertirse en un solo archivo variable ({range}).",
+    "okOn": "Estos {count} archivos se convertirán en un solo archivo variable ({range}).",
+    "rangeWeight": "grosor {min} a {max}",
+    "rangeWidth": "anchura {min} % a {max} %",
+    "errIncompatible": "No se puede fusionar: {count, plural, one {# carácter no está dibujado} other {# caracteres no están dibujados}} de la misma manera de un archivo a otro{chars}.",
+    "errGlyphSet": "No se puede fusionar: los archivos no contienen los mismos caracteres ({count, plural, one {# diferencia} other {# diferencias}}).",
+    "errSameStyle": "No se puede fusionar: {files} tienen el mismo grosor ({weight}). Quita uno de los dos.",
+    "errMixed": "No se puede fusionar: la lista mezcla archivos TTF y OTF de esta fuente. Conserva un solo tipo.",
+    "errOther": "No se puede fusionar: estos archivos no son compatibles.",
+    "separately": "Se convertirán por separado.",
+    "inList": "fusión en fuente variable",
+    "badgeDone": "Fusionada"
   }
 }

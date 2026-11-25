@@ -59,7 +59,8 @@ ctx.onmessage = async (e: MessageEvent) => {
   const { id, op, bytes, filename, options } = e.data;
   try {
     await ready;
-    const fn = engine![op === 'open' ? 'open_faces' : 'convert'];
+    const fn = engine![op === 'open' ? 'open_faces' : op === 'merge' ? 'merge' : 'convert'];
+    // Fusion : bytes et filename sont des listes (un fichier par graisse).
     const args = op === 'open' ? [bytes, filename] : [bytes, filename, JSON.stringify(options)];
     const result = toPlain(fn(...args));
     ctx.postMessage({ id, ok: true, result }, transferables(result));

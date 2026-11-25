@@ -1,7 +1,7 @@
 {
   "name": "fontshift",
   "private": true,
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Fontshift — conversion de polices (TTF, OTF, WOFF, WOFF2, EOT, variables, Google Fonts)",
   "type": "module",
   "license": "UNLICENSED",

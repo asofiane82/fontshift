@@ -48,6 +48,8 @@ export interface FaceInfo {
 
 export type EngineErrorCode = 'type1' | 'unknownFormat' | 'corrupt' | 'eotCompressed' | 'noFormat' | 'convertFailed';
 
+export type MergeErrorCode = 'mergeIncompatible' | 'mergeGlyphSet' | 'mergeSameStyle' | 'mergeMixed' | 'mergeVariable' | 'mergeTooFew' | 'mergeFailed' | EngineErrorCode;
+
 export interface OpenResult {
   faces?: FaceInfo[];
   error?: EngineErrorCode;
@@ -81,7 +83,29 @@ export interface OutputFile {
 
 export interface ConvertResult {
   outputs?: OutputFile[];
-  warnings?: { code: 'otfVariable' | 'eotStatic'; file: string }[];
+  warnings?: { code: 'otfVariable' | 'eotStatic' | 'mergeLayoutStatic'; file: string }[];
   error?: EngineErrorCode;
+  detail?: string;
+}
+
+/** Fusion de polices statiques en police variable : vérification, puis police construite (build). */
+export interface MergeResult {
+  ok?: boolean;
+  family?: string;
+  italic?: boolean;
+  axes?: { tag: 'wght' | 'wdth'; min: number; default: number; max: number }[];
+  masters?: { file: string; style: string; weight: number; width: number }[];
+  stem?: string;
+  font?: Uint8Array;
+  size?: number;
+  warnings?: { code: 'mergeLayoutStatic'; file: string }[];
+  error?: MergeErrorCode;
+  /** mergeIncompatible / mergeGlyphSet : nombre de glyphes en cause et caractères visibles concernés. */
+  count?: number;
+  total?: number;
+  chars?: string;
+  /** mergeSameStyle : graisse en double et fichiers concernés. */
+  weight?: string;
+  files?: string[];
   detail?: string;
 }

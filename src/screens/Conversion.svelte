@@ -6,7 +6,7 @@
   import Toast from '../components/Toast.svelte';
   import Specimen from '../components/Specimen.svelte';
   import { t, fmt } from '../lib/i18n/index.svelte';
-  import { session, styleKey, styleName, type FontItem, type Subset } from '../lib/state/session.svelte';
+  import { session, styleKey, styleName, resultSummary, type FontItem, type MergeGroup, type Subset } from '../lib/state/session.svelte';
   import { ui } from '../lib/state/ui.svelte';
   import { engine } from '../lib/engine/client.svelte';
   import type { Format } from '../lib/engine/types';
@@ -17,6 +17,7 @@
   let htmlDrag = $state(false);
   let tab = $state<'preview' | 'details' | 'glyphs'>('preview');
   let expanded = $state(false);
+  let mergeHelp = $state(false);
 
   // Destination : affiche le sous-dossier réel de la prochaine conversion (polices, dossier, fin de conversion).
   $effect(() => {
@@ -67,7 +68,29 @@
     const spec = item.exportSpec;
     if (spec.kind === 'instance') parts.push(spec.instance.name || t('conv.static'));
     if (spec.kind === 'all') parts.push(t('vf.exportAllSub', { count: info.instances.length }));
+    if (session.mergeOf(item.id)) parts.push(t('merge.inList'));
     return parts.join(' · ');
+  }
+
+  // Fusion de graisses statiques en police variable
+  function mergeRange(g: MergeGroup) {
+    return (g.check?.axes ?? []).map((a) => t(a.tag === 'wght' ? 'merge.rangeWeight' : 'merge.rangeWidth', { min: fmt.num(a.min), max: fmt.num(a.max) })).join(', ');
+  }
+  function mergeStyles(g: MergeGroup) {
+    return g.ids.map((i) => session.items.find((x) => x.id === i)?.info?.style).filter(Boolean).join(' · ');
+  }
+  /** Quelques caractères en cause, lisibles (sans accents seuls ni espaces). */
+  function shownChars(chars = '') {
+    const list = [...chars].filter((c) => !/[\p{M}\p{Z}\p{C}]/u.test(c));
+    return list.length ? ` (${list.slice(0, 8).join(' ')}${list.length > 8 ? ' …' : ''})` : '';
+  }
+  function mergeRefusal(g: MergeGroup) {
+    const c = g.check ?? {};
+    if (c.error === 'mergeIncompatible') return t('merge.errIncompatible', { count: c.count ?? 0, chars: shownChars(c.chars) });
+    if (c.error === 'mergeGlyphSet') return t('merge.errGlyphSet', { count: c.count ?? 0 });
+    if (c.error === 'mergeSameStyle') return t('merge.errSameStyle', { files: fmt.list(c.files ?? []), weight: c.weight ?? '' });
+    if (c.error === 'mergeMixed') return t('merge.errMixed');
+    return t('merge.errOther');
   }
 
   const subsetOptions = $derived(
@@ -94,10 +117,10 @@
     if (!tt) return null;
     const r = session.results;
     if (tt.kind === 'done' && r) {
-      const from = r.sources.reduce((a, s) => a + s.size, 0);
-      const primary = r.sources.map((s) => r.outputs.filter((o) => o.sourceId === s.id).sort((a, b) => a.size - b.size)[0]).filter(Boolean);
-      const to = primary.reduce((a, o) => a + o.size, 0);
-      return { title: t('toast.doneTitle', { count: tt.count }), body: t('toast.doneBody', { pct: fmt.pct(to / from - 1), size: fmt.size(to) }), tone: 'success' as const };
+      const sum = resultSummary(r);
+      const total = t('res.total', { count: sum.files, size: fmt.size(sum.total) });
+      const body = sum.gain !== null ? t('toast.doneBody', { pct: fmt.pct(sum.gain), total }) : total;
+      return { title: t('toast.doneTitle', { count: tt.count }), body, tone: 'success' as const };
     }
     if (tt.kind === 'error') return { title: t('toast.errorTitle'), body: t('conv.failedCount', { count: tt.failed ?? 0 }), tone: 'warning' as const };
     if (tt.kind === 'added') return { title: t('toast.addedTitle', { count: tt.count }), body: t('toast.addedBody'), tone: 'success' as const };
@@ -198,7 +221,7 @@
               {:else if run?.state === 'done'}
                 <span title={t('conv.converted')} class="inline-flex shrink-0 items-center gap-[5px] rounded-md bg-success-soft px-2 py-[3px] text-[12.5px] font-semibold whitespace-nowrap text-success">
                   <Icon name="check" size={14} />
-                  {fmt.pct(run.gain ?? 0)}
+                  {run.merged ? t('merge.badgeDone') : run.gain !== undefined ? fmt.pct(run.gain) : t('res.filesCount', { count: run.files ?? 0 })}
                 </span>
               {/if}
               <button
@@ -289,6 +312,64 @@
     </div>
 
     <div class="bg-card shadow-card flex flex-col gap-3.5 rounded-xl border border-line px-5 py-[18px]">
+      {#if session.merges.length}
+        <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <Icon name="merge" size={19} class="text-fg" />
+          <h2 class="m-0 flex-1 text-[15px] font-semibold whitespace-nowrap text-fg">{t('merge.title')}</h2>
+          <button
+            type="button"
+            aria-expanded={mergeHelp}
+            aria-controls="mh-{id}"
+            onclick={() => (mergeHelp = !mergeHelp)}
+            class="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2 text-[13.5px] font-medium whitespace-nowrap text-accent-text hover:bg-hover"
+          >
+            <Icon name="info" size={17} />
+            {t('merge.howTitle')}
+          </button>
+        </div>
+        <p class="m-0 -mt-1.5 text-[13.5px] leading-normal text-fg-muted">{t('merge.intro')}</p>
+        {#if mergeHelp}
+          <div id="mh-{id}" class="flex flex-col gap-2 rounded-[10px] bg-sunken px-3.5 py-3 text-[13.5px] leading-[1.5] text-fg-muted">
+            <p class="m-0">{t('merge.how1')}</p>
+            <p class="m-0">{t('merge.how2')}</p>
+            <p class="m-0 font-semibold text-fg">{t('merge.limitsTitle')}</p>
+            <ul class="m-0 flex list-disc flex-col gap-1 pl-5">
+              {#each ['limit1', 'limit2', 'limit3', 'limit4', 'limit5'] as k (k)}
+                <li>{t('merge.' + k)}</li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+        {#each session.merges as g, gi (g.key)}
+          {@const label = g.family + (g.italic ? ' Italic' : '')}
+          <div class="flex flex-col gap-2 rounded-[10px] px-3.5 py-3 {g.enabled ? 'border-[1.5px] border-accent bg-selected' : 'border border-line-strong bg-sunken'}">
+            <div class="flex items-center gap-3">
+              <span class="flex min-w-0 flex-1 flex-col gap-[2px]">
+                <span id="mg-{id}-{gi}" class="text-[14.5px] font-semibold [overflow-wrap:anywhere] text-fg">{t('merge.group', { family: label, count: g.ids.length })}</span>
+                <span class="text-[12.5px] [overflow-wrap:anywhere] text-fg-muted">{mergeStyles(g)}</span>
+              </span>
+              <Toggle checked={g.enabled} disabled={g.status !== 'ok' || session.phase === 'running'} label={t('merge.toggleAria', { family: label })} onchange={(v) => session.setMerge(g.key, v)} />
+            </div>
+            {#if g.status === 'checking'}
+              <p class="m-0 flex items-center gap-2 text-[13px] text-fg-muted" role="status">
+                <span class="size-3.5 shrink-0 animate-spin rounded-full border-2 border-line-strong border-t-accent" aria-hidden="true"></span>
+                {t('merge.checking')}
+              </p>
+            {:else if g.status === 'ok'}
+              <p class="m-0 flex items-start gap-2 text-[13px] leading-snug text-fg-muted">
+                <Icon name="checkCircle" size={17} class="text-success" />
+                {t(g.enabled ? 'merge.okOn' : 'merge.ok', { count: g.ids.length, range: mergeRange(g) })}
+              </p>
+            {:else}
+              <p class="m-0 flex items-start gap-2 rounded-lg bg-warning-soft px-2.5 py-2 text-[13px] leading-snug text-warning">
+                <Icon name="alert" size={17} stroke={1.6} />
+                <span>{mergeRefusal(g)} {t('merge.separately')}</span>
+              </p>
+            {/if}
+          </div>
+        {/each}
+        <div class="h-px bg-line"></div>
+      {/if}
       {#if session.variableItems.length}
         {@const choices = session.styleChoices}
         {@const withItalic = choices.some((c) => c.italic)}
